@@ -29,14 +29,14 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  s.add_dependency 'activesupport',       '>= 6.1'
-  s.add_dependency 'i18n',                '>= 1.8', '< 2'
-  s.add_dependency 'zeitwerk',            '~> 2.4'
+  spec.add_dependency 'activesupport',       '>= 6.1'
+  spec.add_dependency 'i18n',                '>= 1.8', '< 2'
+  spec.add_dependency 'zeitwerk',            '~> 2.4'
 
-  s.add_development_dependency 'byebug',  '~> 11.0'
-  s.add_development_dependency 'rake',    '~> 13.0'
-  s.add_development_dependency 'rspec',   '~> 3.0'
-  s.add_development_dependency 'rubocop', '~> 1.7'
+  spec.add_development_dependency 'byebug',  '~> 11.0'
+  spec.add_development_dependency 'rake',    '~> 13.0'
+  spec.add_development_dependency 'rspec',   '~> 3.0'
+  spec.add_development_dependency 'rubocop', '~> 1.7'
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
