@@ -6,7 +6,7 @@ Gem::Specification.new do |spec|
   spec.name          = "active_ad"
   spec.version       = ActiveAd::VERSION
   spec.authors       = ["Kobus Joubert"]
-  spec.email         = ["kobus51@yahoo.com"]
+  spec.email         = ["kobus@translate3d.com'"]
 
   spec.summary       = "TODO: Write a short summary, because RubyGems requires one."
   spec.description   = "TODO: Write a longer description or delete this line."
