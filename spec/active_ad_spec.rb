@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 RSpec.describe ActiveAd do
   it "has a version number" do
     expect(ActiveAd::VERSION).not_to be nil

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require "active_ad"
 
 RSpec.configure do |config|
