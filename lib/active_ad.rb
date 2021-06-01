@@ -1,4 +1,4 @@
-require_relative "active_ad/version"
+require_relative 'active_ad/version'
 
 module ActiveAd
   class Error < StandardError; end
