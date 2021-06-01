@@ -1,10 +1,2 @@
-source "https://rubygems.org"
-
-# Specify your gem's dependencies in active_ad.gemspec
+source 'https://rubygems.org'
 gemspec
-
-gem "rake", "~> 13.0"
-
-gem "rspec", "~> 3.0"
-
-gem "rubocop", "~> 1.7"
