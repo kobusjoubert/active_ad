@@ -1,4 +1,4 @@
-# ActiveAd
+# Active Ad
 
 Active Ad allows you to talk to all the different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn all the different social media APIs out there.
 
