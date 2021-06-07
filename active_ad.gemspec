@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['kobus@translate3d.com']
 
   spec.summary       = 'Framework to manage ads.'
-  spec.description   = 'Active Ad allows you to talk to all the different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn all the different social media APIs out there. The aim of the project is to feel natural to Ruby users and is developed to be used in Ruby on Rails applications, but can also be used as a stand alone library in any Ruby project.'
+  spec.description   = 'Active Ad allows you to talk to different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn all the different social media APIs out there. The aim of the project is to feel natural to Ruby users and is developed to be used in Ruby on Rails applications, but can also be used as a stand alone library in any Ruby project.'
   spec.homepage      = 'https://github.com/ClickAds/active_ad'
   spec.license       = 'MIT'
 
@@ -30,7 +30,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'activesupport',       '>= 6.1'
-  spec.add_dependency 'i18n',                '>= 1.8', '< 2'
+  spec.add_dependency 'faraday',             '~> 1.4'
+  spec.add_dependency 'i18n',                '~> 1.8'
   spec.add_dependency 'zeitwerk',            '~> 2.4'
 
   spec.add_development_dependency 'byebug',  '~> 11.0'
