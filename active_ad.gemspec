@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/ClickAds/active_ad'
   spec.license       = 'MIT'
 
-  spec.required_ruby_version = '>= 2.4.0'
+  spec.required_ruby_version = '>= 3.0.0'
 
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'activemodel',         '~> 6.1'
   spec.add_dependency 'activesupport',       '~> 6.1'
   spec.add_dependency 'faraday',             '~> 1.4'
   spec.add_dependency 'i18n',                '~> 1.8'
