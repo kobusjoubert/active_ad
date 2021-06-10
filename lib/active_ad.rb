@@ -27,6 +27,7 @@ require 'zeitwerk'
 loader = Zeitwerk::Loader.for_gem
 loader.push_dir("#{__dir__}/active_ad/clients", namespace: ActiveAd)
 loader.push_dir("#{__dir__}/active_ad/interfaces", namespace: ActiveAd)
+loader.push_dir("#{__dir__}/active_ad/validators")
 
 if ActiveAd.env.development?
   loader.log!
