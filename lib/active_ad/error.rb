@@ -4,4 +4,6 @@ module ActiveAd
   class RequestError < Error; end
 
   class ResponseError < Error; end
+
+  class LoginError < Error; end
 end

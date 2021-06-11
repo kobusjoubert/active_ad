@@ -2,7 +2,7 @@ class ActiveAd::BaseInterface
   extend ActiveModel::Callbacks
   include ActiveModel::Validations
 
-  attr_accessor :response
+  attr_reader :request, :response
 
   define_model_callbacks :save, :update, :destroy
 
@@ -16,44 +16,50 @@ class ActiveAd::BaseInterface
   end
 
   def save
-    self.response = nil
+    @request = nil
+    @response = nil
 
     run_callbacks(:save) do
-      self.response = create_request
+      @request = create_request
+      @response = JSON.parse(request.body).with_indifferent_access
     end
 
     self
   end
 
   def update
-    self.response = nil
+    @request = nil
+    @response = nil
 
     run_callbacks(:update) do
-      self.response = update_request
+      @request = update_request
+      @response = JSON.parse(request.body).with_indifferent_access
     end
 
     self
   end
 
   def destroy
-    self.response = nil
+    @request = nil
+    @response = nil
 
     run_callbacks(:destroy) do
-      self.response = delete_request
+      @request = delete_request
+      @response = JSON.parse(request.body).with_indifferent_access
     end
 
     self
   end
 
   def create_request
-    raise NotImplementedError
+    raise NotImplementedError, 'Subclasses must implement a public create_request method'
   end
 
   def update_request
-    raise NotImplementedError
+    raise NotImplementedError, 'Subclasses must implement a public update_request method'
   end
 
   def delete_request
-    raise NotImplementedError
+    raise NotImplementedError, 'Subclasses must implement a public delete_request method'
   end
 end
