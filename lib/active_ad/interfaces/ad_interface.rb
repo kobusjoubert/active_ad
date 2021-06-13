@@ -1,6 +1,8 @@
 class ActiveAd::AdInterface < ActiveAd::BaseInterface
   attr_accessor :ad_group, :type, :name, :title, :titles, :description, :descriptions
 
+  delegate :api_version, :access_token, to: :ad_group
+
   validates_presence_of :ad_group
   validates_presence_of :title_or_titles
   validates_length_of :title, maximum: 255, unless: :platform_checks_length_of_title, allow_blank: true

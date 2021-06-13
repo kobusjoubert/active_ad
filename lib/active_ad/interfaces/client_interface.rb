@@ -2,7 +2,10 @@ class ActiveAd::ClientInterface
   extend ActiveModel::Callbacks
   include ActiveModel::Validations
 
-  attr_reader :platform, :request, :response, :access_token
+  attr_reader :platform, :api_version, :request, :response
+  attr_accessor :access_token
+
+  validates_presence_of :access_token
 
   define_model_callbacks :login
 

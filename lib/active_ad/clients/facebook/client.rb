@@ -1,10 +1,7 @@
 class ActiveAd::Facebook::Client < ActiveAd::ClientInterface
-  attr_accessor :short_lived_access_token, :client_id, :client_secret
-  attr_reader :api_version
+  attr_accessor :client_id, :client_secret, :short_lived_access_token
 
   validates_presence_of :client_id, :client_secret
-
-  # after_login :set_access_token
 
   def initialize(**kwargs)
     super
