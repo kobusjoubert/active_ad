@@ -32,6 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activemodel',         '~> 6.1'
   spec.add_dependency 'activesupport',       '~> 6.1'
   spec.add_dependency 'faraday',             '~> 1.4'
+  spec.add_dependency 'faraday_middleware',  '~> 1.0'
   spec.add_dependency 'i18n',                '~> 1.8'
   spec.add_dependency 'zeitwerk',            '~> 2.4'
 

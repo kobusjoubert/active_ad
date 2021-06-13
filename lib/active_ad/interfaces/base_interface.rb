@@ -2,7 +2,7 @@ class ActiveAd::BaseInterface
   extend ActiveModel::Callbacks
   include ActiveModel::Validations
 
-  attr_reader :request, :response
+  attr_reader :response
 
   define_model_callbacks :save, :update, :destroy
 
@@ -16,36 +16,30 @@ class ActiveAd::BaseInterface
   end
 
   def save
-    @request = nil
     @response = nil
 
     run_callbacks(:save) do
-      @request = create_request
-      @response = JSON.parse(request.body).with_indifferent_access
+      @response = create_request
     end
 
     self
   end
 
   def update
-    @request = nil
     @response = nil
 
     run_callbacks(:update) do
-      @request = update_request
-      @response = JSON.parse(request.body).with_indifferent_access
+      @response = update_request
     end
 
     self
   end
 
   def destroy
-    @request = nil
     @response = nil
 
     run_callbacks(:destroy) do
-      @request = delete_request
-      @response = JSON.parse(request.body).with_indifferent_access
+      @response = delete_request
     end
 
     self

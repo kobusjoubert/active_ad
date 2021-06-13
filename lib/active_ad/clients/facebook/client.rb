@@ -9,7 +9,7 @@ class ActiveAd::Facebook::Client < ActiveAd::ClientInterface
   end
 
   def login_request
-    Faraday.get("https://graph.facebook.com/v#{api_version}/oauth/access_token", {
+    ActiveAd.connection.get("https://graph.facebook.com/v#{api_version}/oauth/access_token", {
       grant_type: 'fb_exchange_token',
       client_id: client_id,
       client_secret: client_secret,
@@ -20,7 +20,7 @@ class ActiveAd::Facebook::Client < ActiveAd::ClientInterface
   private
 
   def set_access_token
-    raise ActiveAd::LoginError, response[:error] unless request.success?
-    @access_token = response[:access_token]
+    raise ActiveAd::LoginError, response.body['error'] unless response.success?
+    @access_token = response.body['access_token']
   end
 end

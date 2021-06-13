@@ -2,7 +2,7 @@ class ActiveAd::ClientInterface
   extend ActiveModel::Callbacks
   include ActiveModel::Validations
 
-  attr_reader :platform, :api_version, :request, :response
+  attr_reader :platform, :api_version, :response
   attr_accessor :access_token
 
   validates_presence_of :access_token
@@ -20,12 +20,10 @@ class ActiveAd::ClientInterface
   end
 
   def login
-    @request = nil
     @response = nil
 
     run_callbacks(:login) do
-      @request = login_request
-      @response = JSON.parse(request.body).with_indifferent_access
+      @response = login_request
     end
 
     self

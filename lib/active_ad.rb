@@ -9,6 +9,7 @@ require 'active_model'
 require 'active_model/callbacks'
 require 'active_model/validations'
 require 'faraday'
+require 'faraday_middleware'
 
 module ActiveAd
   class << self
@@ -21,6 +22,16 @@ module ActiveAd
       @_env ||= ActiveSupport::EnvironmentInquirer.new(
         ENV['ACTIVE_AD_ENV'].presence || ENV['RAILS_ENV'].presence || ENV['RACK_ENV'].presence || ''
       )
+    end
+
+    def connection
+      Faraday.new do |conn|
+        conn.request :json # Encode req bodies as JSON
+        conn.request :retry # Retry transient failures
+        # conn.response :follow_redirects # Follow redirects
+        conn.response :json # Decode response bodies as JSON
+        conn.adapter Faraday.default_adapter
+      end
     end
   end
 end
