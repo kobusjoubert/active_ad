@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Ad < ActiveAd::AdInterface
+class ActiveAd::Facebook::Ad < ActiveAd::Ad
   # Must be able to use your own validations, taking precedence over what the interface supplies.
   validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }

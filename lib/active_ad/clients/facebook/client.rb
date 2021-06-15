@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Client < ActiveAd::ClientInterface
+class ActiveAd::Facebook::Client < ActiveAd::Client
   attr_accessor :client_id, :client_secret, :short_lived_access_token
 
   validates_presence_of :client_id, :client_secret

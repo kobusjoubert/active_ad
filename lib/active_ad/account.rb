@@ -1,16 +1,14 @@
 class ActiveAd::Account < ActiveAd::Base
-  attr_reader :client
+  attr_accessor :client, :account_id, :name
 
-  delegate :platform, to: :client
+  delegate :platform, :api_version, :access_token, to: :client
 
-  def initialize(client:, **kwargs)
-    @client = client
-    @platform_object = "ActiveAd::#{platform.classify}::Account".constantize.new(client: client, **kwargs)
-  end
+  validates_presence_of :client
 
-  class << self
-    def create(client:, **kwargs)
-      new(client: client, **kwargs).save
-    end
-  end
+  # before_save :do_something
+  # after_destroy :do_something
+
+  # def id
+  #   account_id
+  # end
 end

@@ -1,16 +1,10 @@
 class ActiveAd::Campaign < ActiveAd::Base
-  attr_reader :account
+  attr_accessor :account, :campaign_id, :name
 
-  delegate :platform, to: :account
+  delegate :platform, :api_version, :access_token, to: :account
 
-  def initialize(account:, **kwargs)
-    @account = account
-    @platform_object = "ActiveAd::#{platform.classify}::Campaign".constantize.new(account: account, **kwargs)
-  end
+  validates_presence_of :account
 
-  class << self
-    def create(account:, **kwargs)
-      new(account: account, **kwargs).save
-    end
-  end
+  # before_save :do_something
+  # after_destroy :do_something
 end
