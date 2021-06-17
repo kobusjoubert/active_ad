@@ -1,6 +1,6 @@
 class ActiveAd::Client
   extend ActiveModel::Callbacks
-  include ActiveModel::Validations
+  include ActiveModel::Model
 
   attr_reader :api_version, :response
   attr_accessor :access_token
@@ -18,9 +18,14 @@ class ActiveAd::Client
   end
 
   def initialize(**kwargs)
-    kwargs.each do |key, value|
-      public_send("#{key}=", value)
-    end
+    super(**kwargs)
+
+    # By including ActiveModel::Model and calling super, attributes will be assigned with `assign_attributes(kwargs)` which calls
+    # `public_send("#{key}=", value)` internally.
+    #
+    # kwargs.each do |key, value|
+    #   public_send("#{key}=", value)
+    # end
   end
 
   def platform
