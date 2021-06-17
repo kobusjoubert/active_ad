@@ -8,11 +8,12 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
     @api_version = '11.0'
   end
 
+  # Permissions required on the short_lived_access_token: email, ads_management, business_management, leads_retrieval
   def login_request
     ActiveAd.connection.get("https://graph.facebook.com/v#{api_version}/oauth/access_token", {
-      grant_type: 'fb_exchange_token',
       client_id: client_id,
       client_secret: client_secret,
+      grant_type: 'fb_exchange_token',
       fb_exchange_token: short_lived_access_token
     })
   end
