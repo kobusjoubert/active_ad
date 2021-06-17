@@ -7,4 +7,6 @@ class ActiveAd::Campaign < ActiveAd::Base
 
   # before_save :do_something
   # after_destroy :do_something
+
+  alias_method :id, :campaign_id
 end

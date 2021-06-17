@@ -1,5 +1,5 @@
 class ActiveAd::Ad < ActiveAd::Base
-  attr_accessor :ad_group, :type, :name, :title, :titles, :description, :descriptions
+  attr_accessor :ad_group, :ad_id, :name, :title, :titles, :description, :descriptions, :type
 
   delegate :platform, :api_version, :access_token, to: :ad_group
 
@@ -10,6 +10,8 @@ class ActiveAd::Ad < ActiveAd::Base
 
   # before_save :do_something
   # after_destroy :do_something
+
+  alias_method :id, :ad_id
 
   private
 

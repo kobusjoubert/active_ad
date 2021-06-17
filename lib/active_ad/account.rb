@@ -8,7 +8,5 @@ class ActiveAd::Account < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
 
-  # def id
-  #   account_id
-  # end
+  alias_method :id, :account_id
 end
