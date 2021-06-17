@@ -1,6 +1,6 @@
 class ActiveAd::Base
   extend ActiveModel::Callbacks
-  include ActiveModel::Validations
+  include ActiveModel::Model
 
   attr_reader :response
 
@@ -10,9 +10,14 @@ class ActiveAd::Base
   # after_destroy :do_something
 
   def initialize(**kwargs)
-    kwargs.each do |key, value|
-      public_send("#{key}=", value)
-    end
+    super(**kwargs)
+
+    # By including ActiveModel::Model and calling super, attributes will be assigned with `assign_attributes(kwargs)` which calls
+    # `public_send("#{key}=", value)` internally.
+    #
+    # kwargs.each do |key, value|
+    #   public_send("#{key}=", value)
+    # end
   end
 
   class << self
@@ -27,8 +32,8 @@ class ActiveAd::Base
       new(**kwargs).send(:find!)
     end
 
-    # TODO: Might need some work to fullfil blank object when not created.
     # Returns object or blank object.
+    # TODO: Might need some work to fullfil blank object when not created.
     def create(**kwargs)
       object = new(**kwargs)
       object.save
@@ -51,8 +56,9 @@ class ActiveAd::Base
   end
 
   # Returns true or exception.
-  # ActiveAd::RecordInvalid (Validation failed: Client can't be blank).
-  # ActiveAd::RecordInvalid (404 Not Found: {}).
+  #
+  #   ActiveAd::RecordInvalid (Validation failed: Client can't be blank).
+  #   ActiveAd::RecordInvalid (404 Not Found: {}).
   def save!
     save
     raise ActiveAd::RecordInvalid, errors.full_messages.join(', ') unless valid?
@@ -61,16 +67,17 @@ class ActiveAd::Base
     response.success?
   end
 
+  # TODO: ==> Carry on here, finish this method.
   # Returns true or false.
-  def update # TODO: update(**kwargs)
+  def update(**kwargs)
     @response = nil
     run_callbacks(:update) { @response = update_request }
     response.sucess?
   end
 
   # Returns true or exception.
-  def update! # TODO: update!(**kwargs)
-    update
+  def update!(**kwargs)
+    update(**kwargs)
     # TODO: Raise errors
   end
 
@@ -92,13 +99,29 @@ class ActiveAd::Base
   # Returns object or nil.
   def find
     @response = nil
-    run_callbacks(:find) { @response = find_request }
+    run_callbacks(:find) { @response = read_request }
+
+    if response.success?
+      response.body.each do |attribute, value|
+        attributes =
+          if self.class.const_defined?('ATTRIBUTES_MAPPING')
+            { (self.class::ATTRIBUTES_MAPPING[attribute.to_sym] || attribute) => value }
+          else
+            { attribute => value }
+          end
+
+        assign_attributes(attributes)
+      rescue  ActiveModel::UnknownAttributeError
+      end
+    end
+
     self
   end
 
   # Returns object or exception.
-  # ActiveAd::RecordNotFound (Couldn't find record with 'id'=#{id}).
-  # ActiveAd::RecordNotFound (404 Not Found: {}).
+  #
+  #   ActiveAd::RecordNotFound (Couldn't find record with 'id'=#{id}).
+  #   ActiveAd::RecordNotFound (404 Not Found: {}).
   def find!
     find
     # raise ActiveAd::RecordNotFound, "Couldn't find record with 'id'=#{id}" unless response.success? # TODO: Probably not what I want.
@@ -107,8 +130,8 @@ class ActiveAd::Base
     self
   end
 
-  def find_request
-    raise NotImplementedError, 'Subclasses must implement a find_request method'
+  def read_request
+    raise NotImplementedError, 'Subclasses must implement a read_request method'
   end
 
   def create_request
