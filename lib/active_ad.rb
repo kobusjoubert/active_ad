@@ -6,8 +6,6 @@ require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/json'
 require 'active_support/environment_inquirer'
 require 'active_model'
-require 'active_model/callbacks'
-require 'active_model/validations'
 require 'faraday'
 require 'faraday_middleware'
 
