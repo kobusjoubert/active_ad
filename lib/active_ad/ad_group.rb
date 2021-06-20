@@ -1,12 +1,13 @@
 class ActiveAd::AdGroup < ActiveAd::Base
-  attr_accessor :campaign, :ad_group_id, :name
+  # Attributes needed for creating and updating.
+  attribute :id, :string
+  attribute :name, :string
+  attribute :status, :string
 
-  delegate :platform, :api_version, :access_token, to: :campaign
-
-  validates_presence_of :campaign
+  # validates_presence_of :some_attribute
 
   # before_save :do_something
   # after_destroy :do_something
 
-  alias_method :id, :ad_group_id
+  alias_method :ad_group_id, :id
 end
