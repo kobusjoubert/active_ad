@@ -3,6 +3,7 @@ class ActiveAd::Ad < ActiveAd::Base
   attribute :id, :string
   attribute :name, :string
   attribute :status, :string
+  attribute :ad_group_id, :string
   attribute :title, :string
   attribute :titles, array: true
   attribute :description, :string

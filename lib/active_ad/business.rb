@@ -1,6 +1,6 @@
 class ActiveAd::Business < ActiveAd::Base
   # Attributes needed for creating and updating.
-  attribute :business_id, :string
+  attribute :id, :string
   attribute :name, :string
   attribute :status, :string
 
@@ -9,5 +9,5 @@ class ActiveAd::Business < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
 
-  alias_method :id, :business_id
+  alias_method :business_id, :id
 end

@@ -1,12 +1,24 @@
 class ActiveAd::Facebook::Account < ActiveAd::Account
-  attr_accessor :business_id, :currency, :fields, :media_agency_id, :end_advertiser_id, :partner_id, :timezone_id
+  attr_accessor :fields
 
-  READ_FIELDS = %w[name timezone_id spend_cap tos_accepted user_tos_accepted offsite_pixels_tos_accepted amount_spent balance currency
-                   min_campaign_group_spend_cap min_daily_budget media_agency end_advertiser end_advertiser_name funding_source funding_source_details
-                   is_prepay_account is_notifications_enabled is_personal disable_reason business business_name business_country_code business_state
-                   business_city business_street business_street2 business_zip capabilities]
+  # Attributes needed for creating and updating.
+  attribute :business_id, :string
+  attribute :currency, :string
+  attribute :media_agency_id, :string
+  attribute :end_advertiser_id, :string
+  attribute :partner_id, :string
+  attribute :timezone_id, :integer
+
+  # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on whitelist`.
+  READ_FIELDS = %w[
+    account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2 business_zip
+    capabilities created_time currency disable_reason end_advertiser end_advertiser_name failed_delivery_checks funding_source funding_source_details
+    is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap min_daily_budget name
+    offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tos_accepted
+  ]
 
   ATTRIBUTES_MAPPING = {
+    account_status: :status,
     end_advertiser: :end_advertiser_id,
     media_agency: :media_agency_id,
     partner: :partner_id

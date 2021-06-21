@@ -3,6 +3,7 @@ class ActiveAd::AdGroup < ActiveAd::Base
   attribute :id, :string
   attribute :name, :string
   attribute :status, :string
+  attribute :campaign_id, :string
 
   # validates_presence_of :some_attribute
 

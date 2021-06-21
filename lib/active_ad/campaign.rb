@@ -3,6 +3,7 @@ class ActiveAd::Campaign < ActiveAd::Base
   attribute :id, :string
   attribute :name, :string
   attribute :status, :string
+  attribute :account_id, :string
 
   # validates_presence_of :some_attribute
 
