@@ -3,7 +3,9 @@ RSpec.describe ActiveAd do
     expect(ActiveAd::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    expect(false).to eq(true)
+  describe '.env' do
+    it 'does not set the default environment to development' do
+      expect(described_class.env.development?).to be(false)
+    end
   end
 end
