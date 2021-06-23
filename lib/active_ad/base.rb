@@ -63,15 +63,15 @@ class ActiveAd::Base
     # Returns object or blank object.
     # TODO: Might need some work to fullfil blank object when not created.
     def create(**kwargs)
-      object = new(**kwargs)
-      object.save
+      object = new(**kwargs.except(:validate))
+      object.save(**kwargs)
       object
     end
 
     # Returns object or exception.
     def create!(**kwargs)
-      object = new(**kwargs)
-      object.save!
+      object = new(**kwargs.except(:validate))
+      object.save!(**kwargs)
       object
     end
   end
@@ -81,20 +81,20 @@ class ActiveAd::Base
   end
 
   # Returns true or false.
-  def save
+  def save(**kwargs)
     @response = nil
 
     run_callbacks(:save) do
       if new_record?
         run_callbacks(:create) do
-          return false unless valid?
+          return false unless perform_validations(kwargs)
 
           @response = create_request
         end
       else
         run_callbacks(:update) do
-          return false unless valid?
           return false unless changed?
+          return false unless perform_validations(kwargs)
 
           @response = update_request
         end
@@ -108,8 +108,8 @@ class ActiveAd::Base
   #
   #   ActiveAd::RecordInvalid (Validation failed: Client can't be blank).
   #   ActiveAd::RecordInvalid (404 Not Found: {}).
-  def save!
-    save
+  def save!(**kwargs)
+    save(**kwargs)
     raise ActiveAd::RecordInvalid, errors.full_messages.join(', ') if errors.any?
     raise ActiveAd::RecordInvalid, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
     response.success?
@@ -117,14 +117,14 @@ class ActiveAd::Base
 
   # Returns true or false.
   def update(**kwargs)
-    update_attributes(kwargs)
-    save
+    set_attributes(kwargs)
+    save(**kwargs)
   end
 
   # Returns true or exception.
   def update!(**kwargs)
-    update_attributes(kwargs)
-    save!
+    set_attributes(kwargs)
+    save!(**kwargs)
   end
 
   # Returns true or false.
@@ -144,7 +144,7 @@ class ActiveAd::Base
     @new_record
   end
 
-  # Borrowed from ActiveRecord::Validations (งツ)ว
+  # Borrowed some methods from ActiveRecord::Validations (งツ)ว
   def valid?(context = nil)
     context ||= default_validation_context
     output = super(context)
@@ -155,13 +155,17 @@ class ActiveAd::Base
 
   private
 
+  def perform_validations(options = {})
+    options[:validate] == false || valid?
+  end
+
   def default_validation_context
     new_record? ? :create : :update
   end
 
-  def update_attributes(attributes = {})
+  def set_attributes(attributes = {})
     attributes.each do |attribute, value|
-      next if attribute == 'id'
+      next if ['id', 'validate'].include?(attribute) # Attributes we don't need for create or update. We set `id` on initialize.
 
       attributes =
         if self.class.const_defined?('ATTRIBUTES_MAPPING')
@@ -181,7 +185,7 @@ class ActiveAd::Base
     run_callbacks(:find) { @response = read_request }
 
     if response.success?
-      update_attributes(response.body)
+      set_attributes(response.body)
       clear_changes_information
     end
 
