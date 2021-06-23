@@ -7,16 +7,16 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   attribute :special_ad_categories, array: true, default: []
   attribute :status, :string, default: 'PAUSED'
 
+  # TODO: Maybe use a class method that needs to be implemented on child objects, instead of using a constant?
+  ATTRIBUTES_MAPPING = {
+    effective_status: :status
+  }
+
   READ_FIELDS = %w[
     ad_strategy_id adlabels bid_strategy budget_remaining buying_type can_use_spend_cap configured_status created_time daily_budget effective_status issues_info
     last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object source_campaign source_campaign_id special_ad_categories
     special_ad_category special_ad_category_country spend_cap start_time status stop_time updated_time
   ]
-
-  # TODO: Maybe use a class method that needs to be implemented on child objects, instead of using a constant?
-  ATTRIBUTES_MAPPING = {
-    effective_status: :status
-  }
 
   validates_presence_of :name, :status, :objective, on: :create
   validates_presence_of :special_ad_categories, allow_blank: true, on: :create

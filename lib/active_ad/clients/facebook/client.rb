@@ -3,9 +3,11 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
 
   validates_presence_of :client_id, :client_secret
 
+  API_VERSION = '11.0'
+
   def initialize(**kwargs)
     super
-    @api_version = '11.0'
+    @api_version = API_VERSION
   end
 
   # Permissions required on the short_lived_access_token: email, ads_management, business_management, leads_retrieval

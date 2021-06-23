@@ -9,6 +9,14 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   attribute :partner_id, :string
   attribute :timezone_id, :integer
 
+  # TODO: Maybe use a class method that needs to be implemented on child objects, instead of using a constant?
+  ATTRIBUTES_MAPPING = {
+    account_status: :status,
+    end_advertiser: :end_advertiser_id,
+    media_agency: :media_agency_id,
+    partner: :partner_id
+  }
+
   # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on whitelist`.
   READ_FIELDS = %w[
     account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2 business_zip
@@ -16,13 +24,6 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
     is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap min_daily_budget name
     offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tos_accepted
   ]
-
-  ATTRIBUTES_MAPPING = {
-    account_status: :status,
-    end_advertiser: :end_advertiser_id,
-    media_agency: :media_agency_id,
-    partner: :partner_id
-  }
 
   # Must be able to use your own validations, taking precedence over what the interface supplies.
   #
@@ -63,15 +64,15 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   #   })
   # end
 
-  # TODO: Make more elegant.
+  # # TODO: Make more elegant.
   # def update_request
   #   # name: name,
   #   # end_advertiser_id: (end_advertiser_id.presence || 'NONE').to_s,
   #   # spend_cap: 100.00,
   #   # spend_cap_action: 'reset'
-  #   ActiveAd.connection.post("https://graph.facebook.com/v#{api_version}/act_#{account_id}", {
-  #     access_token: access_token
-  #   }.merge(update_attributes))
+  #   ActiveAd.connection.post("https://graph.facebook.com/v#{api_version}/act_#{account_id}",
+  #     update_request_attributes.merge(access_token: access_token)
+  #   )
   # end
 
   def delete_request
