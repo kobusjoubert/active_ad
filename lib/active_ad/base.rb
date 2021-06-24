@@ -89,7 +89,12 @@ class ActiveAd::Base
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
           @response = create_request
-          @new_record = false if response.success?
+
+          if response.success?
+            @new_record = false
+            clear_changes_information
+            self.id = create_response_id(response)
+          end
         end
       else
         run_callbacks(:update) do
@@ -263,5 +268,9 @@ class ActiveAd::Base
 
   def delete_request
     raise NotImplementedError, 'Subclasses must implement a delete_request method'
+  end
+
+  def create_response_id
+    raise NotImplementedError, 'Subclasses must implement a create_response_id method'
   end
 end

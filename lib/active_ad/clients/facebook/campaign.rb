@@ -32,6 +32,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   # after_destroy :do_something
 
   def read_request
+    p "=== Response from READ request campaign_id: #{campaign_id}"
+
     ActiveAd.connection.get("https://graph.facebook.com/v#{api_version}/#{campaign_id}", {
       access_token: access_token,
       fields: (fields || READ_FIELDS).join(',')
@@ -61,5 +63,9 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
     ActiveAd.connection.delete("https://graph.facebook.com/v#{api_version}/#{campaign_id}", {
       access_token: access_token
     })
+  end
+
+  def create_response_id(response)
+    response.body['id']
   end
 end

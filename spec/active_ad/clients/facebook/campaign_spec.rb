@@ -126,28 +126,32 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#new_record?' do
     it 'ise a new record when initializing without an id' do
-      stub_request(:any, /.*/)
-
       expect(described_class.new.new_record?).to be true
     end
 
     it 'is not a new record when initializing with id' do
-      stub_request(:any, /.*/)
-
       expect(described_class.new(id: 'campaign_123').new_record?).to be false
     end
 
     it 'is not a new record after update' do
-      stub_request(:any, /.*/)
+      stub_request(:post, "https://graph.facebook.com/v#{api_version}/campaign_123").with(body:
+        hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
+      ).to_return(status: 200, body: {
+        id: 'campaign_123', name: 'New Campaign Name'
+      }.to_json)
 
       campaign.update(name: 'New Campaign Name', validate: false)
       expect(campaign.new_record?).to be false
     end
 
     it 'is not a new record after create' do
-      stub_request(:any, /.*/)
+      stub_request(:post, "https://graph.facebook.com/v#{api_version}/act_account_123/campaigns").with(body:
+        hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
+      ).to_return(status: 200, body: {
+        id: 'campaign_123', name: 'Campaign Name'
+      }.to_json)
 
-      expect(described_class.create(name: 'Campaign Name', validate: false).new_record?).to be false
+      expect(described_class.create(account_id: 'account_123', name: 'Campaign Name', validate: false).new_record?).to be false
     end
   end
 
@@ -209,44 +213,44 @@ RSpec.describe ActiveAd::Facebook::Campaign do
   describe '#update' do
     it 'returns true when updated' do
       stub_request(:post, "https://graph.facebook.com/v#{api_version}/campaign_123").with(body:
-        hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
+        hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: 'campaign_123', name: 'New Campaign Name'
       }.to_json)
 
-      expect(campaign.update(name: 'Campaign Name', validate: false)).to be true
+      expect(campaign.update(name: 'New Campaign Name', validate: false)).to be true
     end
 
     it 'returns false when not updated' do
       stub_request(:post, "https://graph.facebook.com/v#{api_version}/campaign_123").with(body:
-        hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
+        hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
       }.to_json)
 
-      expect(campaign.update(name: 'Campaign Name', validate: false)).to be false
+      expect(campaign.update(name: 'New Campaign Name', validate: false)).to be false
     end
   end
 
   describe '#update!' do
     it 'returns true when updated' do
       stub_request(:post, "https://graph.facebook.com/v#{api_version}/campaign_123").with(body:
-        hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
+        hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: 'campaign_123', name: 'New Campaign Name'
       }.to_json)
 
-      expect(campaign.update!(name: 'Campaign Name', validate: false)).to be true
+      expect(campaign.update!(name: 'New Campaign Name', validate: false)).to be true
     end
 
     it 'raise an exception when not updated' do
       stub_request(:post, "https://graph.facebook.com/v#{api_version}/campaign_123").with(body:
-        hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
+        hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
       }.to_json)
 
-      expect { campaign.update!(name: 'Campaign Name', validate: false) }.to raise_error(ActiveAd::RecordInvalid)
+      expect { campaign.update!(name: 'New Campaign Name', validate: false) }.to raise_error(ActiveAd::RecordInvalid)
     end
   end
 
