@@ -56,6 +56,10 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   end
 
   def delete_request
-    "Response from DELETE request"
+    p "=== Response from DELETE request campaign_id: #{campaign_id}"
+
+    ActiveAd.connection.delete("https://graph.facebook.com/v#{api_version}/#{campaign_id}", {
+      access_token: access_token
+    })
   end
 end

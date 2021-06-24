@@ -4,7 +4,9 @@ class ActiveAd::Base
   include ActiveModel::Attributes
   include ActiveModel::Dirty
 
-  attr_reader :response
+  # Reserve attribute `validate` to allow skipping of validation on create, save or update. Eg: save(validate: false).
+  attr_accessor :validate
+  attr_reader   :response
 
   define_model_callbacks :find, :save, :create, :update, :destroy
 
@@ -61,18 +63,15 @@ class ActiveAd::Base
     end
 
     # Returns object or blank object.
-    # TODO: Might need some work to fullfil blank object when not created.
     def create(**kwargs)
-      object = new(**kwargs.except(:validate))
-      object.save(**kwargs)
-      object
+      object = new(**kwargs)
+      object.save(**kwargs) && object || new
     end
 
     # Returns object or exception.
     def create!(**kwargs)
-      object = new(**kwargs.except(:validate))
-      object.save!(**kwargs)
-      object
+      object = new(**kwargs)
+      object.save!(**kwargs) && object
     end
   end
 
@@ -87,16 +86,18 @@ class ActiveAd::Base
     run_callbacks(:save) do
       if new_record?
         run_callbacks(:create) do
-          return false unless perform_validations(kwargs)
+          return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
           @response = create_request
+          @new_record = false if response.success?
         end
       else
         run_callbacks(:update) do
           return false unless changed?
-          return false unless perform_validations(kwargs)
+          return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
           @response = update_request
+          clear_changes_information if response.success?
         end
       end
     end
@@ -107,7 +108,7 @@ class ActiveAd::Base
   # Returns true or exception.
   #
   #   ActiveAd::RecordInvalid (Validation failed: Client can't be blank).
-  #   ActiveAd::RecordInvalid (404 Not Found: {}).
+  #   ActiveAd::RecordInvalid (400 Bad Request: {}).
   def save!(**kwargs)
     save(**kwargs)
     raise ActiveAd::RecordInvalid, errors.full_messages.join(', ') if errors.any?
@@ -117,13 +118,13 @@ class ActiveAd::Base
 
   # Returns true or false.
   def update(**kwargs)
-    set_attributes(kwargs)
+    set_attributes(kwargs) # Need to set the attributes here so it is in the changed? state before calling save.
     save(**kwargs)
   end
 
   # Returns true or exception.
   def update!(**kwargs)
-    set_attributes(kwargs)
+    set_attributes(kwargs) # Need to set the attributes here so it is in the changed? state before calling save.
     save!(**kwargs)
   end
 
@@ -131,13 +132,14 @@ class ActiveAd::Base
   def destroy
     @response = nil
     run_callbacks(:destroy) { @response = delete_request }
-    response.sucess?
+    response.success?
   end
 
   # Returns true or exception.
   def destroy!
     destroy
-    # TODO: Raise errors
+    raise ActiveAd::RecordNotDeleted, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+    response.success?
   end
 
   def new_record?
@@ -164,8 +166,10 @@ class ActiveAd::Base
   end
 
   def set_attributes(attributes = {})
+    return if attributes.nil?
+
     attributes.each do |attribute, value|
-      next if ['id', 'validate'].include?(attribute) # Attributes we don't need for create or update. We set `id` on initialize.
+      next if ['validate'].include?(attribute) # Skip reserved attributes.
 
       attributes =
         if self.class.const_defined?('ATTRIBUTES_MAPPING')

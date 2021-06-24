@@ -7,6 +7,8 @@ module ActiveAd
 
   class RecordInvalid < Error; end
 
+  class RecordNotDeleted < Error; end
+
   class RecordNotFound < Error; end
 
   class LoginError < Error; end
