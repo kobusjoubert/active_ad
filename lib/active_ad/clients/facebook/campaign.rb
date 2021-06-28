@@ -31,16 +31,39 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   # before_save :do_something
   # after_destroy :do_something
 
+  class << self
+    # TODO: Should be moved to ActiveAd::Base, using different strategy modules instead of defining similar concepts on each client.
+    # Returns an object with the objects as an array and the cursor pagination info.
+    # <Enumerable or HashMap objects: [], cursor: { before: '', after: '' }>
+    def where(**kwargs)
+      response = nil
+      response = index_request(**kwargs)
+      debugger
+    end
+
+    def index_request(**kwargs)
+      account_id = kwargs[:account_id]
+      fields = kwargs[:fields]
+      api_version = kwargs[:api_version]
+      access_token = ActiveAd::Facebook::Connection.client.access_token
+      index_request_attributes = kwargs
+
+      p "=== Response from INDEX request account_id: #{account_id}"
+
+      ActiveAd.connection.get("https://graph.facebook.com/v#{api_version}/act_#{account_id}/campaigns",
+        index_request_attributes.merge(access_token: access_token, fields: (fields || READ_FIELDS).join(','))
+      )
+    end
+  end
+
   def read_request
     p "=== Response from READ request campaign_id: #{campaign_id}"
 
     ActiveAd.connection.get("https://graph.facebook.com/v#{api_version}/#{campaign_id}", {
-      access_token: access_token,
-      fields: (fields || READ_FIELDS).join(',')
+      access_token: access_token, fields: (fields || READ_FIELDS).join(',')
     })
   end
 
-  # TODO: Finish this method.
   def create_request
     p "=== Response from CREATE request create_request_attributes: #{create_request_attributes}"
 
