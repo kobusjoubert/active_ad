@@ -10,7 +10,7 @@ class ActiveAd::Base
 
   define_model_callbacks :find, :save, :create, :update, :destroy
 
-  delegate :platform, :api_version, :access_token, to: :client
+  # delegate :platform, :api_version, :access_token, to: :client # TODO: See if I can get by without these, they feel clunky.
 
   # before_save :do_something
   # after_destroy :do_something
@@ -48,18 +48,24 @@ class ActiveAd::Base
   class << self
     # TODO: Thread safety?
     def client
-      "ActiveAd::#{descendants.last.to_s.split('::')[1]}::Connection".constantize.client
+      platform_class = (descendants.any? ? descendants.last : self).to_s.split('::')[1]
+      "ActiveAd::#{platform_class}::Connection".constantize.client
+    end
+
+    # TODO: Use different strategy modules instead of defining similar concepts on each client.
+    def where(**kwargs)
+      ActiveAd::Relation.new(self, **kwargs)
     end
 
     # Returns object or nil.
     def find(id, **kwargs)
-      object = new(id: id, **kwargs).send(:find)
+      object = new(id: id).send(:find, **kwargs)
       object.response.success? ? object : nil
     end
 
     # Returns object or exception.
     def find!(id, **kwargs)
-      new(id: id, **kwargs).send(:find!)
+      new(id: id).send(:find!, **kwargs)
     end
 
     # Returns object or blank object.
@@ -72,6 +78,10 @@ class ActiveAd::Base
     def create!(**kwargs)
       object = new(**kwargs)
       object.save!(**kwargs) && object
+    end
+
+    def index_request
+      raise NotImplementedError, 'Subclasses must implement a index_request method'
     end
   end
 
@@ -189,9 +199,9 @@ class ActiveAd::Base
   end
 
   # Returns object or nil.
-  def find
+  def find(**kwargs)
     @response = nil
-    run_callbacks(:find) { @response = read_request }
+    run_callbacks(:find) { @response = read_request(**kwargs) }
 
     if response.success?
       set_attributes(response.body)
@@ -205,8 +215,8 @@ class ActiveAd::Base
   #
   #   ActiveAd::RecordNotFound (Couldn't find record with 'id'=#{id}).
   #   ActiveAd::RecordNotFound (404 Not Found: {}).
-  def find!
-    find
+  def find!(**kwargs)
+    find(**kwargs)
     # raise ActiveAd::RecordNotFound, "Couldn't find record with 'id'=#{id}" unless response.success? # TODO: Probably not what I want.
     raise ActiveAd::RecordNotFound, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
 
@@ -218,7 +228,7 @@ class ActiveAd::Base
   end
 
   def update_request_attributes
-    changes.transform_values { |value| value.last }.except(:id)
+    changes.transform_values { |value| value.last }.except(:id) # You can't update an `id`.
   end
 
   # Exchange attribute keys to map what the external API expects.
