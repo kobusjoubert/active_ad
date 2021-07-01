@@ -11,6 +11,13 @@ class ActiveAd::Relation
     @kwargs = kwargs
     @limit = Float::INFINITY
     @strategy = klass.client.pagination_type # :offset, :cursor, :relay_cursor
+
+    if klass.const_defined?('ATTRIBUTES_MAPPING')
+      kwargs.deep_transform_keys! do |key|
+        klass::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym).to_s : key
+      end
+    end
+
     # model_type = klass.to_s.split('::').last.underscore.to_sym # :account, :campaign, :ad_group, :ad
   end
 
@@ -25,7 +32,7 @@ class ActiveAd::Relation
       ActiveAd.logger.debug("ActiveAd::Relation each looping at index: #{index}")
       break if total >= @limit
 
-      raise index_response_error unless index_response.success?
+      raise index_response_error.to_s unless index_response.success?
 
       attributes = index_response_data(index)
 
