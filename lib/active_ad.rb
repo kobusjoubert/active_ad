@@ -31,6 +31,10 @@ module ActiveAd
         conn.adapter Faraday.default_adapter
       end
     end
+
+    def logger
+      @logger ||= Logger.new($stdout)
+    end
   end
 end
 

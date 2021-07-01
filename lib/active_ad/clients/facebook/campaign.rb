@@ -31,7 +31,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
 
   class << self
     def index_request(**kwargs)
-      p "=== Initiating INDEX request with kwargs: #{kwargs}"
+      ActiveAd.logger.info("Calling index_request with kwargs: #{kwargs}")
       raise ArgumentError, "Expected to include an :account_id, got #{kwargs.inspect}" unless account_id = kwargs.delete(:account_id)
 
       fields = kwargs.delete(:fields) || READ_FIELDS
@@ -44,7 +44,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
 
   # TODO: Maybe all of these should be class methods.
   def read_request(**kwargs)
-    p "=== Initiating READ request with kwargs: #{kwargs}"
+    ActiveAd.logger.info("Calling read_request with kwargs: #{kwargs}")
     fields = kwargs[:fields] || READ_FIELDS
 
     ActiveAd.connection.get("https://graph.facebook.com/v#{client.api_version}/#{campaign_id}", {
@@ -53,21 +53,24 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   end
 
   def create_request
-    p "=== Initiating CREATE request with create_request_attributes: #{create_request_attributes}"
+    ActiveAd.logger.info("Calling create_request with create_request_attributes: #{create_request_attributes}")
+
     ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/campaigns",
       create_request_attributes.merge(access_token: client.access_token)
     )
   end
 
   def update_request
-    p "=== Initiating UPDATE request with update_request_attributes: #{update_request_attributes}"
+    ActiveAd.logger.info("Calling update_request with update_request_attributes: #{update_request_attributes}")
+
     ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
       update_request_attributes.merge(access_token: client.access_token)
     )
   end
 
   def delete_request
-    p "=== Initiating DELETE request with id: #{campaign_id}"
+    ActiveAd.logger.info("Calling delete_request with id: #{campaign_id}")
+
     ActiveAd.connection.delete("https://graph.facebook.com/v#{client.api_version}/#{campaign_id}", {
       access_token: client.access_token
     })

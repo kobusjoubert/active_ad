@@ -29,7 +29,7 @@ class ActiveAd::Relation
     total = 0
 
     loop do
-      p "=== index: #{index}"
+      ActiveAd.logger.debug("ActiveAd::Relation each looping at index: #{index}")
       break if total >= @limit
 
       raise index_response_error unless index_response.success?
