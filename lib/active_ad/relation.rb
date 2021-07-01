@@ -6,13 +6,6 @@ class ActiveAd::Relation
 
   attr_reader :klass, :kwargs, :strategy
 
-  # Platforms using this approach: Facebook.
-  #
-  # This class uses the `limit` and `after` query parameters.
-  #
-  # === Example
-  #
-  #   https://somewhere.com/resources?limit=10&after=a1b2c3
   def initialize(klass, **kwargs)
     @klass = klass
     @kwargs = kwargs
@@ -72,6 +65,14 @@ class ActiveAd::Relation
   private
 
   # Cursor based pagination.
+  #
+  # Uses the `limit` and `after` query parameters.
+  #
+  # Platforms using this approach: Facebook.
+  #
+  # === Example
+  #
+  #   https://somewhere.com/resources?limit=10&after=a1b2c3
   #
   # === Response
   #
