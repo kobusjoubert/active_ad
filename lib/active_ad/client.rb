@@ -2,7 +2,7 @@ class ActiveAd::Client
   extend ActiveModel::Callbacks
   include ActiveModel::Model
 
-  attr_reader :api_version, :response
+  attr_reader :api_version, :pagination_type, :response
   attr_accessor :access_token
 
   validates_presence_of :access_token

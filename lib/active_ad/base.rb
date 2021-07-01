@@ -52,7 +52,6 @@ class ActiveAd::Base
       "ActiveAd::#{platform_class}::Connection".constantize.client
     end
 
-    # TODO: Use different strategy modules instead of defining similar concepts on each client.
     def where(**kwargs)
       ActiveAd::Relation.new(self, **kwargs)
     end
