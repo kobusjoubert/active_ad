@@ -14,7 +14,7 @@ class ActiveAd::Relation
 
     if klass.const_defined?('ATTRIBUTES_MAPPING')
       kwargs.deep_transform_keys! do |key|
-        klass::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym).to_s : key
+        klass::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
       end
     end
 
@@ -64,6 +64,37 @@ class ActiveAd::Relation
     super
   end
 
+  # Returns an ActiveAd::Relation with updated `@kwargs` ready with swapped keys to be sent to the external API. Changes are appended.
+  #
+  # === Example
+  #
+  #   campaign.where(account_id: '123, 'status: ['PAUSED'])  # => kwargs: { account_id: '123', effective_status: ['PAUSED'] }
+  #   campaign.where(account_id: '123, 'status: ['DELETED']) # => kwargs: { account_id: '123', effective_status: ['PAUSED', 'DELETED'] }
+  #   campaign.where(account_id: '456, 'status: ['PAUSED'])  # => kwargs: { account_id: '456', effective_status: ['PAUSED', 'DELETED'] }
+  def where(**kwargs)
+    @kwargs.merge!(kwargs_swapped(klass, **kwargs)) do |key, old_value, new_value|
+      if old_value.is_a?(Array) && new_value.is_a?(Array)
+        (old_value + new_value).uniq
+      else
+        new_value
+      end
+    end
+
+    self
+  end
+
+  # Returns an ActiveAd::Relation with updated `@kwargs` ready with swapped keys to be sent to the external API. Changes are overwritten.
+  #
+  # === Example
+  #
+  #   campaign.where(account_id: '123, 'status: ['PAUSED'])   # => kwargs: { account_id: '123', effective_status: ['PAUSED'] }
+  #   campaign.rewhere(status: ['DELETED'])                   # => kwargs: { account_id: '123', status: ['DELETED'] }
+  #   campaign.rewhere(account_id: '456, 'status: ['PAUSED']) # => kwargs: { account_id: '456', effective_status: ['PAUSED'] }
+  def rewhere(**kwargs)
+    @kwargs.merge!(kwargs_swapped(klass, **kwargs))
+    self
+  end
+
   # Invalidate cache when reaching the end of the current list and paginating over to the next set of results. Also enforce a `limit` parameter to the API
   # calls when supplied.
   def index_response
@@ -76,6 +107,18 @@ class ActiveAd::Relation
   end
 
   private
+
+  # Exchange attribute keys to map what the external API expects.
+  #
+  #   kwargs         => { "name" => "My Campaign", "status" => "PAUSED" }
+  #   kwargs_swapped => { "name" => "My Campaign", "effective_status" => "PAUSED" }
+  def kwargs_swapped(klass, **kwargs)
+    return kwargs unless klass.const_defined?('ATTRIBUTES_MAPPING')
+
+    kwargs.deep_transform_keys do |key|
+      klass::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
+    end
+  end
 
   # Cursor based pagination.
   #
