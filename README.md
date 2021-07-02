@@ -22,9 +22,107 @@ Or install it yourself as:
 
 ## Usage
 
-### Setup
+Using Facebook's implementation to demonstrate how this will work for each platform.
 
-TODO:
+All of the platforms follow the same pattern as described below, though their own implementations may differ slightly.
+
+Validation happens before `create`, `update` and `destroy` methods are called. When successful, the object will be returned, when unsuccessful, `false`
+will be returned. This might also mean that the external API didn't except the request.
+
+Each method also implements the bang method, `create!`, `update!` and `destroy!` which will raise an `ActiveAd::RecordInvalid` exception on create or update
+failure or an `ActiveAd::RecordNotDeleted` on destruction failure.
+
+### Client
+
+Create a client.
+
+    client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
+    client.valid? # => false
+    client.login
+    client.access_token # => 'a1b2c3'
+    client.valid? # => true
+
+Assign the client connection.
+
+    ActiveAd::Facebook::Connection.client = client
+
+### Account
+
+Create an account.
+
+    account = ActiveAd::Facebook::Account.create(business_id: '123', currency: 'USD', name: 'Account Name')
+
+Find accounts.
+
+    accounts = ActiveAd::Facebook::Account.where(status: ['ACTIVE']).limit(10)
+
+Find a previously created account by it's identifier.
+
+    account = ActiveAd::Facebook::Account.find('123')
+
+Or if you don't require fresh data and have it already persisted you can just create an instance.
+
+    account = ActiveAd::Facebook::Account.new(id: '123')
+
+Save an account.
+
+    account.name = 'New Account Name'
+    account.save
+
+Update an account.
+
+    account.update(name: 'New Account Name')
+
+Delete an account.
+
+    account.destroy
+
+Find account campaigns.
+
+    campaigns = account.campaigns.where(status: ['ACTIVE']).limit(10)
+
+### Campaign
+
+Create a campaign.
+
+    campaign = ActiveAd::Facebook::Campaign.create(account_id: '123', name: 'Campaign Name')
+
+Find campaigns.
+
+    campaigns = ActiveAd::Facebook::Campaign.where(status: ['ACTIVE']).limit(10)
+
+Find a previously created campaign by it's identifier.
+
+    campaign = ActiveAd::Facebook::Campaign.find('123')
+
+Or if you don't require fresh data and have it already persisted you can just create an instance.
+
+    campaign = ActiveAd::Facebook::Campaign.new(id: '123')
+
+Save a campaign.
+
+    campaign.name = 'New Campaign Name'
+    campaign.save
+
+Update a campaign.
+
+    campaign.update(name: 'New Campaign Name')
+
+Delete a campaign.
+
+    campaign.destroy
+
+Find account ad groups.
+
+    ad_groups = campaign.ad_groups.where(status: ['ACTIVE']).limit(10)
+
+### Ad Group
+
+Follows the same pattern as campaigns.
+
+### Ad
+
+Follows the same pattern as campaigns.
 
 ## Development
 
