@@ -107,6 +107,7 @@ class ActiveAd::Base
         run_callbacks(:create) do
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
+          ActiveAd.logger.info("Calling create_request with kwargs: #{kwargs}")
           @response = create_request
 
           if response.success?
@@ -120,6 +121,7 @@ class ActiveAd::Base
           return false unless changed?
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
+          ActiveAd.logger.info("Calling update_request with id: #{id}; kwargs: #{kwargs}")
           @response = update_request
           clear_changes_information if response.success?
         end
@@ -155,7 +157,12 @@ class ActiveAd::Base
   # Returns true or false.
   def destroy
     @response = nil
-    run_callbacks(:destroy) { @response = delete_request }
+
+    run_callbacks(:destroy) do
+      ActiveAd.logger.info("Calling delete_request with id: #{id}")
+      @response = delete_request
+    end
+
     response.success?
   end
 
@@ -210,7 +217,11 @@ class ActiveAd::Base
   # Returns object or nil.
   def find(**kwargs)
     @response = nil
-    run_callbacks(:find) { @response = read_request(**kwargs) }
+
+    run_callbacks(:find) do
+      ActiveAd.logger.info("Calling read_request with id: #{id}; kwargs: #{kwargs}")
+      @response = read_request(**kwargs)
+    end
 
     if response.success?
       set_attributes(response.body)

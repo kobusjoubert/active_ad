@@ -44,7 +44,9 @@ class ActiveAd::Relation
         offset = index_response_offset
         break if offset.values.last.blank?
 
-        @_index_response = klass.index_request(**kwargs.merge(offset))
+        request_kwargs = kwargs.merge(offset)
+        ActiveAd.logger.info("Calling index_request with kwargs: #{request_kwargs}")
+        @_index_response = klass.index_request(**request_kwargs)
       end
 
       index += 1
@@ -66,7 +68,11 @@ class ActiveAd::Relation
   # calls when supplied.
   def index_response
     kwargs.merge!(index_request_limit) unless @limit.infinite?
-    @_index_response ||= klass.index_request(**kwargs)
+
+    @_index_response ||= begin
+      ActiveAd.logger.info("Calling index_request with kwargs: #{kwargs}")
+      klass.index_request(**kwargs)
+    end
   end
 
   private
