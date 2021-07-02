@@ -95,17 +95,6 @@ class ActiveAd::Relation
     self
   end
 
-  # Invalidate cache when reaching the end of the current list and paginating over to the next set of results. Also enforce a `limit` parameter to the API
-  # calls when supplied.
-  def index_response
-    kwargs.merge!(index_request_limit) unless @limit.infinite?
-
-    @_index_response ||= begin
-      ActiveAd.logger.info("Calling index_request with kwargs: #{kwargs}")
-      klass.index_request(**kwargs)
-    end
-  end
-
   private
 
   # Exchange attribute keys to map what the external API expects.
@@ -153,6 +142,17 @@ class ActiveAd::Relation
   #     "message": "no no no"
   #   }
   # }
+
+  # Invalidate cache when reaching the end of the current list and paginating over to the next set of results. Also enforce a `limit` parameter to the API
+  # calls when supplied.
+  def index_response
+    kwargs.merge!(index_request_limit) unless @limit.infinite?
+
+    @_index_response ||= begin
+      ActiveAd.logger.info("Calling index_request with kwargs: #{kwargs}")
+      klass.index_request(**kwargs)
+    end
+  end
 
   # TODO: Maybe move the different strategies into their own modules.
 
