@@ -25,12 +25,12 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
     offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tos_accepted
   ]
 
-  # Must be able to use your own validations, taking precedence over what the interface supplies.
+  # Use validations which will overwrite the parent class implementations.
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
 
-  # Must be able to use your own callbacks.
+  # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something
   # after_destroy :do_something
