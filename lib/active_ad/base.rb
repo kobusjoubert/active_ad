@@ -48,10 +48,20 @@ class ActiveAd::Base
   class << self
     # TODO: Thread safety?
     def client
-      platform_class = (descendants.any? ? descendants.last : self).to_s.split('::')[1]
       "ActiveAd::#{platform_class}::Connection".constantize.client
     end
 
+    # Returns a symobol in underscore style: `:platform_name`.
+    def platform
+      platform_class.underscore.to_sym
+    end
+
+    # Returns a string in classify style: `"PlatformName"`.
+    def platform_class
+      (descendants.any? ? descendants.last : self).to_s.split('::')[1]
+    end
+
+    # Returns an ActiveAd::Relation object.
     def where(**kwargs)
       ActiveAd::Relation.new(self, **kwargs)
     end
