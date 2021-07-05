@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 RSpec.describe ActiveAd::Facebook::Account do
-  let(:account)     { described_class.new(id: 'account_123') }
-  let(:api_version) { account.api_version }
-
   before(:all) do
     client = ActiveAd::Facebook::Client.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c')
     ActiveAd::Facebook::Connection.client = client
   end
 
+  let(:account) { described_class.new(id: 'account_123') }
+  let(:client)  { ActiveAd::Base.client }
+
   describe '.find' do
     it 'returns an account when found' do
-      stub_request(:get, "https://graph.facebook.com/v#{api_version}/act_account_123").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         id: 'act_account_123', name: 'Account Name'
@@ -21,7 +21,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
 
     it 'returns nil if no account found' do
-      stub_request(:get, "https://graph.facebook.com/v#{api_version}/act_account_999").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_999").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
@@ -33,7 +33,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '.find!' do
     it 'returns an account when found' do
-      stub_request(:get, "https://graph.facebook.com/v#{api_version}/act_account_123").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         id: 'act_account_123', name: 'Account Name'
@@ -43,7 +43,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
 
     it 'raises exception if no account found' do
-      stub_request(:get, "https://graph.facebook.com/v#{api_version}/act_account_999").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_999").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
@@ -62,14 +62,6 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
   end
 
-  describe '#platform' do
-    it 'returns the platform name' do
-      expect(account.platform).to eq('facebook')
-    end
-  end
-
-  describe '#api_version'
-  describe '#access_token'
   describe '#save'
   describe '#save!'
   describe '#update'
