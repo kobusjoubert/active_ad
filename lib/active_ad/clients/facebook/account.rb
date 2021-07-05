@@ -1,6 +1,4 @@
 class ActiveAd::Facebook::Account < ActiveAd::Account
-  attr_accessor :fields
-
   # Attributes needed for creating and updating.
   attribute :business_id, :string
   attribute :currency, :string
@@ -35,11 +33,12 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   # before_save :do_something
   # after_destroy :do_something
 
-  def read_request
-    ActiveAd.connection.get("https://graph.facebook.com/v#{api_version}/act_#{account_id}", {
-      access_token: access_token,
-      fields: (fields || READ_FIELDS).join(',')
-    })
+  def read_request(**kwargs)
+    fields = kwargs.delete(:fields) || READ_FIELDS
+
+    ActiveAd.connection.get("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
+      kwargs.merge(access_token: client.access_token, fields: fields.join(','))
+    )
   end
 
   # On create_request & update_request.
@@ -53,8 +52,8 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   #
   # TODO: Make more elegant.
   # def create_request
-  #   ActiveAd.connection.post("https://graph.facebook.com/v#{api_version}/#{business_id}/adaccount", {
-  #     access_token: access_token,
+  #   ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/#{business_id}/adaccount", {
+  #     access_token: client.access_token,
   #     name: name,
   #     timezone_id: timezone_id || 474,
   #     currency: (currency.presence || 'USD').to_s,
@@ -70,8 +69,8 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   #   # end_advertiser_id: (end_advertiser_id.presence || 'NONE').to_s,
   #   # spend_cap: 100.00,
   #   # spend_cap_action: 'reset'
-  #   ActiveAd.connection.post("https://graph.facebook.com/v#{api_version}/act_#{account_id}",
-  #     update_request_attributes.merge(access_token: access_token)
+  #   ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
+  #     update_request_attributes.merge(access_token: client.access_token)
   #   )
   # end
 
