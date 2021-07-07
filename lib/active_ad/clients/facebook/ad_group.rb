@@ -8,7 +8,7 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
   attribute :targeting
 
   # Both `effective_status` and `status` are supplied by Facebook, so mapping `effective_status: :status` will cause conflicts.
-  ATTRIBUTES_MAPPING = {}
+  ATTRIBUTES_MAPPING = {}.freeze
 
   READ_FIELDS = %w[
     adlabels adset_schedule attribution_spec bid_adjustments bid_amount bid_constraints bid_info bid_strategy billing_event budget_remaining campaign_id
@@ -17,7 +17,7 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
     multi_optimization_goal_weight name optimization_goal optimization_sub_event pacing_type promoted_object recommendations recurring_budget_semantics
     review_feedback rf_prediction_id source_adset_id start_time status targeting time_based_ad_rotation_id_blocks time_based_ad_rotation_intervals updated_time
     use_new_app_click
-  ]
+  ].freeze
 
   validates_presence_of :name, :status, on: :create
 
@@ -33,7 +33,7 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
 
   class << self
     def index_request(**kwargs)
-      raise ArgumentError, "Expected to include an :campaign_id, got #{kwargs.inspect}" unless campaign_id = kwargs.delete(:campaign_id)
+      raise ArgumentError, "Expected to include an :campaign_id, got #{kwargs.inspect}" unless (campaign_id = kwargs.delete(:campaign_id))
 
       fields = kwargs.delete(:fields) || READ_FIELDS
 

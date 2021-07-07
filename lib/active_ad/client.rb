@@ -13,20 +13,20 @@ class ActiveAd::Client
 
   class << self
     def platform
-      self.to_s.split('::')[1].underscore
+      to_s.split('::')[1].underscore
     end
   end
 
-  def initialize(**kwargs)
-    super(**kwargs)
-
-    # By including ActiveModel::Model and calling super, attributes will be assigned with `assign_attributes(kwargs)` which calls
-    # `public_send("#{key}=", value)` internally.
-    #
-    # kwargs.each do |key, value|
-    #   public_send("#{key}=", value)
-    # end
-  end
+  # def initialize(**kwargs)
+  #   super(**kwargs)
+  #
+  #   # By including ActiveModel::Model and calling super, attributes will be assigned with `assign_attributes(kwargs)` which calls
+  #   # `public_send("#{key}=", value)` internally.
+  #   #
+  #   # kwargs.each do |key, value|
+  #   #   public_send("#{key}=", value)
+  #   # end
+  # end
 
   def platform
     self.class.platform

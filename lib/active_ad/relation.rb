@@ -15,11 +15,11 @@ class ActiveAd::Relation
 
     if klass.const_defined?('ATTRIBUTES_MAPPING')
       kwargs.deep_transform_keys! do |key|
-        klass::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
+        klass::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
       end
     end
 
-    # model_type = klass.to_s.split('::').last.underscore.to_sym # :account, :campaign, :ad_group, :ad
+    @model_type = klass.to_s.split('::').last.underscore.to_sym # :account, :campaign, :ad_group, :ad
   end
 
   # Returns an Enumerator.
@@ -60,10 +60,10 @@ class ActiveAd::Relation
     self
   end
 
-  # TODO: Implement a more efficient count_request method.
-  def count
-    super
-  end
+  # # TODO: Implement a more efficient count_request method.
+  # def count
+  #   super
+  # end
 
   # Returns an ActiveAd::Relation with updated `@kwargs` ready with swapped keys to be sent to the external API. Changes are appended.
   #
@@ -73,7 +73,7 @@ class ActiveAd::Relation
   #   campaign.where(account_id: '123, 'status: ['DELETED']) # => kwargs: { account_id: '123', effective_status: ['PAUSED', 'DELETED'] }
   #   campaign.where(account_id: '456, 'status: ['PAUSED'])  # => kwargs: { account_id: '456', effective_status: ['PAUSED', 'DELETED'] }
   def where(**kwargs)
-    @kwargs.merge!(kwargs_swapped(klass, **kwargs)) do |key, old_value, new_value|
+    @kwargs.merge!(kwargs_swapped(klass, **kwargs)) do |_key, old_value, new_value|
       if old_value.is_a?(Array) && new_value.is_a?(Array)
         (old_value + new_value).uniq
       else
@@ -106,7 +106,7 @@ class ActiveAd::Relation
     return kwargs unless klass.const_defined?('ATTRIBUTES_MAPPING')
 
     kwargs.deep_transform_keys do |key|
-      klass::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
+      klass::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
     end
   end
 

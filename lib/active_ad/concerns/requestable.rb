@@ -1,7 +1,7 @@
 module ActiveAd::Requestable
   include ActiveSupport::Concern
 
-  REQUEST_METHODS = %i[get head delete trace post put patch]
+  REQUEST_METHODS = %i[get head delete trace post put patch].freeze
 
   def request(kwargs)
     request_method = kwargs.keys[0]

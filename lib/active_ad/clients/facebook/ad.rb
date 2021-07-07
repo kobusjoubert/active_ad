@@ -10,14 +10,14 @@ class ActiveAd::Facebook::Ad < ActiveAd::Ad
   # after_destroy :do_something
 
   def create_request
-    "Response from CREATE request"
+    'Response from CREATE request'
   end
 
   def update_request
-    "Response from UPDATE request"
+    'Response from UPDATE request'
   end
 
   def delete_request
-    "Response from DELETE request"
+    'Response from DELETE request'
   end
 end

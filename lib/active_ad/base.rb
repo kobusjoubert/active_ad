@@ -5,9 +5,9 @@ class ActiveAd::Base
   include ActiveModel::Dirty
   include ActiveAd::Requestable
 
-  # Reserve attribute `validate` to allow skipping of validation on create, save or update. Eg: save(validate: false).
-  attr_accessor :validate
-  attr_reader   :response
+  RESERVED_ATTRIBUTES = %w[validate].freeze
+
+  attr_reader :response
 
   define_model_callbacks :find, :save, :create, :update, :destroy
 
@@ -140,18 +140,19 @@ class ActiveAd::Base
     save(**kwargs)
     raise ActiveAd::RecordInvalid, errors.full_messages.join(', ') if errors.any?
     raise ActiveAd::RecordInvalid, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+
     response.success?
   end
 
   # Returns true or false.
   def update(**kwargs)
-    set_attributes(kwargs) # Need to set the attributes here so it is in the changed? state before calling save.
+    assign_attributes(kwargs) # Need to set the attributes here so it is in the changed? state before calling save.
     save(**kwargs)
   end
 
   # Returns true or exception.
   def update!(**kwargs)
-    set_attributes(kwargs) # Need to set the attributes here so it is in the changed? state before calling save.
+    assign_attributes(kwargs) # Need to set the attributes here so it is in the changed? state before calling save.
     save!(**kwargs)
   end
 
@@ -171,6 +172,7 @@ class ActiveAd::Base
   def destroy!
     destroy
     raise ActiveAd::RecordNotDeleted, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+
     response.success?
   end
 
@@ -185,6 +187,7 @@ class ActiveAd::Base
     errors.empty? && output
   end
 
+  # Reserve attribute `validate` to allow skipping of validation on create, save or update. Eg: save(validate: false).
   alias_method :validate, :valid?
 
   private
@@ -197,11 +200,11 @@ class ActiveAd::Base
     new_record? ? :create : :update
   end
 
-  def set_attributes(attributes = {})
+  def assign_attributes(attributes = {})
     return if attributes.nil?
 
     attributes.each do |attribute, value|
-      next if ['validate'].include?(attribute) # Skip reserved attributes.
+      next if RESERVED_ATTRIBUTES.include?(attribute) # Skip reserved attributes.
 
       attributes =
         if self.class.const_defined?('ATTRIBUTES_MAPPING')
@@ -210,8 +213,9 @@ class ActiveAd::Base
           { attribute => value }
         end
 
-      assign_attributes(attributes) # TODO: Try attributes = attributes
-    rescue  ActiveModel::UnknownAttributeError
+      super(attributes) # TODO: Try attributes = attributes
+    rescue ActiveModel::UnknownAttributeError
+      next
     end
   end
 
@@ -225,7 +229,7 @@ class ActiveAd::Base
     end
 
     if response.success?
-      set_attributes(response.body)
+      assign_attributes(response.body)
       clear_changes_information
     end
 
@@ -249,7 +253,7 @@ class ActiveAd::Base
   end
 
   def update_request_attributes
-    changes.transform_values { |value| value.last }.except(:id) # You can't update an `id`.
+    changes.transform_values(&:last).except(:id) # You can't update an `id`.
   end
 
   # Exchange attribute keys to map what the external API expects.
@@ -261,7 +265,7 @@ class ActiveAd::Base
 
     # ATTRIBUTES_MAPPING.invert to swap the keys and values.
     attributes.deep_transform_keys do |key|
-      self.class::ATTRIBUTES_MAPPING.values.include?(key.to_sym) ? self.class::ATTRIBUTES_MAPPING.key(key.to_sym).to_s : key
+      self.class::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? self.class::ATTRIBUTES_MAPPING.key(key.to_sym).to_s : key
     end
   end
 

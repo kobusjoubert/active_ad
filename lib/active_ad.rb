@@ -35,7 +35,7 @@ module ActiveAd
     end
 
     def logger
-      @logger ||= Logger.new($stdout)
+      @_logger ||= Logger.new($stdout)
     end
   end
 end

@@ -1,12 +1,12 @@
 class ActiveAd::Facebook::Client < ActiveAd::Client
+  API_VERSION = '11.0'.freeze
+
   attr_accessor :client_id, :client_secret, :short_lived_access_token
 
   validates_presence_of :client_id, :client_secret
 
-  API_VERSION = '11.0'
-
   def initialize(**kwargs)
-    super
+    super(**kwargs)
     @api_version = API_VERSION
     @pagination_type = :cursor
   end
@@ -25,6 +25,7 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
 
   def set_access_token
     raise ActiveAd::LoginError, response.body['error'] unless response.success?
+
     @access_token = response.body['access_token']
   end
 end

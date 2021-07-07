@@ -36,12 +36,15 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'i18n',                '~> 1.8'
   spec.add_dependency 'zeitwerk',            '~> 2.4'
 
-  spec.add_development_dependency 'byebug',  '~> 11.0'
-  spec.add_development_dependency 'listen',  '~> 3.5'
-  spec.add_development_dependency 'rake',    '~> 13.0'
-  spec.add_development_dependency 'rspec',   '~> 3.0'
-  spec.add_development_dependency 'rubocop', '~> 1.7'
-  spec.add_development_dependency 'webmock', '~> 3.13'
+  spec.add_development_dependency 'byebug',              '~> 11.0'
+  spec.add_development_dependency 'listen',              '~> 3.5'
+  spec.add_development_dependency 'rake',                '~> 13.0'
+  spec.add_development_dependency 'rspec',               '~> 3.0'
+  spec.add_development_dependency 'rubocop',             '~> 1.7'
+  spec.add_development_dependency 'rubocop-performance', '~> 1.11'
+  spec.add_development_dependency 'rubocop-rake',        '~> 0.6'
+  spec.add_development_dependency 'rubocop-rspec',       '~> 2.4'
+  spec.add_development_dependency 'webmock',             '~> 3.13'
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

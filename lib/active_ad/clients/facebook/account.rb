@@ -13,7 +13,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
     end_advertiser: :end_advertiser_id,
     media_agency: :media_agency_id,
     partner: :partner_id
-  }
+  }.freeze
 
   # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on whitelist`.
   READ_FIELDS = %w[
@@ -21,7 +21,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
     capabilities created_time currency disable_reason end_advertiser end_advertiser_name failed_delivery_checks funding_source funding_source_details
     is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap min_daily_budget name
     offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tos_accepted
-  ]
+  ].freeze
 
   # Use validations which will overwrite the parent class implementations.
   #
