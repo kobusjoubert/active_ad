@@ -23,12 +23,14 @@ module ActiveAd
     end
 
     def connection
-      Faraday.new do |conn|
-        conn.request :json # Encode req bodies as JSON
-        conn.request :retry # Retry transient failures
-        # conn.response :follow_redirects # Follow redirects
-        conn.response :json # Decode response bodies as JSON
-        conn.adapter Faraday.default_adapter
+      @_connection ||= begin
+        Faraday.new do |conn|
+          conn.request :json # Encode req bodies as JSON
+          conn.request :retry # Retry transient failures
+          # conn.response :follow_redirects # Follow redirects
+          conn.response :json # Decode response bodies as JSON
+          conn.adapter Faraday.default_adapter
+        end
       end
     end
 
