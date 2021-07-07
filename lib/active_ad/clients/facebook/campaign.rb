@@ -5,10 +5,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   attribute :special_ad_categories, array: true, default: []
   attribute :status, :string, default: 'PAUSED'
 
-  # TODO: Maybe use a class method that needs to be implemented on child objects, instead of using a constant?
-  ATTRIBUTES_MAPPING = {
-    effective_status: :status
-  }
+  # Both `effective_status` and `status` are supplied by Facebook, so mapping `effective_status: :status` will cause conflicts.
+  ATTRIBUTES_MAPPING = {}
 
   READ_FIELDS = %w[
     ad_strategy_id adlabels bid_strategy budget_remaining buying_type can_use_spend_cap configured_status created_time daily_budget effective_status issues_info
@@ -42,7 +40,6 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
     end
   end
 
-  # TODO: Maybe all of these should be class methods.
   def read_request(**kwargs)
     fields = kwargs[:fields] || READ_FIELDS
 
@@ -71,6 +68,12 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
       delete: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
       params: { access_token: client.access_token }
     }
+  end
+
+  private
+
+  def create_request_attributes
+    super.except('account_id')
   end
 
   def create_response_id(response)
