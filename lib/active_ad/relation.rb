@@ -3,6 +3,7 @@ class ActiveAd::Relation
   # method each, which yields successive members of the collection. If #max, min, or sort is used, the objects in the collection must also implement a
   # meaningful <=> operator, as these methods rely on an ordering between members of the collection.
   include Enumerable
+  include ActiveAd::Requestable
 
   attr_reader :klass, :kwargs, :strategy
 
@@ -46,7 +47,7 @@ class ActiveAd::Relation
 
         request_kwargs = kwargs.merge(offset)
         ActiveAd.logger.info("Calling index_request with kwargs: #{request_kwargs}")
-        @_index_response = klass.index_request(**request_kwargs)
+        @_index_response = request(klass.index_request(**request_kwargs))
       end
 
       index += 1
@@ -150,7 +151,7 @@ class ActiveAd::Relation
 
     @_index_response ||= begin
       ActiveAd.logger.info("Calling index_request with kwargs: #{kwargs}")
-      klass.index_request(**kwargs)
+      request(klass.index_request(**kwargs))
     end
   end
 

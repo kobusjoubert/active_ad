@@ -3,6 +3,7 @@ class ActiveAd::Base
   include ActiveModel::Model
   include ActiveModel::Attributes
   include ActiveModel::Dirty
+  include ActiveAd::Requestable
 
   # Reserve attribute `validate` to allow skipping of validation on create, save or update. Eg: save(validate: false).
   attr_accessor :validate
@@ -108,7 +109,7 @@ class ActiveAd::Base
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
           ActiveAd.logger.info("Calling create_request with kwargs: #{kwargs}")
-          @response = create_request
+          @response = request(create_request)
 
           if response.success?
             @new_record = false
@@ -122,7 +123,7 @@ class ActiveAd::Base
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
           ActiveAd.logger.info("Calling update_request with id: #{id}; kwargs: #{kwargs}")
-          @response = update_request
+          @response = request(update_request)
           clear_changes_information if response.success?
         end
       end
@@ -160,7 +161,7 @@ class ActiveAd::Base
 
     run_callbacks(:destroy) do
       ActiveAd.logger.info("Calling delete_request with id: #{id}")
-      @response = delete_request
+      @response = request(delete_request)
     end
 
     response.success?
@@ -220,7 +221,7 @@ class ActiveAd::Base
 
     run_callbacks(:find) do
       ActiveAd.logger.info("Calling read_request with id: #{id}; kwargs: #{kwargs}")
-      @response = read_request(**kwargs)
+      @response = request(read_request(**kwargs))
     end
 
     if response.success?

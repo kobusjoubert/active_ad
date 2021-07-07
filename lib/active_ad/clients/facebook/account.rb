@@ -36,9 +36,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   def read_request(**kwargs)
     fields = kwargs.delete(:fields) || READ_FIELDS
 
-    ActiveAd.connection.get("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
-      kwargs.merge(access_token: client.access_token, fields: fields.join(','))
-    )
+    {
+      get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
+      params: kwargs.merge(access_token: client.access_token, fields: fields.join(','))
+    }
   end
 
   # On create_request & update_request.
@@ -50,17 +51,20 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   # media_agency: The agency, this could be your own business.
   # partner: This could be Facebook Marketing Partner, if there is one.
   #
-  # TODO: Make more elegant.
+  # # TODO: Make more elegant.
   # def create_request
-  #   ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/#{business_id}/adaccount", {
-  #     access_token: client.access_token,
-  #     name: name,
-  #     timezone_id: timezone_id || 474,
-  #     currency: (currency.presence || 'USD').to_s,
-  #     end_advertiser: (end_advertiser_id.presence || 'NONE').to_s,
-  #     media_agency: (media_agency_id.presence || end_advertiser_id.presence || 'NONE').to_s,
-  #     partner: (partner_id.presence || 'NONE').to_s
-  #   })
+  #   {
+  #     post: "https://graph.facebook.com/v#{client.api_version}/#{business_id}/adaccount",
+  #     body: {
+  #       access_token: client.access_token,
+  #       name: name,
+  #       timezone_id: timezone_id || 474,
+  #       currency: (currency.presence || 'USD').to_s,
+  #       end_advertiser: (end_advertiser_id.presence || 'NONE').to_s,
+  #       media_agency: (media_agency_id.presence || end_advertiser_id.presence || 'NONE').to_s,
+  #       partner: (partner_id.presence || 'NONE').to_s
+  #     }
+  #   }
   # end
 
   # # TODO: Make more elegant.
@@ -69,9 +73,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   #   # end_advertiser_id: (end_advertiser_id.presence || 'NONE').to_s,
   #   # spend_cap: 100.00,
   #   # spend_cap_action: 'reset'
-  #   ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
-  #     update_request_attributes.merge(access_token: client.access_token)
-  #   )
+  #   {
+  #     post: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
+  #     body: update_request_attributes.merge(access_token: client.access_token)
+  #   }
   # end
 
   def delete_request

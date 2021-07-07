@@ -35,9 +35,10 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
 
       fields = kwargs.delete(:fields) || READ_FIELDS
 
-      ActiveAd.connection.get("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/campaigns",
-        kwargs.merge(access_token: client.access_token, fields: fields.join(','))
-      )
+      {
+        get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/campaigns",
+        params: kwargs.merge(access_token: client.access_token, fields: fields.join(','))
+      }
     end
   end
 
@@ -45,27 +46,31 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   def read_request(**kwargs)
     fields = kwargs[:fields] || READ_FIELDS
 
-    ActiveAd.connection.get("https://graph.facebook.com/v#{client.api_version}/#{campaign_id}", {
-      access_token: client.access_token, fields: fields.join(',')
-    })
+    {
+      get: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
+      params: { access_token: client.access_token, fields: fields.join(',') }
+    }
   end
 
   def create_request
-    ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/campaigns",
-      create_request_attributes.merge(access_token: client.access_token)
-    )
+    {
+      post: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/campaigns",
+      body: create_request_attributes.merge(access_token: client.access_token)
+    }
   end
 
   def update_request
-    ActiveAd.connection.post("https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
-      update_request_attributes.merge(access_token: client.access_token)
-    )
+    {
+      post: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
+      body: update_request_attributes.merge(access_token: client.access_token)
+    }
   end
 
   def delete_request
-    ActiveAd.connection.delete("https://graph.facebook.com/v#{client.api_version}/#{campaign_id}", {
-      access_token: client.access_token
-    })
+    {
+      delete: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
+      params: { access_token: client.access_token }
+    }
   end
 
   def create_response_id(response)
