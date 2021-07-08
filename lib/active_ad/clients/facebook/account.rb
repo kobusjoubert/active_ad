@@ -15,7 +15,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
     partner: :partner_id
   }.freeze
 
-  # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on whitelist`.
+  # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on allowlist`.
   READ_FIELDS = %w[
     account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2 business_zip
     capabilities created_time currency disable_reason end_advertiser end_advertiser_name failed_delivery_checks funding_source funding_source_details
