@@ -29,13 +29,14 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
 
   class << self
     def index_request(**kwargs)
-      raise ArgumentError, "Expected to include an :account_id, got #{kwargs.inspect}" unless (account_id = kwargs.delete(:account_id))
+      params = kwargs.dup
+      raise ArgumentError, "Expected :account_id to be present, got #{params}" unless (account_id = params.delete(:account_id))
 
-      fields = kwargs.delete(:fields) || READ_FIELDS
+      fields = params.delete(:fields) || READ_FIELDS
 
       {
         get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/campaigns",
-        params: kwargs.merge(access_token: client.access_token, fields: fields.join(','))
+        params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end
   end

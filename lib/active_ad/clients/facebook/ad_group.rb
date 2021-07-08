@@ -33,13 +33,14 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
 
   class << self
     def index_request(**kwargs)
-      raise ArgumentError, "Expected to include an :campaign_id, got #{kwargs.inspect}" unless (campaign_id = kwargs.delete(:campaign_id))
+      params = kwargs.dup
+      raise ArgumentError, "Expected :campaign_id to be present, got #{params}" unless (campaign_id = params.delete(:campaign_id))
 
-      fields = kwargs.delete(:fields) || READ_FIELDS
+      fields = params.delete(:fields) || READ_FIELDS
 
       {
         get: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}/adsets",
-        params: kwargs.merge(access_token: client.access_token, fields: fields.join(','))
+        params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end
   end
