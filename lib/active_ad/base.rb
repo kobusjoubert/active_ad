@@ -248,10 +248,18 @@ class ActiveAd::Base
     self
   end
 
+  # Returns the attributes that has been assigned.
+  #
+  #   attributes                => { "field" => "value", "another_field" => nil }
+  #   create_request_attributes => { "field" => "value" }
   def create_request_attributes
     attributes.compact
   end
 
+  # Returns the changed attributes in key value format.
+  #
+  #   changes                   => { "field" => ["old_value", "new_value"], "id" => ["old_value", "new_value"] }
+  #   update_request_attributes => { "field" => "new_value" }
   def update_request_attributes
     changes.transform_values(&:last).except(:id) # You can't update an `id`.
   end
