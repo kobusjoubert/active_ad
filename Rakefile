@@ -6,7 +6,7 @@ RSpec::Core::RakeTask.new(:spec)
 require 'rubocop/rake_task'
 
 RuboCop::RakeTask.new(:rubocop) do |task|
-  task.patterns = ['lib/**/*.rb']
+  task.patterns = ['lib/**/*.rb', 'spec/**/*.rb']
 end
 
 task default: %i[spec rubocop]
