@@ -7,7 +7,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
   attribute :partner_id, :string
   attribute :timezone_id, :integer
 
-  # TODO: Maybe use a class method that needs to be implemented on child objects, instead of using a constant?
+  # platform_attribute <==> active_ad_attribute
   ATTRIBUTES_MAPPING = {
     account_status: :status,
     end_advertiser: :end_advertiser_id,

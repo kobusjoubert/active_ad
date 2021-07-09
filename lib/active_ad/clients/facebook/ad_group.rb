@@ -7,6 +7,8 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
   attribute :status, :string, default: 'PAUSED'
   attribute :targeting
 
+  # platform_attribute <==> active_ad_attribute
+  #
   # Both `effective_status` and `status` are supplied by Facebook, so mapping `effective_status: :status` will cause conflicts.
   ATTRIBUTES_MAPPING = {}.freeze
 

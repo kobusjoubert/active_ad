@@ -5,6 +5,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
   attribute :special_ad_categories, array: true, default: []
   attribute :status, :string, default: 'PAUSED'
 
+  # platform_attribute <==> active_ad_attribute
+  #
   # Both `effective_status` and `status` are supplied by Facebook, so mapping `effective_status: :status` will cause conflicts.
   ATTRIBUTES_MAPPING = {}.freeze
 
