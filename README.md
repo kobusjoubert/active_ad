@@ -32,6 +32,10 @@ will be returned. This might also mean that the external API didn't except the r
 Each method also implements the bang method, `create!`, `update!` and `destroy!` which will raise an `ActiveAd::RecordInvalid` exception on create or update
 failure or an `ActiveAd::RecordNotDeleted` on destruction failure.
 
+Object structure with *one-to-many* `-<` relationships.
+
+**Client -< Account -< Campaign -< AdGroup -< Ad -< AdCreative**
+
 ### Client
 
 Create a client.
