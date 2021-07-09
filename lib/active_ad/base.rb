@@ -213,7 +213,7 @@ class ActiveAd::Base
           { attribute => value }
         end
 
-      super(attributes) # TODO: Try attributes = attributes
+      super(attributes.deep_stringify_keys) # TODO: Try attributes = attributes
     rescue ActiveModel::UnknownAttributeError
       next
     end
@@ -250,8 +250,8 @@ class ActiveAd::Base
 
   # Returns the attributes that has been assigned.
   #
-  #   attributes                => { "field" => "value", "another_field" => nil }
-  #   create_request_attributes => { "field" => "value" }
+  #   attributes                => { "field" => "value", "status" => "PAUSED", "empty_field" => nil }
+  #   create_request_attributes => { "field" => "value", "status" => "PAUSED" }
   def create_request_attributes
     attributes.compact
   end
@@ -267,7 +267,7 @@ class ActiveAd::Base
   # Exchange attribute keys to map what the external API expects.
   #
   #   attributes         => { "name" => "My Campaign", "status" => "PAUSED" }
-  #   attributes_swapped => { "name" => "My Campaign", "effective_status" => "PAUSED" }
+  #   attributes_swapped => { "name" => "My Campaign", "platform_status" => "PAUSED" }
   def attributes_swapped
     return attributes unless self.class.const_defined?('ATTRIBUTES_MAPPING')
 
@@ -279,8 +279,8 @@ class ActiveAd::Base
 
   # Exchange keys to map what the external API expects.
   #
-  #   ['name', 'status'] => ['name', 'effective_status']
-  #   ['name', 'effective_status'] => ['name', 'effective_status']
+  #   ['name', 'status'] => ['name', 'platform_status']
+  #   ['name', 'platform_status'] => ['name', 'platform_status']
   def keys_for_request(keys)
     return keys unless self.class.const_defined?('ATTRIBUTES_MAPPING')
 
@@ -290,7 +290,7 @@ class ActiveAd::Base
   # Exchange keys to map what the internal API expects.
   #
   #   ['name', 'status'] => ['name', 'status']
-  #   ['name', 'effective_status'] => ['name', 'status']
+  #   ['name', 'platform_status'] => ['name', 'status']
   def keys_for_object(keys)
     return keys unless self.class.const_defined?('ATTRIBUTES_MAPPING')
 
