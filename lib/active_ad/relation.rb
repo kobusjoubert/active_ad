@@ -12,13 +12,6 @@ class ActiveAd::Relation
     @kwargs = kwargs
     @limit = Float::INFINITY
     @strategy = klass.client.pagination_type # :offset, :cursor, :relay_cursor
-
-    if klass.const_defined?('ATTRIBUTES_MAPPING')
-      kwargs.deep_transform_keys! do |key|
-        klass::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
-      end
-    end
-
     @model_type = klass.to_s.split('::').last.underscore.to_sym # :account, :campaign, :ad_group, :ad
   end
 
@@ -65,15 +58,15 @@ class ActiveAd::Relation
   #   super
   # end
 
-  # Returns an ActiveAd::Relation with updated `@kwargs` ready with swapped keys to be sent to the external API. Changes are appended.
+  # Returns an ActiveAd::Relation with updated `@kwargs`. Changes are appended.
   #
   # === Example
   #
-  #   campaign.where(account_id: '123, 'status: ['PAUSED'])  # => kwargs: { account_id: '123', effective_status: ['PAUSED'] }
-  #   campaign.where(account_id: '123, 'status: ['DELETED']) # => kwargs: { account_id: '123', effective_status: ['PAUSED', 'DELETED'] }
-  #   campaign.where(account_id: '456, 'status: ['PAUSED'])  # => kwargs: { account_id: '456', effective_status: ['PAUSED', 'DELETED'] }
+  #   campaign.where(account_id: '123, 'status: ['PAUSED'])  # => kwargs: { account_id: '123', status: ['PAUSED'] }
+  #   campaign.where(account_id: '123, 'status: ['DELETED']) # => kwargs: { account_id: '123', status: ['PAUSED', 'DELETED'] }
+  #   campaign.where(account_id: '456, 'status: ['PAUSED'])  # => kwargs: { account_id: '456', status: ['PAUSED', 'DELETED'] }
   def where(**kwargs)
-    @kwargs.merge!(kwargs_swapped(klass, **kwargs)) do |_key, old_value, new_value|
+    @kwargs.merge!(kwargs) do |_key, old_value, new_value|
       if old_value.is_a?(Array) && new_value.is_a?(Array)
         (old_value + new_value).uniq
       else
@@ -84,31 +77,19 @@ class ActiveAd::Relation
     self
   end
 
-  # Returns an ActiveAd::Relation with updated `@kwargs` ready with swapped keys to be sent to the external API. Changes are overwritten.
+  # Returns an ActiveAd::Relation with updated `@kwargs`. Changes are overwritten.
   #
   # === Example
   #
-  #   campaign.where(account_id: '123, 'status: ['PAUSED'])   # => kwargs: { account_id: '123', effective_status: ['PAUSED'] }
+  #   campaign.where(account_id: '123, 'status: ['PAUSED'])   # => kwargs: { account_id: '123', status: ['PAUSED'] }
   #   campaign.rewhere(status: ['DELETED'])                   # => kwargs: { account_id: '123', status: ['DELETED'] }
-  #   campaign.rewhere(account_id: '456, 'status: ['PAUSED']) # => kwargs: { account_id: '456', effective_status: ['PAUSED'] }
+  #   campaign.rewhere(account_id: '456, 'status: ['PAUSED']) # => kwargs: { account_id: '456', status: ['PAUSED'] }
   def rewhere(**kwargs)
-    @kwargs.merge!(kwargs_swapped(klass, **kwargs))
+    @kwargs.merge!(kwargs)
     self
   end
 
   private
-
-  # Exchange attribute keys to map what the external API expects.
-  #
-  #   kwargs         => { "name" => "My Campaign", "status" => "PAUSED" }
-  #   kwargs_swapped => { "name" => "My Campaign", "effective_status" => "PAUSED" }
-  def kwargs_swapped(klass, **kwargs)
-    return kwargs unless klass.const_defined?('ATTRIBUTES_MAPPING')
-
-    kwargs.deep_transform_keys do |key|
-      klass::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
-    end
-  end
 
   # Cursor based pagination.
   #
