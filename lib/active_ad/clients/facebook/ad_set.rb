@@ -1,5 +1,14 @@
-class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
-  # Attributes needed for creating and updating.
+class ActiveAd::Facebook::AdSet < ActiveAd::Base
+  # Identification attributes.
+  alias_method :ad_set_id, :id
+
+  # Relation attributes.
+  attribute :campaign_id, :string
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
   attribute :account_id, :string
   attribute :bid_amount, :integer
   attribute :billing_event, :string, default: 'LINK_CLICKS'
@@ -51,7 +60,7 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
     fields = kwargs[:fields] || READ_FIELDS
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/#{ad_group_id}",
+      get: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}",
       params: { access_token: client.access_token, fields: fields.join(',') }
     }
   end
@@ -65,14 +74,14 @@ class ActiveAd::Facebook::AdGroup < ActiveAd::AdGroup
 
   def update_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{ad_group_id}",
+      post: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}",
       body: update_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def delete_request
     {
-      delete: "https://graph.facebook.com/v#{client.api_version}/#{ad_group_id}",
+      delete: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}",
       params: { access_token: client.access_token }
     }
   end

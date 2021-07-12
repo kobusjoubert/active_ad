@@ -9,6 +9,8 @@ class ActiveAd::Base
 
   attr_reader :response
 
+  attribute :id, :string
+
   define_model_callbacks :find, :save, :create, :update, :destroy
 
   # delegate :platform, :api_version, :access_token, to: :client # TODO: See if I can get by without these, they feel clunky.

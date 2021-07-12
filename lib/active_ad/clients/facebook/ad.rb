@@ -1,12 +1,26 @@
-class ActiveAd::Facebook::Ad < ActiveAd::Ad
-  # Attributes needed for creating and updating.
+class ActiveAd::Facebook::Ad < ActiveAd::Base
+  # Identification attributes.
+  alias_method :ad_id, :id
+
+  # Relation attributes.
   attribute :account_id, :string
+  attribute :ad_set_id, :string
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
+  attribute :title, :string
+  attribute :titles, array: true
   attribute :creative
+  attribute :description, :string
+  attribute :descriptions, array: true
   attribute :status, :string, default: 'PAUSED'
+  attribute :type, :string
 
   # platform_attribute <==> active_ad_attribute
   ATTRIBUTES_MAPPING = {
-    adset_id: :ad_group_id
+    adset_id: :ad_set_id
   }.freeze
 
   READ_FIELDS = %w[
@@ -29,12 +43,12 @@ class ActiveAd::Facebook::Ad < ActiveAd::Ad
   class << self
     def index_request(**kwargs)
       params = kwargs.dup
-      raise ArgumentError, "Expected :ad_group_id to be present, got #{params}" unless (ad_group_id = params.delete(:ad_group_id))
+      raise ArgumentError, "Expected :ad_set_id to be present, got #{params}" unless (ad_set_id = params.delete(:ad_set_id))
 
       fields = params.delete(:fields) || READ_FIELDS
 
       {
-        get: "https://graph.facebook.com/v#{client.api_version}/#{ad_group_id}/ads",
+        get: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}/ads",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end

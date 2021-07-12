@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe ActiveAd::Campaign do
+RSpec.describe ActiveAd::Base do
   describe '.find' do
     it 'raises NotImplementedError' do
       expect{ described_class.find('1') }.to raise_error(NotImplementedError)

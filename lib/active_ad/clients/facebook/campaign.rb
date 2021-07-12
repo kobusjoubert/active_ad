@@ -1,5 +1,14 @@
-class ActiveAd::Facebook::Campaign < ActiveAd::Campaign
-  # Attributes needed for creating and updating.
+class ActiveAd::Facebook::Campaign < ActiveAd::Base
+  # Identification attributes.
+  alias_method :campaign_id, :id
+
+  # Relation attributes.
+  attribute :account_id, :string
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
   attribute :bid_strategy, :string
   attribute :objective, :string, default: 'LINK_CLICKS'
   attribute :special_ad_categories, array: true, default: []

@@ -22,19 +22,13 @@ Or install it yourself as:
 
 ## Usage
 
-Using Facebook's implementation to demonstrate how this will work for each platform.
-
-All of the platforms follow the same pattern as described below, though their own implementations may differ slightly.
-
 Validation happens before `create`, `update` and `destroy` methods are called. When successful, the object will be returned, when unsuccessful, `false`
-will be returned. This might also mean that the external API didn't except the request.
+will be returned. This might also mean that the external API didn't accept the request.
 
 Each method also implements the bang method, `create!`, `update!` and `destroy!` which will raise an `ActiveAd::RecordInvalid` exception on create or update
 failure or an `ActiveAd::RecordNotDeleted` on destruction failure.
 
-Object structure with *one-to-many* `-<` relationships.
-
-**Client -< Account -< Campaign -< AdGroup -< Ad -< AdCreative**
+Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
 ### Client
 
@@ -118,7 +112,7 @@ Delete a campaign.
 
 Find account ad groups.
 
-    ad_groups = campaign.ad_groups.where(status: ['ACTIVE']).limit(10)
+    ad_sets = campaign.ad_sets.where(status: ['ACTIVE']).limit(10)
 
 ### Ad Group
 
@@ -127,6 +121,37 @@ Follows the same pattern as campaigns.
 ### Ad
 
 Follows the same pattern as campaigns.
+
+## Roadmap
+
+### Version 0
+
+Implement classes which maps to it's external API entities.
+
+`ActiveAd::Facebook::Client` -< `ActiveAd::Facebook::Account` -< `ActiveAd::Facebook::Campaign` -< `ActiveAd::Facebook::AdSet` -< `ActiveAd::Facebook::Ad` -<
+`ActiveAd::Facebook::AdCreative`
+
+`ActiveAd::Google::Client` -< `ActiveAd::Google::Account` -< `ActiveAd::Google::Campaign` -< `ActiveAd::Google::AdGroup` -< `ActiveAd::Google::Ad`
+
+### Version 1
+
+Implement base classes with *one-to-many* `-<` relationships looking like this.
+
+`ActiveAd::Client` -< `ActiveAd::Account` -< `ActiveAd::Campaign` -< `ActiveAd::AdGroup` -< `ActiveAd::Ad`
+
+The base classes will then use the different platform classes to make all the required requests to create the different base entities.
+
+If we look at Facebook, the classes to be used in the base classes will look like this.
+
+`ActiveAd::Client` will use `ActiveAd::Facebook::Client` which will define the platform being used.
+
+`ActiveAd::Account` will use `ActiveAd::Facebook::Account`.
+
+`ActiveAd::Campaign` will use `ActiveAd::Facebook::Campaign`.
+
+`ActiveAd::AdGroup` will use `ActiveAd::Facebook::AdSet`.
+
+`ActiveAd::Ad` will use `ActiveAd::Facebook::Ad` and `ActiveAd::Facebook::AdCreative` to create an ad as a whole.
 
 ## Development
 

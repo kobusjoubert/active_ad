@@ -1,10 +1,17 @@
-class ActiveAd::Facebook::Account < ActiveAd::Account
-  # Attributes needed for creating and updating.
+class ActiveAd::Facebook::Account < ActiveAd::Base
+  # Identification attributes.
+  alias_method :account_id, :id
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
   attribute :business_id, :string
   attribute :currency, :string
-  attribute :media_agency_id, :string
   attribute :end_advertiser_id, :string
+  attribute :media_agency_id, :string
   attribute :partner_id, :string
+  attribute :status, :string
   attribute :timezone_id, :integer
 
   # platform_attribute <==> active_ad_attribute
@@ -25,6 +32,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Account
 
   # Use validations which will overwrite the parent class implementations.
   #
+  # validates_presence_of :title
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
 

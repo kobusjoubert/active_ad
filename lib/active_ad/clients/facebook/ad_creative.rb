@@ -1,5 +1,14 @@
-class ActiveAd::Facebook::AdCreative < ActiveAd::AdCreative
-  # Attributes needed for creating and updating.
+class ActiveAd::Facebook::AdCreative < ActiveAd::Base
+  # Identification attributes.
+  alias_method :ad_creative_id, :id
+
+  # Relation attributes.
+  attribute :ad_id, :string
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
   attribute :object_story_spec
   attribute :account_id, :string
 
