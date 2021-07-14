@@ -14,6 +14,7 @@ class ActiveAd::Base
   define_model_callbacks :find, :save, :create, :update, :destroy
 
   # delegate :platform, :api_version, :access_token, to: :client # TODO: See if I can get by without these, they feel clunky.
+  delegate :entity, :entity_class, :platform, :platform_class, to: :class
 
   # before_save :do_something
   # after_destroy :do_something
@@ -54,14 +55,45 @@ class ActiveAd::Base
       "ActiveAd::#{platform_class}::Connection".constantize.client
     end
 
+    # Returns a symobol in underscore style: `:entity_name`.
+    def entity
+      entity_class.underscore.to_sym
+    end
+
+    # Returns a string in classify style: `"EntityClassName"`.
+    def entity_class
+      (descendants.any? ? descendants.last : self).to_s.split('::')[2]
+    end
+
     # Returns a symobol in underscore style: `:platform_name`.
     def platform
       platform_class.underscore.to_sym
     end
 
-    # Returns a string in classify style: `"PlatformName"`.
+    # Returns a string in classify style: `"PlatformClassName"`.
     def platform_class
       (descendants.any? ? descendants.last : self).to_s.split('::')[1]
+    end
+
+    # Returns an ActiveAd::Relation object.
+    def has_many(model_name)
+      define_method(model_name) do
+        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id)
+      end
+    end
+
+    # Returns an ActiveAd::Base object.
+    def belongs_to(model_name)
+      define_method(model_name) do
+        return instance_variable_get("@#{model_name}") if instance_variable_defined?("@#{model_name}")
+
+        find_related = lambda do |model|
+          relation_id = public_send("#{model}_id")
+          "ActiveAd::#{platform_class}::#{model.to_s.classify}".constantize.find(relation_id)
+        end
+
+        instance_variable_set("@#{model_name}", find_related.call(model_name))
+      end
     end
 
     # Returns an ActiveAd::Relation object.

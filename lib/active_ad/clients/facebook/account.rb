@@ -1,19 +1,4 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
-  # Identification attributes.
-  alias_method :account_id, :id
-
-  # Titles and descriptions attributes.
-  attribute :name, :string
-
-  # Other attributes.
-  attribute :business_id, :string
-  attribute :currency, :string
-  attribute :end_advertiser_id, :string
-  attribute :media_agency_id, :string
-  attribute :partner_id, :string
-  attribute :status, :string
-  attribute :timezone_id, :integer
-
   # platform_attribute <==> active_ad_attribute
   ATTRIBUTES_MAPPING = {
     account_status: :status,
@@ -29,6 +14,23 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap min_daily_budget name
     offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tos_accepted
   ].freeze
+
+  has_many :campaigns
+
+  # Identification attributes.
+  alias_method :account_id, :id
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
+  attribute :business_id, :string
+  attribute :currency, :string
+  attribute :end_advertiser_id, :string
+  attribute :media_agency_id, :string
+  attribute :partner_id, :string
+  attribute :status, :string
+  attribute :timezone_id, :integer
 
   # Use validations which will overwrite the parent class implementations.
   #

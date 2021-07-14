@@ -1,4 +1,18 @@
 class ActiveAd::Facebook::Campaign < ActiveAd::Base
+  # platform_attribute <==> active_ad_attribute
+  #
+  # Both `effective_status` and `status` are supplied by the external API, so mapping `effective_status: :status` will cause conflicts.
+  ATTRIBUTES_MAPPING = {}.freeze
+
+  READ_FIELDS = %w[
+    ad_strategy_id adlabels bid_strategy budget_remaining buying_type can_use_spend_cap configured_status created_time daily_budget effective_status issues_info
+    last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object source_campaign source_campaign_id special_ad_categories
+    special_ad_category special_ad_category_country spend_cap start_time status stop_time updated_time
+  ].freeze
+
+  belongs_to :account
+  has_many :ad_sets
+
   # Identification attributes.
   alias_method :campaign_id, :id
 
@@ -13,17 +27,6 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :objective, :string, default: 'LINK_CLICKS'
   attribute :special_ad_categories, array: true, default: []
   attribute :status, :string, default: 'PAUSED'
-
-  # platform_attribute <==> active_ad_attribute
-  #
-  # Both `effective_status` and `status` are supplied by Facebook, so mapping `effective_status: :status` will cause conflicts.
-  ATTRIBUTES_MAPPING = {}.freeze
-
-  READ_FIELDS = %w[
-    ad_strategy_id adlabels bid_strategy budget_remaining buying_type can_use_spend_cap configured_status created_time daily_budget effective_status issues_info
-    last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object source_campaign source_campaign_id special_ad_categories
-    special_ad_category special_ad_category_country spend_cap start_time status stop_time updated_time
-  ].freeze
 
   validates_presence_of :name, :status, :objective, on: :create
   validates_presence_of :special_ad_categories, allow_blank: true, on: :create

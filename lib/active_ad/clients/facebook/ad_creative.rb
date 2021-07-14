@@ -1,20 +1,7 @@
 class ActiveAd::Facebook::AdCreative < ActiveAd::Base
-  # Identification attributes.
-  alias_method :ad_creative_id, :id
-
-  # Relation attributes.
-  attribute :ad_id, :string
-
-  # Titles and descriptions attributes.
-  attribute :name, :string
-
-  # Other attributes.
-  attribute :object_story_spec
-  attribute :account_id, :string
-
   # platform_attribute <==> active_ad_attribute
   #
-  # Both `effective_status` and `status` are supplied by Facebook, so mapping `effective_status: :status` will cause conflicts.
+  # Both `effective_status` and `status` are supplied by the external API, so mapping `effective_status: :status` will cause conflicts.
   ATTRIBUTES_MAPPING = {
     body: :description
   }.freeze
@@ -28,6 +15,21 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
     platform_customizations playable_asset_id portrait_customizations product_set_id recommender_settings status template_url template_url_spec thumbnail_url
     title url_tags use_page_actor_override video_id
   ].freeze
+
+  belongs_to :ad
+
+  # Identification attributes.
+  alias_method :ad_creative_id, :id
+
+  # Relation attributes.
+  attribute :ad_id, :string
+
+  # Titles and descriptions attributes.
+  attribute :name, :string
+
+  # Other attributes.
+  attribute :object_story_spec
+  attribute :account_id, :string
 
   validates_presence_of :name, on: :create
 

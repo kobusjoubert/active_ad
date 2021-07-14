@@ -153,6 +153,8 @@ Naming/PredicateName:
     - define_singleton_method
     - def_node_matcher
     - def_node_search
+  AllowedMethods:
+    - has_many
 
 Naming/VariableNumber:
   EnforcedStyle: snake_case

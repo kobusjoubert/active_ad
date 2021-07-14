@@ -1,4 +1,19 @@
 class ActiveAd::Facebook::Ad < ActiveAd::Base
+  # platform_attribute <==> active_ad_attribute
+  #
+  # Both `effective_status` and `status` are supplied by the external API, so mapping `effective_status: :status` will cause conflicts.
+  ATTRIBUTES_MAPPING = {
+    adset_id: :ad_set_id
+  }.freeze
+
+  READ_FIELDS = %w[
+    account_id ad_review_feedback adlabels adset_id bid_amount campaign_id configured_status conversion_domain created_time effective_status issues_info
+    last_updated_by_app_id name preview_shareable_link recommendations source_ad_id status tracking_specs updated_time
+  ].freeze
+
+  belongs_to :ad_set
+  has_many :ad_creatives
+
   # Identification attributes.
   alias_method :ad_id, :id
 
@@ -17,16 +32,6 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   attribute :descriptions, array: true
   attribute :status, :string, default: 'PAUSED'
   attribute :type, :string
-
-  # platform_attribute <==> active_ad_attribute
-  ATTRIBUTES_MAPPING = {
-    adset_id: :ad_set_id
-  }.freeze
-
-  READ_FIELDS = %w[
-    account_id ad_review_feedback adlabels adset_id bid_amount campaign_id configured_status conversion_domain created_time effective_status issues_info
-    last_updated_by_app_id name preview_shareable_link recommendations source_ad_id status tracking_specs updated_time
-  ].freeze
 
   validates_presence_of :name, :status, on: :create
 
