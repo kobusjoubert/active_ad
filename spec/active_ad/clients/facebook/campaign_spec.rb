@@ -6,7 +6,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     ActiveAd::Facebook::Connection.client = client
   end
 
-  let(:campaign) { described_class.new(id: 'campaign_123') }
+  let(:campaign) { described_class.new(id: 'campaign_123', account_id: 'account_123') }
   let(:client)   { ActiveAd::Base.client }
 
   describe '.find' do
@@ -277,6 +277,48 @@ RSpec.describe ActiveAd::Facebook::Campaign do
       }.to_json)
 
       expect { campaign.destroy! }.to raise_error(ActiveAd::RecordNotDeleted)
+    end
+  end
+
+  describe '#account' do
+    it 'returns the object type' do
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_123").with(query:
+        hash_including(access_token: 'secret_access_token')
+      ).to_return(status: 200, body: {
+        id: 'account_123', name: 'Account Name'
+      }.to_json)
+
+      expect(campaign.account.class).to be(ActiveAd::Facebook::Account)
+    end
+
+    it 'returns the object' do
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_123").with(query:
+        hash_including(access_token: 'secret_access_token')
+      ).to_return(status: 200, body: {
+        id: 'account_123', name: 'Account Name'
+      }.to_json)
+
+      expect(campaign.account.name).to eq('Account Name')
+    end
+  end
+
+  describe '#ad_sets' do
+    it 'returns a relation' do
+      expect(campaign.ad_sets).to be_a_kind_of(ActiveAd::Relation)
+    end
+
+    it 'returns the objects when invoked' do
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/#{campaign.id}/adsets").with(query:
+        hash_including(access_token: 'secret_access_token')
+      ).to_return(status: 200, body: {
+        data: [
+          { id: 'ad_set_1', name: 'Ad Set 1' },
+          { id: 'ad_set_2', name: 'Ad Set 2' }
+        ],
+        paging: { cursors: { before: '1' } }
+      }.to_json)
+
+      expect(campaign.ad_sets.map(&:name)).to include('Ad Set 1', 'Ad Set 2')
     end
   end
 end
