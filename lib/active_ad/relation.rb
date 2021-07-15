@@ -24,11 +24,13 @@ class ActiveAd::Relation
 
     loop do
       ActiveAd.logger.debug("ActiveAd::Relation each looping at index: #{index}")
-      break if total >= @limit
-
       raise index_response_error.to_s unless index_response.success?
 
+      # It is possible to get back less results than what was requested for.
       attributes = index_response_data(index)
+      break unless attributes
+
+      attributes.merge!(relational_attributes)
 
       if attributes
         object = klass.new(**attributes)
@@ -45,6 +47,7 @@ class ActiveAd::Relation
 
       index += 1
       total += 1
+      break if total >= @limit
     end
   end
 
@@ -172,5 +175,12 @@ class ActiveAd::Relation
     when :offset
       # { offset: @limit }
     end
+  end
+
+  # Set the relationships between the objects so that we can call the parent object. For instance when a campaign class has the `belongs_to :account`
+  # relationship setup, we'll need to set the `account_id` attribute for `campaign.account` to work.
+  def relational_attributes
+    attributes = kwargs.dup.deep_stringify_keys
+    attributes.keep_if { |key, _| key.include?('_id') && klass.public_method_defined?(key.chomp('_id')) }
   end
 end
