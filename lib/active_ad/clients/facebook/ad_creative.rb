@@ -58,7 +58,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   end
 
   def read_request(**kwargs)
-    fields = kwargs[:fields] || READ_FIELDS
+    fields = ((kwargs[:fields] || READ_FIELDS) + relational_attributes).uniq
 
     {
       get: "https://graph.facebook.com/v#{client.api_version}/#{ad_creative_id}",
@@ -95,5 +95,10 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   def create_response_id(response)
     response.body['id']
+  end
+
+  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  def relational_attributes
+    [:ad_id]
   end
 end

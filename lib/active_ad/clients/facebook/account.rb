@@ -1,4 +1,8 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
+  # TODO: Could use `alias_attribute` provided by `ActiveModel::AttributeMethods`
+  #
+  #  alias_attribute :account_status, :status
+  #
   # platform_attribute <==> active_ad_attribute
   ATTRIBUTES_MAPPING = {
     account_status: :status,
@@ -44,8 +48,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # after_destroy :do_something
 
   def read_request(**kwargs)
-    params = kwargs.dup
-    fields = params.delete(:fields) || READ_FIELDS
+    fields = ((kwargs[:fields] || READ_FIELDS) + relational_attributes).uniq
 
     {
       get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
@@ -92,5 +95,12 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
   def delete_request
     raise ActiveAd::RequestError, 'Cannot delete an ad account'
+  end
+
+  private
+
+  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  def relational_attributes
+    []
   end
 end
