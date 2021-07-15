@@ -56,11 +56,12 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   end
 
   def read_request(**kwargs)
-    fields = ((kwargs[:fields] || READ_FIELDS) + relational_attributes).uniq
+    params = kwargs.dup
+    fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
       get: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}",
-      params: { access_token: client.access_token, fields: fields.join(',') }
+      params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
 
