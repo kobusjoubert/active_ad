@@ -249,6 +249,7 @@ class ActiveAd::Base
 
       super(attributes.deep_stringify_keys) # TODO: Try attributes = attributes
     rescue ActiveModel::UnknownAttributeError
+      ActiveAd.logger.warn("Tried to assign an unknown attribute (#{attribute}) to #{self.class}")
       next
     end
   end
