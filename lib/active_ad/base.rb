@@ -247,6 +247,7 @@ class ActiveAd::Base
           { attribute => value }
         end
 
+      ActiveAd.logger.debug("Assigning attribute with value #{attributes}")
       super(attributes.deep_stringify_keys) # TODO: Try attributes = attributes
     rescue ActiveModel::UnknownAttributeError
       ActiveAd.logger.warn("Tried to assign an unknown attribute (#{attribute}) to #{self.class}")

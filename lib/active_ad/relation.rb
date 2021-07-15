@@ -104,9 +104,9 @@ class ActiveAd::Relation
   # === Response
   #
   # {
-  #   "data": [
+  #   "data": [{
   #      ...
-  #   ],
+  #   }],
   #   "paging": {
   #     "cursors": {
   #       "after": "MTAxNTExOTQ1MjAwNzI5NDE=",
