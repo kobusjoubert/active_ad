@@ -40,6 +40,8 @@ module ActiveAd
   end
 end
 
+ActiveAd.logger.level = ActiveAd.env.development? ? Logger::DEBUG : Logger::INFO
+
 require 'zeitwerk'
 
 loader = Zeitwerk::Loader.for_gem
