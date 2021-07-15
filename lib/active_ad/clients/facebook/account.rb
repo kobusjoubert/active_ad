@@ -52,7 +52,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
     {
       get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
-      params: params.merge(access_token: client.access_token, fields: fields.join(','))
+      params: { access_token: client.access_token, fields: fields.join(',') }
     }
   end
 
