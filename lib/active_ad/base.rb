@@ -210,6 +210,10 @@ class ActiveAd::Base
     response.success?
   end
 
+  def reload(**kwargs)
+    find(**kwargs)
+  end
+
   def new_record?
     @new_record
   end
