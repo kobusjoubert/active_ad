@@ -1,16 +1,24 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
   # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on allowlist`.
+  #
+  # The `id` field returnes a `act_` prefixed value, possibly a Facebook hack because they needed the values to be globally unique. When you look at things
+  # like `campaign.account_id` it doesn't return the `act_` prefixed value. So whenever the `id` attribute is being set on an object, we remove the prefixed
+  # `act_` value.
+  #
+  #   'id' => 'act_123'
+  #   'account_id' => '123'
   READ_FIELDS = %i[
-    account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2 business_zip
-    capabilities created_time currency disable_reason end_advertiser end_advertiser_name failed_delivery_checks funding_source funding_source_details
-    is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap min_daily_budget name
-    offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tos_accepted
+    account_id account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2
+    business_zip capabilities created_time currency disable_reason end_advertiser end_advertiser_name failed_delivery_checks funding_source
+    funding_source_details id is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap
+    min_daily_budget name offsite_pixels_tos_accepted owner partner rf_spec spend_cap timezone_id timezone_name timezone_offset_hours_utc tos_accepted
+    user_tos_accepted
   ].freeze
 
   has_many :campaigns
 
   # Identification attributes.
-  alias_method :account_id, :id
+  attribute :account_id, :string
 
   # Titles and descriptions attributes.
   attribute :name, :string
@@ -48,7 +56,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
+      get: "https://graph.facebook.com/v#{client.api_version}/act_#{id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
@@ -99,5 +107,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
     []
+  end
+
+  def assign_attributes(attributes = {})
+    attributes['id'] = attributes['id'].remove('act_') if attributes.has_key?('id')
+    super(attributes)
   end
 end
