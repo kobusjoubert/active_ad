@@ -240,13 +240,7 @@ class ActiveAd::Base
     attributes.each do |attribute, value|
       next if RESERVED_ATTRIBUTES.include?(attribute) # Skip reserved attributes.
 
-      attributes =
-        if self.class.const_defined?('ATTRIBUTES_MAPPING')
-          { (self.class::ATTRIBUTES_MAPPING[attribute.to_sym] || attribute) => value }
-        else
-          { attribute => value }
-        end
-
+      attributes = { attribute => value }
       ActiveAd.logger.debug("Assigning attribute with value #{attributes}")
       super(attributes.deep_stringify_keys) # TODO: Try attributes = attributes
     rescue ActiveModel::UnknownAttributeError
@@ -305,11 +299,8 @@ class ActiveAd::Base
   #   attributes         => { "name" => "My Campaign", "status" => "PAUSED" }
   #   attributes_swapped => { "name" => "My Campaign", "platform_status" => "PAUSED" }
   def attributes_swapped
-    return attributes unless self.class.const_defined?('ATTRIBUTES_MAPPING')
-
-    # ATTRIBUTES_MAPPING.invert to swap the keys and values.
     attributes.deep_transform_keys do |key|
-      self.class::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? self.class::ATTRIBUTES_MAPPING.key(key.to_sym).to_s : key
+      attribute_aliases.has_value?(key) ? attribute_aliases.key(key) : key
     end
   end
 
@@ -318,9 +309,7 @@ class ActiveAd::Base
   #   ['name', 'status'] => ['name', 'platform_status']
   #   ['name', 'platform_status'] => ['name', 'platform_status']
   def keys_for_request(keys)
-    return keys unless self.class.const_defined?('ATTRIBUTES_MAPPING')
-
-    keys.map { |key| (self.class::ATTRIBUTES_MAPPING.invert.stringify_keys[key] || key).to_s }
+    keys.map { |key| attribute_aliases.invert[key] || key }
   end
 
   # Exchange keys to map what the internal API expects.
@@ -328,9 +317,7 @@ class ActiveAd::Base
   #   ['name', 'status'] => ['name', 'status']
   #   ['name', 'platform_status'] => ['name', 'status']
   def keys_for_object(keys)
-    return keys unless self.class.const_defined?('ATTRIBUTES_MAPPING')
-
-    keys.map { |key| (self.class::ATTRIBUTES_MAPPING.stringify_keys[key] || key).to_s }
+    keys.map { |key| attribute_aliases[key] || key }
   end
 
   def read_request

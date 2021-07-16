@@ -1,9 +1,4 @@
 class ActiveAd::Facebook::Campaign < ActiveAd::Base
-  # platform_attribute <==> active_ad_attribute
-  #
-  # Both `effective_status` and `status` are supplied by the external API, so mapping `effective_status: :status` will cause conflicts.
-  ATTRIBUTES_MAPPING = {}.freeze
-
   READ_FIELDS = %w[
     ad_strategy_id adlabels bid_strategy budget_remaining buying_type can_use_spend_cap configured_status created_time daily_budget effective_status issues_info
     last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object source_campaign source_campaign_id special_ad_categories
@@ -27,6 +22,10 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :objective, :string, default: 'LINK_CLICKS'
   attribute :special_ad_categories, array: true, default: []
   attribute :status, :string, default: 'PAUSED'
+
+  # Use aliases to map external API attributes to the object attributes.
+  #
+  # alias_attribute :platform_attribute, :active_ad_attribute
 
   validates_presence_of :name, :status, :objective, on: :create
   validates_presence_of :special_ad_categories, allow_blank: true, on: :create

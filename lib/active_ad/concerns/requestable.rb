@@ -37,10 +37,8 @@ module ActiveAd::Requestable
   #   kwargs             => { name: "My Campaign", status: "PAUSED" }
   #   kwargs_for_request => { name: "My Campaign", platform_status: "PAUSED" }
   def kwargs_for_request(klass, **kwargs)
-    return kwargs unless klass.const_defined?('ATTRIBUTES_MAPPING')
-
     kwargs.deep_transform_keys do |key|
-      klass::ATTRIBUTES_MAPPING.has_value?(key.to_sym) ? klass::ATTRIBUTES_MAPPING.key(key.to_sym) : key
+      (klass.attribute_aliases.has_value?(key) ? klass.attribute_aliases.key(key) : key).to_sym
     end
   end
 
@@ -49,10 +47,8 @@ module ActiveAd::Requestable
   #   kwargs            => { name: "My Campaign", platform_status: "PAUSED" }
   #   kwargs_for_object => { name: "My Campaign", status: "PAUSED" }
   def kwargs_for_object(klass, **kwargs)
-    return kwargs unless klass.const_defined?('ATTRIBUTES_MAPPING')
-
     kwargs.deep_transform_keys do |key|
-      klass::ATTRIBUTES_MAPPING[key.to_sym] || key
+      (klass.attribute_aliases[key] || key).to_sym
     end
   end
 end

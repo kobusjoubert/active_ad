@@ -1,16 +1,4 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
-  # TODO: Could use `alias_attribute` provided by `ActiveModel::AttributeMethods`
-  #
-  #  alias_attribute :account_status, :status
-  #
-  # platform_attribute <==> active_ad_attribute
-  ATTRIBUTES_MAPPING = {
-    account_status: :status,
-    end_advertiser: :end_advertiser_id,
-    media_agency: :media_agency_id,
-    partner: :partner_id
-  }.freeze
-
   # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on allowlist`.
   READ_FIELDS = %w[
     account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2 business_zip
@@ -35,6 +23,14 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :partner_id, :string
   attribute :status, :string
   attribute :timezone_id, :integer
+
+  # Use aliases to map external API attributes to the object attributes.
+  #
+  # alias_attribute :platform_attribute, :active_ad_attribute
+  alias_attribute :account_status, :status
+  alias_attribute :end_advertiser, :end_advertiser_id
+  alias_attribute :media_agency, :media_agency_id
+  alias_attribute :partner, :partner_id
 
   # Use validations which will overwrite the parent class implementations.
   #

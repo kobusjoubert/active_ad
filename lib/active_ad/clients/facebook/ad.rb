@@ -1,11 +1,4 @@
 class ActiveAd::Facebook::Ad < ActiveAd::Base
-  # platform_attribute <==> active_ad_attribute
-  #
-  # Both `effective_status` and `status` are supplied by the external API, so mapping `effective_status: :status` will cause conflicts.
-  ATTRIBUTES_MAPPING = {
-    adset_id: :ad_set_id
-  }.freeze
-
   READ_FIELDS = %w[
     account_id ad_review_feedback adlabels adset_id bid_amount campaign_id configured_status conversion_domain created_time effective_status issues_info
     last_updated_by_app_id name preview_shareable_link recommendations source_ad_id status tracking_specs updated_time
@@ -32,6 +25,13 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   attribute :descriptions, array: true
   attribute :status, :string, default: 'PAUSED'
   attribute :type, :string
+
+  # Use aliases to map external API attributes to the object attributes.
+  #
+  # alias_attribute :platform_attribute, :active_ad_attribute
+  #
+  # Both `effective_status` and `status` are supplied by the external API, so `alias_attribute :effective_status, :status` will cause conflicts.
+  alias_attribute :adset_id, :ad_set_id
 
   validates_presence_of :name, :status, on: :create
 
@@ -102,6 +102,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
-    [:ad_set_id]
+    # [:ad_set_id]
+    [:adset_id]
   end
 end

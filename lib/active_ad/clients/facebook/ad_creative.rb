@@ -1,11 +1,4 @@
 class ActiveAd::Facebook::AdCreative < ActiveAd::Base
-  # platform_attribute <==> active_ad_attribute
-  #
-  # Both `effective_status` and `status` are supplied by the external API, so mapping `effective_status: :status` will cause conflicts.
-  ATTRIBUTES_MAPPING = {
-    body: :description
-  }.freeze
-
   # Requesting `referral_id` causes a status `400` with message `(#3) User must be on allowlist`.
   READ_FIELDS = %w[
     account_id actor_id applink_treatment asset_feed_spec authorization_category body branded_content_sponsor_page_id bundle_folder_id call_to_action_type
@@ -30,6 +23,13 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   # Other attributes.
   attribute :object_story_spec
   attribute :account_id, :string
+
+  # Use aliases to map external API attributes to the object attributes.
+  #
+  # alias_attribute :platform_attribute, :active_ad_attribute
+  #
+  # Both `effective_status` and `status` are supplied by the external API, so `alias_attribute :effective_status, :status` will cause conflicts.
+  alias_attribute :body, :description
 
   validates_presence_of :name, on: :create
 
