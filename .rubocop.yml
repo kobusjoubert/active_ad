@@ -158,6 +158,8 @@ Naming/PredicateName:
 
 Naming/VariableNumber:
   EnforcedStyle: snake_case
+  AllowedIdentifiers:
+    - business_street2
 
 Performance/RedundantMerge:
   MaxKeyValuePairs: 1
