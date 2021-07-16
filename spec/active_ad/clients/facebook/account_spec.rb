@@ -61,7 +61,7 @@ RSpec.describe ActiveAd::Facebook::Account do
       expect(described_class.new(id: 'account_123').id).to eq('account_123')
     end
 
-    it 'removes the act_ prefix' do
+    it 'removes prefix "act_" when setting the id' do
       expect(described_class.new(id: 'act_123').id).to eq('123')
     end
   end
