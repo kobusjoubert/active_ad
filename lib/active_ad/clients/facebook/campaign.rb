@@ -1,5 +1,5 @@
 class ActiveAd::Facebook::Campaign < ActiveAd::Base
-  READ_FIELDS = %w[
+  READ_FIELDS = %i[
     ad_strategy_id adlabels bid_strategy budget_remaining buying_type can_use_spend_cap configured_status created_time daily_budget effective_status issues_info
     last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object source_campaign source_campaign_id special_ad_categories
     special_ad_category special_ad_category_country spend_cap start_time status stop_time updated_time

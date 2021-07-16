@@ -1,5 +1,5 @@
 class ActiveAd::Facebook::AdSet < ActiveAd::Base
-  READ_FIELDS = %w[
+  READ_FIELDS = %i[
     adlabels adset_schedule attribution_spec bid_adjustments bid_amount bid_constraints bid_info bid_strategy billing_event budget_remaining campaign_id
     configured_status created_time daily_budget daily_min_spend_target daily_spend_cap destination_type effective_status end_time frequency_control_specs
     is_dynamic_creative issues_info learning_stage_info lifetime_budget lifetime_imps lifetime_min_spend_target lifetime_spend_cap

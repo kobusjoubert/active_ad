@@ -1,5 +1,5 @@
 class ActiveAd::Facebook::Ad < ActiveAd::Base
-  READ_FIELDS = %w[
+  READ_FIELDS = %i[
     account_id ad_review_feedback adlabels adset_id bid_amount campaign_id configured_status conversion_domain created_time effective_status issues_info
     last_updated_by_app_id name preview_shareable_link recommendations source_ad_id status tracking_specs updated_time
   ].freeze

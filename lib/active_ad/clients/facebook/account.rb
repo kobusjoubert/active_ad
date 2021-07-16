@@ -1,6 +1,6 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
   # Requesting `direct_deals_tos_accepted` causes a status `400` with message `(#3) Ad Account must be on allowlist`.
-  READ_FIELDS = %w[
+  READ_FIELDS = %i[
     account_status age amount_spent balance business_city business_country_code business_name business_state business_street business_street2 business_zip
     capabilities created_time currency disable_reason end_advertiser end_advertiser_name failed_delivery_checks funding_source funding_source_details
     is_direct_deals_enabled is_notifications_enabled is_personal is_prepay_account media_agency min_campaign_group_spend_cap min_daily_budget name

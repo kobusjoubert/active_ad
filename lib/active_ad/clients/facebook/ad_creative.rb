@@ -1,6 +1,6 @@
 class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   # Requesting `referral_id` causes a status `400` with message `(#3) User must be on allowlist`.
-  READ_FIELDS = %w[
+  READ_FIELDS = %i[
     account_id actor_id applink_treatment asset_feed_spec authorization_category body branded_content_sponsor_page_id bundle_folder_id call_to_action_type
     categorization_criteria category_media_source destination_set_id dynamic_ad_voice effective_authorization_category effective_object_story_id
     enable_direct_install enable_launch_instant_app image_crops image_hash image_url interactive_components_spec link_destination_display_url link_og_id
