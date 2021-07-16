@@ -11,9 +11,6 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   belongs_to :ad
 
-  # Identification attributes.
-  alias_method :ad_creative_id, :id
-
   # Relation attributes.
   attribute :ad_id, :string
 
@@ -62,7 +59,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/#{ad_creative_id}",
+      get: "https://graph.facebook.com/v#{client.api_version}/#{id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
@@ -76,14 +73,14 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   def update_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{ad_creative_id}",
+      post: "https://graph.facebook.com/v#{client.api_version}/#{id}",
       body: update_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def delete_request
     {
-      delete: "https://graph.facebook.com/v#{client.api_version}/#{ad_creative_id}",
+      delete: "https://graph.facebook.com/v#{client.api_version}/#{id}",
       params: { access_token: client.access_token }
     }
   end

@@ -57,8 +57,12 @@ RSpec.describe ActiveAd::Facebook::Account do
   describe '.create!'
 
   describe '#initialize' do
-    it 'sets the account_id' do
-      expect(described_class.new(id: 'account_123').account_id).to eq('account_123')
+    it 'sets the id' do
+      expect(described_class.new(id: 'account_123').id).to eq('account_123')
+    end
+
+    it 'removes the act_ prefix' do
+      expect(described_class.new(id: 'act_123').id).to eq('123')
     end
   end
 

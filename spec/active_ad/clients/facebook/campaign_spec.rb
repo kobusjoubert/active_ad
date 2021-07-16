@@ -101,8 +101,8 @@ RSpec.describe ActiveAd::Facebook::Campaign do
   end
 
   describe '#initialize' do
-    it 'sets the campaign_id' do
-      expect(described_class.new(id: 'campaign_123').campaign_id).to eq('campaign_123')
+    it 'sets the id' do
+      expect(described_class.new(id: 'campaign_123').id).to eq('campaign_123')
     end
   end
 

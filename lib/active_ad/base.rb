@@ -43,7 +43,7 @@ class ActiveAd::Base
   # end
 
   def initialize(**kwargs)
-    super
+    super(**kwargs)
 
     # Allows us to initialize a known record without needing to call `.find('id')` first.
     @new_record = kwargs[:id].blank?

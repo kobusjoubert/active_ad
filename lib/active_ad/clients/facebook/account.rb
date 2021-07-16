@@ -51,6 +51,11 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
 
+  def initialize(**kwargs)
+    super(**kwargs)
+    self.id = id.remove('act_') if id.present?
+  end
+
   def read_request(**kwargs)
     params = kwargs.dup
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq

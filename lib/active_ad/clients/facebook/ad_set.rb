@@ -11,9 +11,6 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   belongs_to :campaign
   has_many :ads
 
-  # Identification attributes.
-  alias_method :ad_set_id, :id
-
   # Relation attributes.
   attribute :campaign_id, :string
 
@@ -65,7 +62,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}",
+      get: "https://graph.facebook.com/v#{client.api_version}/#{id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
@@ -79,14 +76,14 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
 
   def update_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}",
+      post: "https://graph.facebook.com/v#{client.api_version}/#{id}",
       body: update_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def delete_request
     {
-      delete: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}",
+      delete: "https://graph.facebook.com/v#{client.api_version}/#{id}",
       params: { access_token: client.access_token }
     }
   end
