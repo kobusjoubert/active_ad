@@ -5,7 +5,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   #   'has_page_authorized_adaccount' => "(#100) For field 'has_page_authorized_adaccount': The parameter page_id is required".
   #   'show_checkout_experience' => "(#100) For field 'show_checkout_experience': The parameter page_id is required".
   #
-  # The 'id' field returnes an 'act_' prefixed value, possibly a Facebook hack because they might have needed values to be globally unique ¯\_(ツ)_/¯. When you
+  # The 'id' field returns an 'act_' prefixed value, possibly a Facebook hack because they might have needed values to be globally unique ¯\_(ツ)_/¯. When you
   # look at things like 'campaign.account_id' it doesn't return the 'act_' prefixed value. So whenever the 'id' attribute is being set on an object, we remove
   # the prefixed 'act_' value.
   #
@@ -30,6 +30,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # alias_attribute :platform_attribute, :active_ad_attribute
   alias_attribute :account_id, :id
   alias_attribute :account_status, :status
+  alias_attribute :created_time, :created_at
   alias_attribute :end_advertiser, :end_advertiser_id
   alias_attribute :funding_source, :funding_source_id
   alias_attribute :media_agency, :media_agency_id
@@ -52,15 +53,15 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :business_street2, :string
   attribute :business_zip, :string
   attribute :can_create_brand_lift_study, :boolean
-  attribute :capabilities
-  attribute :created_time, :datetime
+  attribute :capabilities, array: true
+  attribute :created_at, :datetime
   attribute :currency, :string
   attribute :direct_deals_tos_accepted, :boolean
   attribute :disable_reason, :integer
   attribute :end_advertiser_id, :string
   attribute :end_advertiser_name, :string
   attribute :extended_credit_invoice_group
-  attribute :failed_delivery_checks
+  attribute :failed_delivery_checks, array: true
   attribute :fb_entity, :integer
   attribute :funding_source_id, :string
   attribute :funding_source_details
@@ -75,7 +76,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :is_personal, :integer
   attribute :is_prepay_account, :boolean
   attribute :is_tax_id_required, :boolean
-  attribute :line_numbers
+  attribute :line_numbers, array: true
   attribute :media_agency_id, :string
   attribute :min_campaign_group_spend_cap, :string
   attribute :min_daily_budget, :integer
@@ -95,7 +96,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :timezone_name, :string
   attribute :timezone_offset_hours_utc, :float
   attribute :tos_accepted
-  attribute :user_tasks
+  attribute :user_tasks, array: true
   attribute :user_tos_accepted
 
   # Use validations which will overwrite the parent class implementations.
