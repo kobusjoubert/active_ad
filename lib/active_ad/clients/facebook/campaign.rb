@@ -48,7 +48,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :source_campaign_id, :string
   attribute :special_ad_categories, array: true #, default: []
   attribute :special_ad_category, :string
-  attribute :special_ad_category_country, array: true, default: []
+  attribute :special_ad_category_country, array: true #, default: []
   attribute :spend_cap, :string
   attribute :start_time, :datetime
   attribute :status, :string #, default: 'PAUSED'
