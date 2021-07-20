@@ -45,6 +45,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :business
   attribute :business_city, :string
   attribute :business_country_code, :string
+  attribute :business_info
   attribute :business_name, :string
   attribute :business_state, :string
   attribute :business_street, :string
@@ -85,6 +86,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :rf_spec
   attribute :show_checkout_experience, :boolean
   attribute :spend_cap, :string
+  attribute :spend_cap_action, :string
   attribute :status, :integer
   attribute :tax_id, :string
   attribute :tax_id_status, :integer
@@ -147,17 +149,12 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   #   }
   # end
 
-  # # TODO: Make more elegant.
-  # def update_request
-  #   # name: name,
-  #   # end_advertiser_id: (end_advertiser_id.presence || 'NONE').to_s,
-  #   # spend_cap: 100.00,
-  #   # spend_cap_action: 'reset'
-  #   {
-  #     post: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}",
-  #     body: update_request_attributes.merge(access_token: client.access_token)
-  #   }
-  # end
+  def update_request
+    {
+      post: "https://graph.facebook.com/v#{client.api_version}/act_#{id}",
+      body: update_request_attributes.merge(access_token: client.access_token)
+    }
+  end
 
   def delete_request
     raise ActiveAd::RequestError, 'Cannot delete an ad account'
