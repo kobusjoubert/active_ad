@@ -6,72 +6,72 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     ActiveAd::Facebook::Connection.client = client
   end
 
-  let(:campaign) { described_class.new(id: 'campaign_123', account_id: 'account_123') }
+  let(:campaign) { described_class.new(id: '123', account_id: '123') }
   let(:client)   { ActiveAd::Base.client }
 
   describe '.find' do
     it 'returns an object when found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
-      expect(described_class.find('campaign_123')).to be_an_instance_of(ActiveAd::Facebook::Campaign)
+      expect(described_class.find('123')).to be_an_instance_of(ActiveAd::Facebook::Campaign)
     end
 
     it 'returns nil when not found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/campaign_999").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/999").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
       }.to_json)
 
-      expect(described_class.find('campaign_999')).to be_nil
+      expect(described_class.find('999')).to be_nil
     end
   end
 
   describe '.find!' do
     it 'returns an object when found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
-      expect(described_class.find!('campaign_123')).to be_an_instance_of(ActiveAd::Facebook::Campaign)
+      expect(described_class.find!('123')).to be_an_instance_of(ActiveAd::Facebook::Campaign)
     end
 
     it 'raises an exception when not found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/campaign_999").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/999").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
       }.to_json)
 
-      expect { described_class.find!('campaign_999') }.to raise_error(ActiveAd::RecordNotFound)
+      expect { described_class.find!('999') }.to raise_error(ActiveAd::RecordNotFound)
     end
   end
 
   describe '.create' do
     it 'returns an object when created' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_account_123/campaigns").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_123/campaigns").with(body:
         hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
-      expect(described_class.create(account_id: 'account_123', name: 'Campaign Name', validate: false)).to be_an_instance_of(ActiveAd::Facebook::Campaign)
+      expect(described_class.create(account_id: '123', name: 'Campaign Name', validate: false)).to be_an_instance_of(ActiveAd::Facebook::Campaign)
     end
 
     it 'returns an empty object when not created' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_account_123/campaigns").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_123/campaigns").with(body:
         hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
       }.to_json)
 
-      object = described_class.create(account_id: 'account_123', name: 'Campaign Name', validate: false)
+      object = described_class.create(account_id: '123', name: 'Campaign Name', validate: false)
       expect(object).to be_an_instance_of(ActiveAd::Facebook::Campaign)
       expect(object.id).to be_nil
       expect(object.name).to be_nil
@@ -80,29 +80,29 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '.create!' do
     it 'returns an object when created' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_account_123/campaigns").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_123/campaigns").with(body:
         hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
-      expect(described_class.create!(account_id: 'account_123', name: 'Campaign Name', validate: false)).to be_an_instance_of(ActiveAd::Facebook::Campaign)
+      expect(described_class.create!(account_id: '123', name: 'Campaign Name', validate: false)).to be_an_instance_of(ActiveAd::Facebook::Campaign)
     end
 
     it 'raises an exception when not created' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_account_123/campaigns").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_123/campaigns").with(body:
         hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
       }.to_json)
 
-      expect { described_class.create!(account_id: 'account_123', name: 'Campaign Name', validate: false) }.to raise_error(ActiveAd::RecordInvalid)
+      expect { described_class.create!(account_id: '123', name: 'Campaign Name', validate: false) }.to raise_error(ActiveAd::RecordInvalid)
     end
   end
 
   describe '#initialize' do
     it 'sets the id' do
-      expect(described_class.new(id: 'campaign_123').id).to eq('campaign_123')
+      expect(described_class.new(id: '123').id).to eq(123)
     end
   end
 
@@ -112,14 +112,14 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     end
 
     it 'is not a new record when initializing with id' do
-      expect(described_class.new(id: 'campaign_123').new_record?).to be false
+      expect(described_class.new(id: '123').new_record?).to be false
     end
 
     it 'is not a new record after update' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'New Campaign Name'
+        id: '123', name: 'New Campaign Name'
       }.to_json)
 
       campaign.update(name: 'New Campaign Name', validate: false)
@@ -127,13 +127,13 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     end
 
     it 'is not a new record after create' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_account_123/campaigns").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/act_123/campaigns").with(body:
         hash_including(access_token: 'secret_access_token', name: 'Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'Campaign Name'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
-      expect(described_class.create(account_id: 'account_123', name: 'Campaign Name', validate: false).new_record?).to be false
+      expect(described_class.create(account_id: '123', name: 'Campaign Name', validate: false).new_record?).to be false
     end
   end
 
@@ -150,17 +150,17 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#save' do
     it 'returns true when saved' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: 'campaign_123'
+        id: '123'
       }.to_json)
 
       expect(campaign.save(validate: false)).to be true
     end
 
     it 'returns false when not saved' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
@@ -172,17 +172,17 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#save!' do
     it 'returns true when saved' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: 'campaign_123'
+        id: '123'
       }.to_json)
 
       expect(campaign.save!(validate: false)).to be true
     end
 
     it 'raises an exception when not saved' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
@@ -194,17 +194,17 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#update' do
     it 'returns true when updated' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'New Campaign Name'
+        id: '123', name: 'New Campaign Name'
       }.to_json)
 
       expect(campaign.update(name: 'New Campaign Name', validate: false)).to be true
     end
 
     it 'returns false when not updated' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
@@ -216,17 +216,17 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#update!' do
     it 'returns true when updated' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 200, body: {
-        id: 'campaign_123', name: 'New Campaign Name'
+        id: '123', name: 'New Campaign Name'
       }.to_json)
 
       expect(campaign.update!(name: 'New Campaign Name', validate: false)).to be true
     end
 
     it 'raise an exception when not updated' do
-      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(body:
+      stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token', name: 'New Campaign Name')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
@@ -238,7 +238,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#destroy' do
     it 'returns true when deleted' do
-      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(query:
+      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         success: true
@@ -248,7 +248,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     end
 
     it 'returns false when not deleted' do
-      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(query:
+      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
@@ -260,7 +260,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#destroy!' do
     it 'returns true when deleted' do
-      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(query:
+      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         success: true
@@ -270,7 +270,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     end
 
     it 'raises an exception when not deleted' do
-      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/campaign_123").with(query:
+      stub_request(:delete, "https://graph.facebook.com/v#{client.api_version}/123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 400, body: {
         error: { message: 'no no no!' }
@@ -282,20 +282,20 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#account' do
     it 'returns the object type' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_123").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: 'account_123', name: 'Account Name'
+        id: '123', name: 'Account Name'
       }.to_json)
 
       expect(campaign.account.class).to be(ActiveAd::Facebook::Account)
     end
 
     it 'returns the object' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_account_123").with(query:
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: 'account_123', name: 'Account Name'
+        id: '123', name: 'Account Name'
       }.to_json)
 
       expect(campaign.account.name).to eq('Account Name')
