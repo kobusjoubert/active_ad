@@ -9,6 +9,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   belongs_to :account
   has_many :ad_sets
 
+  attribute :id, :big_integer
+
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
   # getting back an ID instead of an object.
@@ -19,25 +21,25 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   alias_attribute :updated_time, :updated_at
 
   # ActiveAd object attributes.
-  attribute :account_id, :string
-  attribute :ad_strategy_id, :string
+  attribute :account_id, :big_integer
+  attribute :ad_strategy_id, :big_integer
   attribute :ad_labels, array: true
   attribute :bid_strategy, :string
-  attribute :boosted_object_id, :string
+  attribute :boosted_object_id, :big_integer
   attribute :brand_lift_studies, array: true
   attribute :budget_rebalance_flag, :boolean
-  attribute :budget_remaining, :string
+  attribute :budget_remaining, :big_integer
   attribute :buying_type, :string
   attribute :can_create_brand_lift_study, :boolean
   attribute :can_use_spend_cap, :boolean
   attribute :configured_status, :string
   attribute :created_at, :datetime
-  attribute :daily_budget, :string
+  attribute :daily_budget, :big_integer
   attribute :effective_status, :string
   attribute :is_skadnetwork_attribution, :boolean
   attribute :issues_info, array: true
   attribute :last_budget_toggling_time, :datetime
-  attribute :lifetime_budget, :string
+  attribute :lifetime_budget, :big_integer
   attribute :name, :string
   attribute :objective, :string #, default: 'LINK_CLICKS'
   attribute :pacing_type, array: true
@@ -45,15 +47,15 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :recommendations, array: true
   attribute :smart_promotion_type, :string
   attribute :source_campaign
-  attribute :source_campaign_id, :string
+  attribute :source_campaign_id, :big_integer
   attribute :special_ad_categories, array: true #, default: []
   attribute :special_ad_category, :string
   attribute :special_ad_category_country, array: true #, default: []
-  attribute :spend_cap, :string
+  attribute :spend_cap, :big_integer
   attribute :start_time, :datetime
   attribute :status, :string #, default: 'PAUSED'
   attribute :stop_time, :datetime
-  attribute :topline_id, :string
+  attribute :topline_id, :integer
   attribute :updated_at, :datetime
 
   # Use validations which will overwrite the parent class implementations.
