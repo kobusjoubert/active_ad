@@ -23,6 +23,8 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
   has_many :campaigns
 
+  attribute :id, :big_integer
+
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
   # getting back an ID instead of an object.
@@ -110,11 +112,6 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
 
-  def initialize(**kwargs)
-    super(**kwargs)
-    self.id = id.remove('act_') if id.present?
-  end
-
   def read_request(**kwargs)
     params = kwargs.dup
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
@@ -161,6 +158,11 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     raise ActiveAd::RequestError, 'Cannot delete an ad account'
   end
 
+  def id=(value)
+    super
+    raise "Invalid id: #{value}" if id.zero?
+  end
+
   private
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
@@ -169,7 +171,14 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   end
 
   def assign_attributes(attributes = {})
-    attributes['id'] = attributes['id'].remove('act_') if attributes.has_key?('id')
+    attributes = attributes.deep_stringify_keys
+
+    if attributes['id'].is_a?(String)
+      previous_id = attributes['id']
+      attributes['id'] = attributes['id'].remove('act_')
+      raise "Invalid id: #{previous_id}" if attributes['id'].to_i.zero?
+    end
+
     super(attributes)
   end
 end
