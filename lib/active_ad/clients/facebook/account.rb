@@ -43,8 +43,8 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :ad_account_promotable_objects
   attribute :age, :float
   attribute :agency_client_declaration
-  attribute :amount_spent, :string
-  attribute :balance, :string
+  attribute :amount_spent, :big_integer
+  attribute :balance, :big_integer
   attribute :business
   attribute :business_city, :string
   attribute :business_country_code, :string
@@ -60,16 +60,16 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :currency, :string
   attribute :direct_deals_tos_accepted, :boolean
   attribute :disable_reason, :integer
-  attribute :end_advertiser_id, :string
+  attribute :end_advertiser_id, :big_integer
   attribute :end_advertiser_name, :string
   attribute :extended_credit_invoice_group
   attribute :failed_delivery_checks, array: true
   attribute :fb_entity, :integer
-  attribute :funding_source_id, :string
+  attribute :funding_source_id, :big_integer
   attribute :funding_source_details
   attribute :has_migrated_permissions, :boolean
   attribute :has_page_authorized_adaccount, :boolean
-  attribute :io_number, :string
+  attribute :io_number, :big_integer
   attribute :is_attribution_spec_system_default, :boolean
   attribute :is_direct_deals_enabled, :boolean
   attribute :is_in_3ds_authorization_enabled_market, :boolean
@@ -79,16 +79,16 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :is_prepay_account, :boolean
   attribute :is_tax_id_required, :boolean
   attribute :line_numbers, array: true
-  attribute :media_agency_id, :string
-  attribute :min_campaign_group_spend_cap, :string
+  attribute :media_agency_id, :big_integer
+  attribute :min_campaign_group_spend_cap, :big_integer
   attribute :min_daily_budget, :integer
   attribute :name, :string
   attribute :offsite_pixels_tos_accepted, :boolean
-  attribute :owner_id, :string
-  attribute :partner_id, :string
+  attribute :owner_id, :big_integer
+  attribute :partner_id, :big_integer
   attribute :rf_spec
   attribute :show_checkout_experience, :boolean
-  attribute :spend_cap, :string
+  attribute :spend_cap, :big_integer
   attribute :spend_cap_action, :string
   attribute :status, :integer
   attribute :tax_id, :string
