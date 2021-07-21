@@ -33,7 +33,7 @@ class ActiveAd::Base
   #   ArgumentError (wrong number of arguments (given 1, expected 0))
   #
   # def initialize(**kwargs)
-  #   super(**kwargs)
+  #   super
   #
   #   # By including ActiveModel::Model and calling super, attributes will be assigned with `assign_attributes(kwargs)` which calls
   #   # `public_send("#{key}=", value)` internally.
@@ -44,7 +44,7 @@ class ActiveAd::Base
   # end
 
   def initialize(**kwargs)
-    super(**kwargs)
+    super
 
     # Allows us to initialize a known record without needing to call `.find('id')` first.
     @new_record = kwargs[:id].blank?

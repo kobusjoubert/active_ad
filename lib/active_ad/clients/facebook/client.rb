@@ -6,7 +6,7 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
   validates_presence_of :client_id, :client_secret
 
   def initialize(**kwargs)
-    super(**kwargs)
+    super
     @api_version = API_VERSION
     @pagination_type = :cursor
   end
