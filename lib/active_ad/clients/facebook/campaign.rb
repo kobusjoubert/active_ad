@@ -41,19 +41,19 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :last_budget_toggling_time, :datetime
   attribute :lifetime_budget, :big_integer
   attribute :name, :string
-  attribute :objective, :string #, default: 'LINK_CLICKS'
+  attribute :objective, :string # , default: 'LINK_CLICKS'
   attribute :pacing_type, array: true
   attribute :promoted_object
   attribute :recommendations, array: true
   attribute :smart_promotion_type, :string
   attribute :source_campaign
   attribute :source_campaign_id, :big_integer
-  attribute :special_ad_categories, array: true #, default: []
+  attribute :special_ad_categories, array: true # , default: []
   attribute :special_ad_category, :string
-  attribute :special_ad_category_country, array: true #, default: []
+  attribute :special_ad_category_country, array: true # , default: []
   attribute :spend_cap, :big_integer
   attribute :start_time, :datetime
-  attribute :status, :string #, default: 'PAUSED'
+  attribute :status, :string # , default: 'PAUSED'
   attribute :stop_time, :datetime
   attribute :topline_id, :integer
   attribute :updated_at, :datetime
