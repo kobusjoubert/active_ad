@@ -158,9 +158,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     raise ActiveAd::RequestError, 'Cannot delete an ad account'
   end
 
+  # Remove 'act_' prefixes from the 'id' attribute.
   def id=(value)
+    value = value.remove('act_') if value.is_a?(String)
     super
-    raise "Invalid id: #{value}" if id.zero?
   end
 
   private
@@ -170,15 +171,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     []
   end
 
+  # Remove 'act_' prefixes from the 'id' attribute.
   def assign_attributes(attributes = {})
     attributes = attributes.deep_stringify_keys
-
-    if attributes['id'].is_a?(String)
-      previous_id = attributes['id']
-      attributes['id'] = attributes['id'].remove('act_')
-      raise "Invalid id: #{previous_id}" if attributes['id'].to_i.zero?
-    end
-
+    attributes['id'] = attributes['id'].remove('act_') if attributes['id'].is_a?(String)
     super(attributes)
   end
 end

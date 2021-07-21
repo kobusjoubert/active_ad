@@ -29,6 +29,16 @@ RSpec.describe ActiveAd::Facebook::Account do
 
       expect(described_class.find('999')).to be_nil
     end
+
+    it 'returns nil when requesting an invalid id' do
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_0").with(query:
+        hash_including(access_token: 'secret_access_token')
+      ).to_return(status: 404, body: {
+        error: { message: 'no no no!' }
+      }.to_json)
+
+      expect(described_class.find('unrecognizable_123')).to be_nil
+    end
   end
 
   describe '.find!' do
@@ -51,6 +61,16 @@ RSpec.describe ActiveAd::Facebook::Account do
 
       expect{ described_class.find!('999') }.to raise_error(ActiveAd::RecordNotFound)
     end
+
+    it 'raises exception when requesting an invalid id' do
+      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_0").with(query:
+        hash_including(access_token: 'secret_access_token')
+      ).to_return(status: 404, body: {
+        error: { message: 'no no no!' }
+      }.to_json)
+
+      expect{ described_class.find!('unrecognizable_123') }.to raise_error(ActiveAd::RecordNotFound)
+    end
   end
 
   describe '.create'
@@ -63,6 +83,10 @@ RSpec.describe ActiveAd::Facebook::Account do
 
     it 'removes prefix "act_" when setting the id' do
       expect(described_class.new(id: 'act_123').id).to eq(123)
+    end
+
+    it 'sets the id to 0 when trying to set an invalid id' do
+      expect(described_class.new(id: 'unrecognizable_123').id).to eq(0)
     end
   end
 
@@ -80,7 +104,7 @@ RSpec.describe ActiveAd::Facebook::Account do
       expect(described_class.new(id: '123').new_record?).to be(false)
     end
 
-    it 'is not a new record on update', skip: true do
+    it 'is not a new record on update' do
       stub_request(:any, /.*/)
 
       account = described_class.new(id: '123')
