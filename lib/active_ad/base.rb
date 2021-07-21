@@ -9,6 +9,7 @@ class ActiveAd::Base
 
   attr_reader :response
 
+  # Overwrite in child classes if the field is actually an :integer or :big_integer and not a :string.
   attribute :id, :string
 
   define_model_callbacks :find, :save, :create, :update, :destroy
