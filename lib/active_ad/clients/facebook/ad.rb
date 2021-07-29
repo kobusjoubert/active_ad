@@ -12,6 +12,8 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   belongs_to :ad_set
   has_many :ad_creatives
 
+  attribute :id, :big_integer
+
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
   # getting back an ID instead of an object.
@@ -38,7 +40,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   attribute :creative
   attribute :effective_status, :string
   attribute :issues_info, array: true
-  attribute :last_updated_by_app_id, :big_integer # TODO: The Facebook type is `id`?
+  attribute :last_updated_by_app_id, :big_integer
   attribute :name, :string
   attribute :preview_shareable_link, :string
   attribute :recommendations, array: true

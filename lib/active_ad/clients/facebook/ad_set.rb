@@ -74,7 +74,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   attribute :recommendations, array: true
   attribute :recurring_budget_semantics, :boolean
   attribute :review_feedback, :string
-  attribute :rf_prediction_id, :big_integer # TODO: The Facebook type is `id`?
+  attribute :rf_prediction_id, :big_integer
   attribute :source_adset
   attribute :source_adset_id, :big_integer
   attribute :start_at, :datetime
