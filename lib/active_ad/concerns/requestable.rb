@@ -19,7 +19,7 @@ module ActiveAd::Requestable
     request_method = options.keys[0]
 
     unless REQUEST_METHODS.include?(request_method)
-      raise ArgumentError, "First key in the arguments hash was #{request_method}, must be one of #{REQUEST_METHODS.join(', ')}"
+      raise ArgumentError, "first key in the arguments hash was #{request_method}, must be one of #{REQUEST_METHODS.join(', ')}"
     end
 
     url = options[request_method]
