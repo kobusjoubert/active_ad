@@ -85,18 +85,11 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   attribute :updated_at, :datetime
   attribute :use_new_app_click, :boolean
 
-  # Use aliases to map external API attributes to the object attributes.
-  #
-  # alias_attribute :platform_attribute, :active_ad_attribute
-  #
-  # Both `effective_status` and `status` are supplied by the external API, so `alias_attribute :effective_status, :status` will cause conflicts.
-
-  validates_presence_of :name, :status, on: :create
-
   # Use validations which will overwrite the parent class implementations.
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
+  validates_presence_of :name, :status, on: :create
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
