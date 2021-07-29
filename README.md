@@ -75,7 +75,7 @@ Delete an account.
 
     account.destroy
 
-Find account campaigns.
+Get an account's campaigns.
 
     campaigns = account.campaigns.where(status: ['ACTIVE']).limit(10)
 
@@ -110,17 +110,129 @@ Delete a campaign.
 
     campaign.destroy
 
-Find account ad groups.
+Get a campaign's ad groups.
 
     ad_sets = campaign.ad_sets.where(status: ['ACTIVE']).limit(10)
 
+Get a campaign's account.
+
+    account = campaign.account
+
 ### Ad Group
 
-Follows the same pattern as campaigns.
+Create an ad group.
+
+    options = {
+      account_id: '123',
+      campaign_id: '456',
+      name: 'Ad Set Name',
+      status: 'PAUSED',
+      bid_amount: 200,
+      daily_budget: 50000,
+      targeting: {
+        device_platforms: ['mobile'],
+        facebook_positions: ['feed'],
+        geo_locations: {
+          countries: ['ZA']
+        },
+        publisher_platforms: ['facebook']
+      }
+    }
+
+    ad_set = ActiveAd::Facebook::AdSet.create!(**options)
+    
+Find ad groups.
+
+    ad_sets = ActiveAd::Facebook::AdSet.where(status: ['PAUSED']).limit(10)
+
+Find a previously created ad group by it's identifier.
+
+    ad_set = ActiveAd::Facebook::AdSet.find('123')
+
+Or if you don't require fresh data and have it already persisted you can just create an instance.
+
+    ad_set = ActiveAd::Facebook::AdSet.new(id: '123')
+
+Save an ad group.
+
+    ad_set.name = 'New Ad Set Name'
+    ad_set.save
+
+Update an ad group.
+
+    ad_set.update(name: 'New Ad Set Name')
+
+Delete an ad group.
+
+    ad_set.destroy
+
+Get an ad group's ads.
+
+    ads = ad_set.ads.where(status: ['ACTIVE']).limit(10)
+
+Get an ad group's campaign.
+
+    campaign = ad_set.campaign
 
 ### Ad
 
-Follows the same pattern as campaigns.
+Create an ad.
+
+    options = {
+      account_id: '123',
+      ad_set_id: '456',
+      creative: {
+        creative_id: '789'
+      },
+      name: 'Ad Name',
+      status: 'PAUSED'
+    }
+
+    ad = ActiveAd::Facebook::Ad.create!(**options)
+
+Find ads.
+
+    ads = ActiveAd::Facebook::Ad.where(status: ['PAUSED']).limit(10)
+
+Find a previously created ad by it's identifier.
+
+    ad = ActiveAd::Facebook::Ad.find('123')
+
+Or if you don't require fresh data and have it already persisted you can just create an instance.
+
+    ad = ActiveAd::Facebook::Ad.new(id: '123')
+
+Save an ad.
+
+    ad.name = 'New Ad Name'
+    ad.save
+
+Update an ad.
+
+    ad.update(name: 'New Ad Name')
+
+Delete an ad.
+
+    ad.destroy
+
+Get an ad's ad creative.
+
+    ad_creative = ad.ad_creative
+
+Get an ad's ad group.
+
+    campaign = ad.ad_set
+
+### Paging
+
+Lists can be paged by using the `next_offset_value` attribute returned from each result set.
+
+    ads = ActiveAd::Facebook::Ad.limit(10)
+    loop do
+      ads.map { |ad| ad.id }
+      break unless (offset = ads.next_offset_value)
+      ads = ads.offset(offset)
+    end
 
 ## Roadmap
 

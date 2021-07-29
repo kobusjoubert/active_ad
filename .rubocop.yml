@@ -247,3 +247,5 @@ Style/StringLiteralsInInterpolation:
 
 Style/WordArray:
   EnforcedStyle: percent
+  Exclude:
+    - spec/**/*.rb

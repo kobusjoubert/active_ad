@@ -5,14 +5,31 @@ class ActiveAd::Relation
   include Enumerable
   include ActiveAd::Requestable
 
-  attr_reader :klass, :kwargs, :strategy
+  attr_reader :klass, :kwargs, :strategy, :limit_value, :offset_value, :next_offset_value
 
   def initialize(klass, **kwargs)
     @klass = klass
     @kwargs = kwargs
-    @limit = Float::INFINITY
+    @limit_value = Float::INFINITY
+    @offset_value = nil
+    @next_offset_value = nil
     @strategy = klass.client.pagination_type # :offset, :cursor, :relay_cursor
     @model_type = klass.to_s.split('::').last.underscore.to_sym # :account, :campaign, :ad_group, :ad
+  end
+
+  # Calling `dup` or `clone` on an object creates a shallow copy of the object. Instance variables are copied, but not the objects they reference. So complex
+  # data structures like arrays, hashes and objects are copied by reference, and will change when being changed from another cloned copy. The `initialize_dup`
+  # and `initialize_clone` ruby methods allow us to deep duplicate any complex data structures that matter.
+  def initialize_dup(_)
+    @kwargs = @kwargs.dup
+    reset
+    super
+  end
+
+  def initialize_clone(_)
+    @kwargs = @kwargs.clone
+    reset
+    super
   end
 
   # Returns an Enumerator.
@@ -43,16 +60,30 @@ class ActiveAd::Relation
         request_kwargs = kwargs.merge(offset)
         ActiveAd.logger.debug("Calling index_request with kwargs: #{request_kwargs}")
         @_index_response = request(klass.index_request(**request_kwargs))
+        @next_offset_value = index_response_offset.values.first
       end
 
       index += 1
       total += 1
-      break if total >= @limit
+      break if total >= limit_value
     end
   end
 
   def limit(value)
-    @limit = value.to_i
+    clone.limit!(value)
+  end
+
+  def limit!(value)
+    @limit_value = value
+    self
+  end
+
+  def offset(value)
+    clone.offset!(value)
+  end
+
+  def offset!(value)
+    @offset_value = value
     self
   end
 
@@ -65,10 +96,14 @@ class ActiveAd::Relation
   #
   # === Example
   #
-  #   campaign.where(account_id: '123, 'status: ['PAUSED'])  # => kwargs: { account_id: '123', status: ['PAUSED'] }
-  #   campaign.where(account_id: '123, 'status: ['DELETED']) # => kwargs: { account_id: '123', status: ['PAUSED', 'DELETED'] }
-  #   campaign.where(account_id: '456, 'status: ['PAUSED'])  # => kwargs: { account_id: '456', status: ['PAUSED', 'DELETED'] }
+  #   scope = campaign.where(account_id: '123', status: ['PAUSED'])  # => kwargs: { account_id: '123', status: ['PAUSED'] }
+  #   scope = scope.where(account_id: '123', status: ['DELETED']) # => kwargs: { account_id: '123', status: ['PAUSED', 'DELETED'] }
+  #   scope = scope.where(account_id: '456', status: ['PAUSED'])  # => kwargs: { account_id: '456', status: ['PAUSED', 'DELETED'] }
   def where(**kwargs)
+    clone.where!(**kwargs)
+  end
+
+  def where!(**kwargs)
     @kwargs.merge!(kwargs) do |_key, old_value, new_value|
       if old_value.is_a?(Array) && new_value.is_a?(Array)
         (old_value + new_value).uniq
@@ -84,10 +119,14 @@ class ActiveAd::Relation
   #
   # === Example
   #
-  #   campaign.where(account_id: '123, 'status: ['PAUSED'])   # => kwargs: { account_id: '123', status: ['PAUSED'] }
-  #   campaign.rewhere(status: ['DELETED'])                   # => kwargs: { account_id: '123', status: ['DELETED'] }
-  #   campaign.rewhere(account_id: '456, 'status: ['PAUSED']) # => kwargs: { account_id: '456', status: ['PAUSED'] }
+  #   scope = campaign.where(account_id: '123', status: ['PAUSED'])   # => kwargs: { account_id: '123', status: ['PAUSED'] }
+  #   scope = scope.rewhere(status: ['DELETED'])                   # => kwargs: { account_id: '123', status: ['DELETED'] }
+  #   scope = scope.rewhere(account_id: '456', status: ['PAUSED']) # => kwargs: { account_id: '456', status: ['PAUSED'] }
   def rewhere(**kwargs)
+    clone.rewhere!(**kwargs)
+  end
+
+  def rewhere!(**kwargs)
     @kwargs.merge!(kwargs)
     self
   end
@@ -128,10 +167,16 @@ class ActiveAd::Relation
   #   }
   # }
 
-  # Invalidate cache when reaching the end of the current list and paginating over to the next set of results. Also enforce a `limit` parameter to the API
+  def reset
+    @_index_response = nil
+    @next_offset_value = nil
+  end
+
+  # Invalidate cache when reaching the end of the current list and paginating over to the next set of results. Add `limit` and `offset` parameters to the API
   # calls when supplied.
   def index_response
-    kwargs.merge!(index_request_limit) unless @limit.infinite?
+    kwargs.merge!(index_request_limit) unless limit_value.infinite?
+    kwargs.merge!(index_request_offset) if offset_value
 
     @_index_response ||= begin
       ActiveAd.logger.debug("Calling index_request with kwargs: #{kwargs}")
@@ -153,6 +198,7 @@ class ActiveAd::Relation
   def index_response_data(index)
     case strategy
     when :cursor
+      @next_offset_value = index_response_offset.values.first
       index_response.body['data'][index]
     when :offset
       # index_response.body['data'][index]
@@ -164,16 +210,25 @@ class ActiveAd::Relation
     when :cursor
       { after: index_response.body.dig('paging', 'cursors', 'after') }
     when :offset
-      # { offset: index_response.body.dig('paging', 'page').to_i * @limit }
+      # { offset: index_response.body.dig('paging', 'page').to_i * limit_value }
     end
   end
 
   def index_request_limit
     case strategy
     when :cursor
-      { limit: @limit }
+      { limit: limit_value }
     when :offset
-      # { offset: @limit }
+      # { offset: limit_value }
+    end
+  end
+
+  def index_request_offset
+    case strategy
+    when :cursor
+      { after: offset_value }
+    when :offset
+      # { offset: offset_value }
     end
   end
 
