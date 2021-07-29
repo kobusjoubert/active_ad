@@ -43,7 +43,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   class << self
     def index_request(**kwargs)
       params = kwargs.dup
-      raise ArgumentError, "Expected :ad_id to be present, got #{params}" unless (ad_id = params.delete(:ad_id))
+      raise ArgumentError, "missing keyword: :ad_id; received #{params}" unless (ad_id = params.delete(:ad_id))
 
       fields = params.delete(:fields) || READ_FIELDS
 
