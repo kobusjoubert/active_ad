@@ -57,8 +57,6 @@ module ActiveAd::Requestable
 
   def request_log_color(request_method)
     case request_method
-    when :get
-      ANSI_COLOR[:blue]
     when :post
       ANSI_COLOR[:green]
     when :put, :patch
