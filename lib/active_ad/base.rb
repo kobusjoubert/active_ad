@@ -102,6 +102,16 @@ class ActiveAd::Base
       ActiveAd::Relation.new(self, **kwargs)
     end
 
+    # Allows us to call `ActiveAd::Base.limit` without creating an `ActiveAd::Base.where` instance first.
+    def limit(value)
+      where.limit(value)
+    end
+
+    # Allows us to call `ActiveAd::Base.offset` without creating an `ActiveAd::Base.where` instance first.
+    def offset(value)
+      where.offset(value)
+    end
+
     # Returns object or nil.
     def find(id, **kwargs)
       object = new(id: id).send(:find, **kwargs)
