@@ -23,7 +23,7 @@ class ActiveAd::Relation
     total = 0
 
     loop do
-      ActiveAd.logger.debug("ActiveAd::Relation each looping at index: #{index}")
+      ActiveAd.logger.debug("ActiveAd::Relation#each looping at index: #{index}")
       raise index_response_error.to_s unless index_response.success?
 
       # It is possible to get back less results than what was requested for.
@@ -41,7 +41,7 @@ class ActiveAd::Relation
         break if offset.values.last.blank?
 
         request_kwargs = kwargs.merge(offset)
-        ActiveAd.logger.info("Calling index_request with kwargs: #{request_kwargs}")
+        ActiveAd.logger.debug("Calling index_request with kwargs: #{request_kwargs}")
         @_index_response = request(klass.index_request(**request_kwargs))
       end
 
@@ -134,7 +134,7 @@ class ActiveAd::Relation
     kwargs.merge!(index_request_limit) unless @limit.infinite?
 
     @_index_response ||= begin
-      ActiveAd.logger.info("Calling index_request with kwargs: #{kwargs}")
+      ActiveAd.logger.debug("Calling index_request with kwargs: #{kwargs}")
       request(klass.index_request(**kwargs))
     end
   end
