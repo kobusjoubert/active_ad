@@ -240,7 +240,7 @@ Lists can be paged by using the `next_offset_value` attribute returned from each
 
 Implement classes which maps to it's external API entities.
 
-`ActiveAd::Facebook::Client` -< `ActiveAd::Facebook::Account` -< `ActiveAd::Facebook::Campaign` -< `ActiveAd::Facebook::AdSet` -< `ActiveAd::Facebook::Ad` -<
+`ActiveAd::Facebook::Client` -< `ActiveAd::Facebook::Account` -< `ActiveAd::Facebook::Campaign` -< `ActiveAd::Facebook::AdSet` -< `ActiveAd::Facebook::Ad` >-
 `ActiveAd::Facebook::AdCreative`
 
 `ActiveAd::Google::Client` -< `ActiveAd::Google::Account` -< `ActiveAd::Google::Campaign` -< `ActiveAd::Google::AdGroup` -< `ActiveAd::Google::Ad`
