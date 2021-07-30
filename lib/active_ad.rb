@@ -5,6 +5,7 @@ require 'active_support/core_ext/module/delegation'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/json'
 require 'active_support/environment_inquirer'
+require 'active_support/parameter_filter'
 require 'active_model'
 require 'faraday'
 require 'faraday_middleware'
@@ -36,6 +37,10 @@ module ActiveAd
 
     def logger
       @_logger ||= Logger.new($stdout)
+    end
+
+    def parameter_filter
+      @_parameter_filter ||= ActiveSupport::ParameterFilter.new([:access_token])
     end
   end
 end

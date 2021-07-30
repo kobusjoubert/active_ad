@@ -6,7 +6,7 @@ module ActiveAd::Requestable
   include ActiveSupport::Concern
 
   REQUEST_METHODS = %i[get head delete trace post put patch].freeze
-  ANSI_COLOR = { red: "\e[31m", green: "\e[32m", yellow: "\e[33m", blue: "\e[34m", magenta: "\e[35m", cyan: "\e[36m" }.freeze
+  ANSI_COLORS = { red: "\e[31m", green: "\e[32m", yellow: "\e[33m", blue: "\e[34m", magenta: "\e[35m", cyan: "\e[36m" }.freeze
 
   # Expect a hash with the first key being one of `REQUEST_METHODS`.
   #
@@ -24,7 +24,10 @@ module ActiveAd::Requestable
 
     url = options[request_method]
 
-    ActiveAd.logger.info("#{ANSI_COLOR[:blue]}  ActiveAd #{request_log_color(request_method)} #{request_method.upcase} #{url} with options: #{options}\e[0m")
+    ActiveAd.logger.info(
+      "#{ANSI_COLORS[:blue]}  ActiveAd #{request_log_color(request_method)} #{request_method.upcase} #{url} with options: " \
+      "#{ActiveAd.parameter_filter.filter(options)}\e[0m"
+    )
 
     ActiveAd.connection.send(request_method, url) do |req|
       req.headers = options[:headers] if options[:headers]
@@ -58,13 +61,13 @@ module ActiveAd::Requestable
   def request_log_color(request_method)
     case request_method
     when :post
-      ANSI_COLOR[:green]
+      ANSI_COLORS[:green]
     when :put, :patch
-      ANSI_COLOR[:yellow]
+      ANSI_COLORS[:yellow]
     when :delete
-      ANSI_COLOR[:red]
+      ANSI_COLORS[:red]
     else
-      ANSI_COLOR[:blue]
+      ANSI_COLORS[:blue]
     end
   end
 end
