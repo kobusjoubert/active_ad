@@ -43,6 +43,21 @@ class ActiveAd::Base
   #   # end
   # end
 
+  # For a campaign class implementation could return something like.
+  #
+  #   [:account]
+  class_attribute :belongs_to_relations, instance_accessor: false, default: []
+
+  # For a campaign class implementation could return something like.
+  #
+  #   [:account_id]
+  class_attribute :belongs_to_relations_ids, instance_accessor: false, default: []
+
+  # For a campaign class implementation could return something like.
+  #
+  #   [:ad_sets, :ads]
+  class_attribute :has_many_relations, instance_accessor: false, default: []
+
   def initialize(**kwargs)
     super
 
@@ -78,6 +93,8 @@ class ActiveAd::Base
 
     # Returns an ActiveAd::Relation object.
     def has_many(model_name)
+      self.has_many_relations += [model_name]
+
       define_method(model_name) do
         "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id)
       end
@@ -85,6 +102,9 @@ class ActiveAd::Base
 
     # Returns an ActiveAd::Base object.
     def belongs_to(model_name)
+      self.belongs_to_relations += [model_name]
+      self.belongs_to_relations_ids += [:"#{model_name}_id"]
+
       define_method(model_name) do
         return instance_variable_get("@#{model_name}") if instance_variable_defined?("@#{model_name}")
 
@@ -114,12 +134,16 @@ class ActiveAd::Base
 
     # Returns object or nil.
     def find(id, **kwargs)
+      return nil unless id.present?
+
       object = new(id: id).send(:find, **kwargs)
       object.response.success? ? object : nil
     end
 
     # Returns object or exception.
     def find!(id, **kwargs)
+      raise ArgumentError, 'missing keyword: :id' unless id.present?
+
       new(id: id).send(:find!, **kwargs)
     end
 
@@ -137,6 +161,16 @@ class ActiveAd::Base
 
     def index_request
       raise NotImplementedError, 'Subclasses must implement a index_request method'
+    end
+
+    # Mutates the params by removing the relational key.
+    def index_request_id_and_key(params)
+      id_keys = params.keys & belongs_to_relations_ids
+      id_key = id_keys.last
+      ActiveAd.logger.warn("Picking relation '#{id_key}' out of #{id_keys}. Might not be what you were looking for! Supply only one key.") if id_keys.size > 1
+      raise ArgumentError, "missing keyword: must include one of #{belongs_to_relations_ids}; received #{params}" unless (id = params.delete(id_key))
+
+      [id, id_key]
     end
   end
 

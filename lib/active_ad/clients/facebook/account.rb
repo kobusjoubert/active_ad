@@ -22,6 +22,8 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   ].freeze
 
   has_many :campaigns
+  has_many :ad_sets
+  has_many :ads
   has_many :ad_creatives
 
   attribute :id, :big_integer

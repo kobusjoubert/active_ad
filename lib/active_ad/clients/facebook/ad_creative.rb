@@ -98,12 +98,13 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   class << self
     def index_request(**kwargs)
       params = kwargs.dup
-      raise ArgumentError, "missing keyword: :account_id; received #{params}" unless (account_id = params.delete(:account_id))
+      id, id_key = index_request_id_and_key(params)
 
+      id = "act_#{id}" if id_key == :account_id
       fields = params.delete(:fields) || READ_FIELDS
 
       {
-        get: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/adcreatives",
+        get: "https://graph.facebook.com/v#{client.api_version}/#{id}/adcreatives",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end
@@ -152,6 +153,6 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
-    [:account_id]
+    %i[account_id]
   end
 end

@@ -15,6 +15,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
     time_based_ad_rotation_id_blocks time_based_ad_rotation_intervals updated_time use_new_app_click
   ].freeze
 
+  belongs_to :account
   belongs_to :campaign
   has_many :ads
 
@@ -99,12 +100,13 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   class << self
     def index_request(**kwargs)
       params = kwargs.dup
-      raise ArgumentError, "missing keyword: :campaign_id; received #{params}" unless (campaign_id = params.delete(:campaign_id))
+      id, id_key = index_request_id_and_key(params)
 
+      id = "act_#{id}" if id_key == :account_id
       fields = params.delete(:fields) || READ_FIELDS
 
       {
-        get: "https://graph.facebook.com/v#{client.api_version}/#{campaign_id}/adsets",
+        get: "https://graph.facebook.com/v#{client.api_version}/#{id}/adsets",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end
@@ -153,6 +155,6 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
-    [:campaign_id]
+    %i[account_id campaign_id]
   end
 end

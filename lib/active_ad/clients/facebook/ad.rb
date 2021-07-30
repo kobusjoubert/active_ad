@@ -9,6 +9,8 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   # account_id ad_review_feedback adlabels adset_id bid_amount campaign_id configured_status conversion_domain created_time effective_status issues_info
   # last_updated_by_app_id name preview_shareable_link recommendations source_ad_id status tracking_specs updated_time
 
+  belongs_to :account
+  belongs_to :campaign
   belongs_to :ad_set
   belongs_to :ad_creative
 
@@ -20,7 +22,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   #
   # alias_attribute :platform_attribute, :active_ad_attribute
   alias_attribute :adlabels, :ad_labels
-  # alias_attribute :adset, :ad_set # Clashes with the `belongs_to :campaign` relationship.
+  # alias_attribute :adset, :ad_set # Clashes with the `belongs_to :ad_set` relationship.
   alias_attribute :adset_id, :ad_set_id
   alias_attribute :created_time, :created_at
   alias_attribute :updated_time, :updated_at
@@ -30,10 +32,10 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   attribute :ad_creative_id, :big_integer
   attribute :ad_review_feedback
   attribute :ad_labels, array: true
-  # attribute :ad_set # Clashes with the `belongs_to :campaign` relationship.
+  # attribute :ad_set # Clashes with the `belongs_to :ad_set` relationship.
   attribute :ad_set_id, :big_integer
   attribute :bid_amount, :integer
-  attribute :campaign
+  # attribute :campaign # Clashes with the `belongs_to :campaign` relationship.
   attribute :campaign_id, :big_integer
   attribute :configured_status, :string
   attribute :conversion_domain, :string
@@ -71,12 +73,13 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   class << self
     def index_request(**kwargs)
       params = kwargs.dup
-      raise ArgumentError, "missing keyword: :ad_set_id; received #{params}" unless (ad_set_id = params.delete(:ad_set_id))
+      id, id_key = index_request_id_and_key(params)
 
+      id = "act_#{id}" if id_key == :account_id
       fields = params.delete(:fields) || READ_FIELDS
 
       {
-        get: "https://graph.facebook.com/v#{client.api_version}/#{ad_set_id}/ads",
+        get: "https://graph.facebook.com/v#{client.api_version}/#{id}/ads",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end
@@ -125,7 +128,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
-    [:adset_id, :creative]
+    %i[account_id campaign_id adset_id creative]
   end
 
   def set_ad_creative_id
