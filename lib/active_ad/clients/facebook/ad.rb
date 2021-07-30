@@ -10,7 +10,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   # last_updated_by_app_id name preview_shareable_link recommendations source_ad_id status tracking_specs updated_time
 
   belongs_to :ad_set
-  has_many :ad_creatives
+  belongs_to :ad_creative
 
   attribute :id, :big_integer
 
@@ -27,6 +27,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
 
   # ActiveAd object attributes.
   attribute :account_id, :big_integer
+  attribute :ad_creative_id, :big_integer
   attribute :ad_review_feedback
   attribute :ad_labels, array: true
   # attribute :ad_set # Clashes with the `belongs_to :campaign` relationship.
@@ -65,6 +66,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   #
   # before_save :do_something
   # after_destroy :do_something
+  after_find :set_ad_creative_id
 
   class << self
     def index_request(**kwargs)
@@ -123,6 +125,10 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
-    [:adset_id]
+    [:adset_id, :creative]
+  end
+
+  def set_ad_creative_id
+    assign_attributes(ad_creative_id: response.body.dig('creative', 'id')) if response.success?
   end
 end
