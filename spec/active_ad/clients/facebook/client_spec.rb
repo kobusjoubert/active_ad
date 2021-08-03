@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ActiveAd::Facebook::Client do
-  let(:api_version) { described_class::API_VERSION }
+  let(:api_version) { described_class.api_version }
   let(:client)      { described_class.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c') }
 
   describe '#platform' do

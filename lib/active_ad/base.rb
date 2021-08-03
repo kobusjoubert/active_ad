@@ -14,7 +14,6 @@ class ActiveAd::Base
 
   define_model_callbacks :find, :save, :create, :update, :destroy
 
-  # delegate :platform, :api_version, :access_token, to: :client # TODO: See if I can get by without these, they feel clunky.
   delegate :entity, :entity_class, :platform, :platform_class, to: :class
 
   # before_save :do_something

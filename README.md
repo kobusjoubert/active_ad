@@ -36,7 +36,7 @@ Create a client.
 
     client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
     client.valid? # => false
-    client.login
+    client.login # => true
     client.access_token # => 'a1b2c3'
     client.valid? # => true
 

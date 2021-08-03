@@ -40,7 +40,7 @@ module ActiveAd
     end
 
     def parameter_filter
-      @_parameter_filter ||= ActiveSupport::ParameterFilter.new([:access_token])
+      @_parameter_filter ||= ActiveSupport::ParameterFilter.new(%i[access_token client_secret fb_exchange_token])
     end
   end
 end

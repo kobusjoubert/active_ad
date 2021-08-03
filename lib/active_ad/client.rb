@@ -1,9 +1,12 @@
 class ActiveAd::Client
   extend ActiveModel::Callbacks
   include ActiveModel::Model
+  include ActiveModel::Attributes
+  include ActiveAd::Requestable
 
-  attr_reader :api_version, :pagination_type, :response
-  attr_accessor :access_token
+  attr_reader :response
+
+  attribute :access_token, :string
 
   validates_presence_of :access_token
 
@@ -11,35 +14,60 @@ class ActiveAd::Client
 
   after_login :set_access_token
 
+  delegate :platform, to: :class
+
+  # Returns the API version.
+  #
+  #   class Client
+  #     api_version '1.0'
+  #   end
+  #
+  #   Client.api_version # => '1.0'
+  class_attribute :api_version, instance_reader: true, instance_writer: false
+
+  # Returns the pagination strategy. Can be one of `:offset`, `:cursor` or `:relay_cursor`.
+  #
+  #   class Client
+  #     pagination_type :cursor
+  #   end
+  #
+  #   Client.pagination_type # => :cursor
+  class_attribute :pagination_type, instance_reader: true, instance_writer: false
+
   class << self
     def platform
       to_s.split('::')[1].underscore
     end
+
+    def api_version(version)
+      self.api_version = version.to_s
+    end
+
+    def pagination_type(type)
+      self.pagination_type = type.to_sym
+    end
   end
 
-  # def initialize(**kwargs)
-  #   super
-  #
-  #   # By including ActiveModel::Model and calling super, attributes will be assigned with `assign_attributes(kwargs)` which calls
-  #   # `public_send("#{key}=", value)` internally.
-  #   #
-  #   # kwargs.each do |key, value|
-  #   #   public_send("#{key}=", value)
-  #   # end
-  # end
-
-  def platform
-    self.class.platform
-  end
-
+  # Returns true or false.
   def login
     @response = nil
 
     run_callbacks(:login) do
-      @response = login_request
+      ActiveAd.logger.debug("Calling login_request with attributes: #{ActiveAd.parameter_filter.filter(attributes)}")
+      @response = request(login_request)
     end
 
-    self
+    response.success?
+  end
+
+  # Returns true or exception.
+  #
+  #   ActiveAd::LoginError ({})
+  def login!
+    login
+    raise ActiveAd::LoginError, response.body unless response.success?
+
+    response.success?
   end
 
   def login_request
