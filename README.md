@@ -52,7 +52,7 @@ Create an account.
 
 Find accounts.
 
-    accounts = ActiveAd::Facebook::Account.where(status: ['ACTIVE']).limit(10)
+    accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE']).limit(10)
 
 Find a previously created account by it's identifier.
 
@@ -87,7 +87,7 @@ Create a campaign.
 
 Find campaigns.
 
-    campaigns = ActiveAd::Facebook::Campaign.where(status: ['ACTIVE']).limit(10)
+    campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE']).limit(10)
 
 Find a previously created campaign by it's identifier.
 
@@ -143,7 +143,7 @@ Create an ad group.
     
 Find ad groups.
 
-    ad_sets = ActiveAd::Facebook::AdSet.where(status: ['PAUSED']).limit(10)
+    ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED']).limit(10)
 
 Find a previously created ad group by it's identifier.
 
@@ -192,7 +192,7 @@ Create an ad.
 
 Find ads.
 
-    ads = ActiveAd::Facebook::Ad.where(status: ['PAUSED']).limit(10)
+    ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED']).limit(10)
 
 Find a previously created ad by it's identifier.
 

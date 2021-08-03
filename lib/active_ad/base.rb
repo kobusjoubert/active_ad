@@ -43,20 +43,44 @@ class ActiveAd::Base
   #   # end
   # end
 
-  # For a campaign class implementation could return something like.
+  # Returns a list of the associations defined by `belongs_to` on a class.
   #
-  #   [:account]
+  #   class Campaign
+  #     belongs_to :account
+  #   end
+  #
+  #   Campaign.belongs_to_relations # => [:account]
   class_attribute :belongs_to_relations, instance_accessor: false, default: []
 
-  # For a campaign class implementation could return something like.
+  # Returns a list of the associations' identification fields defined by `belongs_to` on a class.
   #
-  #   [:account_id]
+  #   class Campaign
+  #     belongs_to :account
+  #   end
+  #
+  #   Campaign.belongs_to_relations_ids # => [:account_id]
   class_attribute :belongs_to_relations_ids, instance_accessor: false, default: []
 
-  # For a campaign class implementation could return something like.
+  # Returns a list of the associations defined by `has_many` on a class.
   #
-  #   [:ad_sets, :ads]
+  #   class Campaign
+  #     has_many :ad_groups
+  #     has_many :ads
+  #   end
+  #
+  #   Campaign.has_many_relations # => [:ad_groups, :ads]
   class_attribute :has_many_relations, instance_accessor: false, default: []
+
+  # Returns a list of the associations' identification fields defined by `has_many` on a class.
+  #
+  #   class Campaign
+  #     has_many :ad_groups
+  #     has_many :ads
+  #   end
+  #
+  #   AdGroup.has_many_relations_ids # => [:campaign_id]
+  #   Ad.has_many_relations_ids      # => [:campaign_id]
+  class_attribute :has_many_relations_ids, instance_accessor: false, default: []
 
   def initialize(**kwargs)
     super
@@ -94,6 +118,7 @@ class ActiveAd::Base
     # Returns an ActiveAd::Relation object.
     def has_many(model_name)
       self.has_many_relations += [model_name]
+      "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.has_many_relations_ids += [:"#{entity}_id"]
 
       define_method(model_name) do
         "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id)
@@ -163,12 +188,13 @@ class ActiveAd::Base
       raise NotImplementedError, 'Subclasses must implement a index_request method'
     end
 
-    # Mutates the params by removing the relational key.
+    # Mutates the params by removing the relational key injected by the `has_many` method.
     def index_request_id_and_key(params)
-      id_keys = params.keys & belongs_to_relations_ids
+      id_keys = params.keys & has_many_relations_ids
       id_key = id_keys.last
-      ActiveAd.logger.warn("Picking relation '#{id_key}' out of #{id_keys}. Might not be what you were looking for! Supply only one key.") if id_keys.size > 1
-      raise ArgumentError, "missing keyword: must include one of #{belongs_to_relations_ids}; received #{params}" unless (id = params.delete(id_key))
+
+      ActiveAd.logger.warn("Picking relation '#{id_key}' out of #{id_keys}. Might not be what you were looking for, provide only one key.") if id_keys.size > 1
+      raise ArgumentError, "missing keyword: must include one of #{has_many_relations_ids}; received #{params}" unless (id = params.delete(id_key))
 
       [id, id_key]
     end
