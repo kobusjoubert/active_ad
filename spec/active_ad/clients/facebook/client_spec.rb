@@ -10,16 +10,24 @@ RSpec.describe ActiveAd::Facebook::Client do
     end
   end
 
-  describe '#login' do
-    it 'is valid when an access_token is present' do
+  describe '#api_version' do
+    it 'returns the api version' do
+      expect(client.api_version).to eq('11.0')
+    end
+  end
+
+  describe '#valid?' do
+    it 'returns true when an access_token is present' do
       expect(client.valid?).to be(true)
     end
 
-    it 'is invalid when there is no access_token present' do
+    it 'returns false when there is no access_token present' do
       client.access_token = nil
       expect(client.valid?).to be(false)
     end
+  end
 
+  describe '#login' do
     it 'retrieves and sets a long lived access_token in exchange for a short lived access_token' do
       stub_request(:get, "https://graph.facebook.com/v#{api_version}/oauth/access_token").with(query: {
         client_id: 'client_123', client_secret: '1a2b3c', grant_type: 'fb_exchange_token', fb_exchange_token: 'secret_short_access_token'
@@ -31,6 +39,19 @@ RSpec.describe ActiveAd::Facebook::Client do
       client.short_lived_access_token = 'secret_short_access_token'
       client.login
       expect(client.access_token).to eq('secret_access_token')
+    end
+  end
+
+  describe '#refresh_token' do
+    it 'retrieves and sets a refreshed long lived access_token in exchange for the current long lived access_token' do
+      stub_request(:get, "https://graph.facebook.com/v#{api_version}/oauth/access_token").with(query: {
+        client_id: 'client_123', client_secret: '1a2b3c', grant_type: 'fb_exchange_token', fb_exchange_token: 'secret_access_token'
+      }).to_return(status: 200, body: {
+        access_token: 'refreshed_secret_access_token'
+      }.to_json)
+
+      client.refresh_token
+      expect(client.access_token).to eq('refreshed_secret_access_token')
     end
   end
 end

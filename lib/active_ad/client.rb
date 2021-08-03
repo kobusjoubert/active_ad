@@ -10,9 +10,10 @@ class ActiveAd::Client
 
   validates_presence_of :access_token
 
-  define_model_callbacks :login
+  define_model_callbacks :login, :refresh_token
 
   after_login :set_access_token
+  after_refresh_token :set_access_token
 
   delegate :platform, to: :class
 
@@ -70,8 +71,34 @@ class ActiveAd::Client
     response.success?
   end
 
+  # Returns true or false.
+  def refresh_token
+    @response = nil
+
+    run_callbacks(:refresh_token) do
+      ActiveAd.logger.debug("Calling refresh_token_request with attributes: #{ActiveAd.parameter_filter.filter(attributes)}")
+      @response = request(refresh_token_request)
+    end
+
+    response.success?
+  end
+
+  # Returns true or exception.
+  #
+  #   ActiveAd::LoginError ({})
+  def refresh_token!
+    refresh_token
+    raise ActiveAd::LoginError, response.body unless response.success?
+
+    response.success?
+  end
+
   def login_request
     raise NotImplementedError, 'Subclasses must implement a login_request method'
+  end
+
+  def refresh_token_request
+    raise NotImplementedError, 'Subclasses must implement a refresh_request method'
   end
 
   private

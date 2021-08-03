@@ -21,6 +21,18 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
     }
   end
 
+  def refresh_token_request
+    {
+      get: "https://graph.facebook.com/v#{api_version}/oauth/access_token",
+      params: {
+        client_id: client_id,
+        client_secret: client_secret,
+        grant_type: 'fb_exchange_token',
+        fb_exchange_token: access_token
+      }
+    }
+  end
+
   private
 
   def set_access_token

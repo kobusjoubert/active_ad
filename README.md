@@ -32,17 +32,24 @@ Using Facebook's implementation to demonstrate usage. All of the platforms follo
 
 ### Client
 
-Create a client.
+Create a client and exchange your short lived access token for a long lived access token.
 
     client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
     client.valid? # => false
     client.login # => true
-    client.access_token # => 'a1b2c3'
+    client.access_token # => 'd4e5f6'
     client.valid? # => true
 
 Assign the client connection.
 
     ActiveAd::Facebook::Connection.client = client
+
+Every day or so you should refresh your current access token.
+
+    client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
+    client.refresh_token # => true
+    client.access_token # => 'g7h8i9'
+    client.valid? # => true
 
 ### Account
 
