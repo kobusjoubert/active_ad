@@ -21,6 +21,14 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     tos_accepted user_tasks user_tos_accepted
   ].freeze
 
+  ISO_4217_CURRENCY_CODES = %w[
+    AED AFN ALL AMD ANG AOA ARS AUD AWG AZN BAM BBD BDT BGN BHD BIF BMD BND BOB BOV BRL BSD BTN BWP BYN BZD CAD CDF CHE CHF CHW CLF CLP CNY COP COU CRC CUC CUP
+    CVE CZK DJF DKK DOP DZD EGP ERN ETB EUR FJD FKP GBP GEL GHS GIP GMD GNF GTQ GYD HKD HNL HRK HTG HUF IDR ILS INR IQD IRR ISK JMD JOD JPY KES KGS KHR KMF KPW
+    KRW KWD KYD KZT LAK LBP LKR LRD LSL LYD MAD MDL MGA MKD MMK MNT MOP MRU MUR MVR MWK MXN MXV MYR MZN NAD NGN NIO NOK NPR NZD OMR PAB PEN PGK PHP PKR PLN PYG
+    QAR RON RSD RUB RWF SAR SBD SCR SDG SEK SGD SHP SLL SOS SRD SSP STN SVC SYP SZL THB TJS TMT TND TOP TRY TTD TWD TZS UAH UGX USD USN UYI UYU UYW UZS VES VND
+    VUV WST XAF XAG XAU XBA XBB XBC XBD XCD XDR XOF XPD XPF XPT XSU XTS XUA XXX YER ZAR ZMW ZWL
+  ].freeze
+
   has_many :campaigns
   has_many :ad_sets
   has_many :ads
@@ -51,6 +59,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :business
   attribute :business_city, :string
   attribute :business_country_code, :string
+  attribute :business_id, :big_integer
   attribute :business_info
   attribute :business_name, :string
   attribute :business_state, :string
@@ -60,10 +69,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :can_create_brand_lift_study, :boolean
   attribute :capabilities, array: true
   attribute :created_at, :datetime
-  attribute :currency, :string
+  attribute :currency, :string # default: 'USD'
   attribute :direct_deals_tos_accepted, :boolean
   attribute :disable_reason, :integer
-  attribute :end_advertiser_id, :big_integer
+  attribute :end_advertiser_id, :big_integer # default: 'NONE'
   attribute :end_advertiser_name, :string
   attribute :extended_credit_invoice_group
   attribute :failed_delivery_checks, array: true
@@ -82,13 +91,13 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :is_prepay_account, :boolean
   attribute :is_tax_id_required, :boolean
   attribute :line_numbers, array: true
-  attribute :media_agency_id, :big_integer
+  attribute :media_agency_id, :big_integer # default: 'NONE'
   attribute :min_campaign_group_spend_cap, :big_integer
   attribute :min_daily_budget, :integer
   attribute :name, :string
   attribute :offsite_pixels_tos_accepted, :boolean
   attribute :owner_id, :big_integer
-  attribute :partner_id, :big_integer
+  attribute :partner_id, :big_integer # default: 'NONE'
   attribute :rf_spec
   attribute :show_checkout_experience, :boolean
   attribute :spend_cap, :big_integer
@@ -97,7 +106,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :tax_id, :string
   attribute :tax_id_status, :integer
   attribute :tax_id_type, :string
-  attribute :timezone_id, :integer
+  attribute :timezone_id, :integer # default: 474
   attribute :timezone_name, :string
   attribute :timezone_offset_hours_utc, :float
   attribute :tos_accepted
@@ -109,11 +118,15 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # validates_presence_of :title
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
+  validates_presence_of :name, :currency, :timezone_id, :end_advertiser_id, :media_agency_id, :partner_id, :business_id, on: :create
+
+  validates_inclusion_of :currency, in: ISO_4217_CURRENCY_CODES, allow_blank: true, message: validates_inclusion_of_message(ISO_4217_CURRENCY_CODES)
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something
   # after_destroy :do_something
+  after_find :set_business_id
 
   def read_request(**kwargs)
     params = kwargs.dup
@@ -133,22 +146,12 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # end_advertiser: The entity the ads will target.
   # media_agency: The agency, this could be your own business.
   # partner: This could be Facebook Marketing Partner, if there is one.
-  #
-  # # TODO: Make more elegant.
-  # def create_request
-  #   {
-  #     post: "https://graph.facebook.com/v#{client.api_version}/#{business_id}/adaccount",
-  #     body: {
-  #       access_token: client.access_token,
-  #       name: name,
-  #       timezone_id: timezone_id || 474,
-  #       currency: (currency.presence || 'USD').to_s,
-  #       end_advertiser: (end_advertiser_id.presence || 'NONE').to_s,
-  #       media_agency: (media_agency_id.presence || end_advertiser_id.presence || 'NONE').to_s,
-  #       partner: (partner_id.presence || 'NONE').to_s
-  #     }
-  #   }
-  # end
+  def create_request
+    {
+      post: "https://graph.facebook.com/v#{client.api_version}/#{business_id}/adaccount",
+      body: create_request_attributes.merge(access_token: client.access_token)
+    }
+  end
 
   def update_request
     {
@@ -171,7 +174,11 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
-    []
+    %i[business]
+  end
+
+  def set_business_id
+    assign_attributes(business_id: response.body.dig('business', 'id')) if response.success?
   end
 
   # Remove 'act_' prefixes from the 'id' attribute.
