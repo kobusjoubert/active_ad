@@ -3,7 +3,7 @@
 #
 # Logging colors: https://misc.flogisoft.com/bash/tip_colors_and_formatting
 module ActiveAd::Requestable
-  include ActiveSupport::Concern
+  extend ActiveSupport::Concern
 
   REQUEST_METHODS = %i[get head delete trace post put patch].freeze
   ANSI_COLORS = { red: "\e[31m", green: "\e[32m", yellow: "\e[33m", blue: "\e[34m", magenta: "\e[35m", cyan: "\e[36m" }.freeze
