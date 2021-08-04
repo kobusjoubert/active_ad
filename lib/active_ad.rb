@@ -44,7 +44,7 @@ module ActiveAd
     end
   end
 end
-[/\Apin\z/i, /\Apin_/i]
+
 ActiveAd.logger.level = ActiveAd.env.development? ? Logger::DEBUG : Logger::INFO
 
 require 'zeitwerk'

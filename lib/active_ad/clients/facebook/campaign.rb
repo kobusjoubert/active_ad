@@ -18,6 +18,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   #
   # alias_attribute :platform_attribute, :active_ad_attribute
   alias_attribute :adlabels, :ad_labels
+  alias_attribute :adset_bid_amounts, :ad_set_bid_amounts
+  alias_attribute :adset_budgets, :ad_set_budgets
   alias_attribute :created_time, :created_at
   alias_attribute :updated_time, :updated_at
   alias_attribute :last_budget_toggling_time, :last_budget_toggling_at
@@ -27,6 +29,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   # ActiveAd object attributes.
   attribute :account_id, :big_integer
   attribute :ad_strategy_id, :big_integer
+  attribute :ad_set_budgets, array: true
+  attribute :ad_set_bid_amounts
   attribute :ad_labels, array: true
   attribute :bid_strategy, :string
   attribute :boosted_object_id, :big_integer
@@ -34,13 +38,18 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :budget_rebalance_flag, :boolean
   attribute :budget_remaining, :big_integer
   attribute :buying_type, :string
+  attribute :campaign_optimization_type, :string
   attribute :can_create_brand_lift_study, :boolean
   attribute :can_use_spend_cap, :boolean
   attribute :configured_status, :string
   attribute :created_at, :datetime
   attribute :daily_budget, :big_integer
+  attribute :deep_copy, :boolean
   attribute :effective_status, :string
+  attribute :execution_options, array: true
   attribute :is_skadnetwork_attribution, :boolean
+  attribute :is_using_l3_schedule, :boolean
+  attribute :iterative_split_test_configs, array: true
   attribute :issues_info, array: true
   attribute :last_budget_toggling_at, :datetime
   attribute :lifetime_budget, :big_integer
@@ -49,6 +58,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :pacing_type, array: true
   attribute :promoted_object
   attribute :recommendations, array: true
+  attribute :rename_options
   attribute :smart_promotion_type, :string
   attribute :source_campaign
   attribute :source_campaign_id, :big_integer
@@ -58,16 +68,17 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   attribute :spend_cap, :big_integer
   attribute :start_at, :datetime
   attribute :status, :string # default: 'PAUSED'
+  attribute :status_option, :string
   attribute :stop_at, :datetime
   attribute :topline_id, :integer
   attribute :updated_at, :datetime
+  attribute :upstream_events
 
   # Use validations which will overwrite the parent class implementations.
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
-  validates_presence_of :name, :status, :objective, on: :create
-  validates_presence_of :special_ad_categories, allow_blank: true, on: :create
+  validates_presence_of :name, :status, :objective, :special_ad_categories, on: :create
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
