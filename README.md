@@ -65,9 +65,13 @@ Find a previously created account by it's identifier.
 
     account = ActiveAd::Facebook::Account.find('123')
 
-Or if you don't require fresh data and have it already persisted you can just create an instance.
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    account = ActiveAd::Facebook::Account.new(id: '123')
+    account = ActiveAd::Facebook::Account.new(stale: true, id: '123', name: 'Account Name')
+
+To refresh the data.
+
+    account.reload
 
 Save an account.
 
@@ -100,9 +104,13 @@ Find a previously created campaign by it's identifier.
 
     campaign = ActiveAd::Facebook::Campaign.find('123')
 
-Or if you don't require fresh data and have it already persisted you can just create an instance.
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    campaign = ActiveAd::Facebook::Campaign.new(id: '123')
+    campaign = ActiveAd::Facebook::Campaign.new(stale: true, id: '123', name: 'Campaign Name')
+
+To refresh the data.
+
+    campaign.reload
 
 Save a campaign.
 
@@ -156,9 +164,13 @@ Find a previously created ad group by it's identifier.
 
     ad_set = ActiveAd::Facebook::AdSet.find('123')
 
-Or if you don't require fresh data and have it already persisted you can just create an instance.
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    ad_set = ActiveAd::Facebook::AdSet.new(id: '123')
+    ad_set = ActiveAd::Facebook::AdSet.new(stale: true, id: '123', name: 'Ad Set Name')
+
+To refresh the data.
+
+    ad_set.reload
 
 Save an ad group.
 
@@ -205,9 +217,13 @@ Find a previously created ad by it's identifier.
 
     ad = ActiveAd::Facebook::Ad.find('123')
 
-Or if you don't require fresh data and have it already persisted you can just create an instance.
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    ad = ActiveAd::Facebook::Ad.new(id: '123')
+    ad = ActiveAd::Facebook::Ad.new(stale: true, id: '123', name: 'Ad Name')
+
+To refresh the data.
+
+  ad.reload
 
 Save an ad.
 

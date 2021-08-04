@@ -5,7 +5,7 @@ class ActiveAd::Base
   include ActiveModel::Dirty
   include ActiveAd::Requestable
 
-  RESERVED_ATTRIBUTES = %w[validate].freeze
+  RESERVED_ATTRIBUTES = %i[validate stale].freeze
 
   attr_reader :response
 
@@ -84,8 +84,9 @@ class ActiveAd::Base
   def initialize(**kwargs)
     super
 
-    # Allows us to initialize a known record without needing to call `.find('id')` first.
+    # Allows us to instantiate a known record using `.new(id: 'id', stale: true)` without needing a network request when calling `.find('id')`.
     @new_record = kwargs[:id].blank?
+    clear_changes_information if kwargs[:stale].present?
   end
 
   class << self
@@ -312,7 +313,7 @@ class ActiveAd::Base
     return if attributes.nil?
 
     attributes.each do |attribute, value|
-      next if RESERVED_ATTRIBUTES.include?(attribute) # Skip reserved attributes.
+      next if RESERVED_ATTRIBUTES.include?(attribute.to_sym) # Skip reserved attributes.
 
       attributes = { attribute => value }
       ActiveAd.logger.debug("Assigning attribute with value #{attributes}")

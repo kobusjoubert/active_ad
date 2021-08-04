@@ -6,7 +6,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     ActiveAd::Facebook::Connection.client = client
   end
 
-  let(:campaign) { described_class.new(id: '123', account_id: '123') }
+  let(:campaign) { described_class.new(id: '123', stale: true) }
   let(:client)   { ActiveAd::Base.client }
 
   describe '.find' do
@@ -142,7 +142,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
       expect(described_class.new.valid?).to be false
     end
 
-    it 'returns true when no name is present when updating a record' do
+    it 'returns true when no name is present when updating an existing record' do
       campaign.name = nil
       expect(campaign.valid?).to be true
     end
@@ -153,9 +153,10 @@ RSpec.describe ActiveAd::Facebook::Campaign do
       stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: '123'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
+      campaign.name = 'Campaign Name'
       expect(campaign.save(validate: false)).to be true
     end
 
@@ -166,6 +167,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
         error: { message: 'no no no!' }
       }.to_json)
 
+      campaign.name = 'Campaign Name'
       expect(campaign.save(validate: false)).to be false
     end
   end
@@ -175,9 +177,10 @@ RSpec.describe ActiveAd::Facebook::Campaign do
       stub_request(:post, "https://graph.facebook.com/v#{client.api_version}/123").with(body:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
-        id: '123'
+        id: '123', name: 'Campaign Name'
       }.to_json)
 
+      campaign.name = 'Campaign Name'
       expect(campaign.save!(validate: false)).to be true
     end
 
@@ -188,6 +191,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
         error: { message: 'no no no!' }
       }.to_json)
 
+      campaign.name = 'Campaign Name'
       expect { campaign.save!(validate: false) }.to raise_error(ActiveAd::RecordInvalid)
     end
   end
@@ -288,6 +292,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
         id: '123', name: 'Account Name'
       }.to_json)
 
+      campaign.account_id = '123'
       expect(campaign.account.class).to be(ActiveAd::Facebook::Account)
     end
 
@@ -298,6 +303,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
         id: '123', name: 'Account Name'
       }.to_json)
 
+      campaign.account_id = '123'
       expect(campaign.account.name).to eq('Account Name')
     end
   end

@@ -96,9 +96,9 @@ class ActiveAd::Relation
   #
   # === Example
   #
-  #   scope = campaign.where(account_id: '123', status: ['PAUSED'])  # => kwargs: { account_id: '123', status: ['PAUSED'] }
-  #   scope = scope.where(account_id: '123', status: ['DELETED']) # => kwargs: { account_id: '123', status: ['PAUSED', 'DELETED'] }
-  #   scope = scope.where(account_id: '456', status: ['PAUSED'])  # => kwargs: { account_id: '456', status: ['PAUSED', 'DELETED'] }
+  #   scope = campaign.where(account_id: '123', status: ['PAUSED']) # => kwargs: { account_id: '123', status: ['PAUSED'] }
+  #   scope = scope.where(account_id: '123', status: ['DELETED'])   # => kwargs: { account_id: '123', status: ['PAUSED', 'DELETED'] }
+  #   scope = scope.where(account_id: '456', status: ['PAUSED'])    # => kwargs: { account_id: '456', status: ['PAUSED', 'DELETED'] }
   def where(**kwargs)
     clone.where!(**kwargs)
   end
@@ -119,9 +119,9 @@ class ActiveAd::Relation
   #
   # === Example
   #
-  #   scope = campaign.where(account_id: '123', status: ['PAUSED'])   # => kwargs: { account_id: '123', status: ['PAUSED'] }
-  #   scope = scope.rewhere(status: ['DELETED'])                   # => kwargs: { account_id: '123', status: ['DELETED'] }
-  #   scope = scope.rewhere(account_id: '456', status: ['PAUSED']) # => kwargs: { account_id: '456', status: ['PAUSED'] }
+  #   scope = campaign.where(account_id: '123', status: ['PAUSED']) # => kwargs: { account_id: '123', status: ['PAUSED'] }
+  #   scope = scope.rewhere(status: ['DELETED'])                    # => kwargs: { account_id: '123', status: ['DELETED'] }
+  #   scope = scope.rewhere(account_id: '456', status: ['PAUSED'])  # => kwargs: { account_id: '456', status: ['PAUSED'] }
   def rewhere(**kwargs)
     clone.rewhere!(**kwargs)
   end
