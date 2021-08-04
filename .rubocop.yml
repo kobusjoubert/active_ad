@@ -227,6 +227,10 @@ Style/ExpandPathArguments:
   Exclude:
     - spec/rails_helper.rb
 
+Style/FormatStringToken:
+  Exclude:
+    - lib/active_ad/concerns/validationable.rb
+
 Style/FrozenStringLiteralComment:
   EnforcedStyle: never
 

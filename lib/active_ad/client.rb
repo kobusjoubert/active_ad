@@ -3,6 +3,7 @@ class ActiveAd::Client
   include ActiveModel::Model
   include ActiveModel::Attributes
   include ActiveAd::Requestable
+  include ActiveAd::Validationable
 
   attr_reader :response
 

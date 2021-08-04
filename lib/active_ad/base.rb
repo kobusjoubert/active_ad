@@ -4,6 +4,7 @@ class ActiveAd::Base
   include ActiveModel::Attributes
   include ActiveModel::Dirty
   include ActiveAd::Requestable
+  include ActiveAd::Validationable
 
   RESERVED_ATTRIBUTES = %i[validate stale].freeze
 
