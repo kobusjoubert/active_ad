@@ -100,7 +100,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
                                                       allow_blank: true,
                                                       message: validates_inclusion_of_message(CAMPAIGN_OPTIMIZATION_TYPES)
   validates_inclusion_of :objective, in: OBJECTIVES, allow_blank: true, message: validates_inclusion_of_message(OBJECTIVES)
-  validates_inclusion_of :status, in: STATUS, on: :create, message: validates_inclusion_of_message(STATUS)
+  validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
   validates_inclusion_of :special_ad_categories, in: SPECIAL_AD_CATEGORIES, on: :create, message: validates_inclusion_of_message(SPECIAL_AD_CATEGORIES)
   validates_inclusion_of :special_ad_category, in: SPECIAL_AD_CATEGORIES,
                                                on: :update,
