@@ -15,6 +15,22 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
     time_based_ad_rotation_id_blocks time_based_ad_rotation_intervals updated_time use_new_app_click
   ].freeze
 
+  BID_STRATEGIES = %w[LOWEST_COST_WITHOUT_CAP LOWEST_COST_WITH_BID_CAP COST_CAP].freeze
+  BILLING_EVENTS = %w[APP_INSTALLS CLICKS IMPRESSIONS LINK_CLICKS NONE OFFER_CLAIMS PAGE_LIKES POST_ENGAGEMENT THRUPLAY PURCHASE LISTING_INTERACTION].freeze
+  DESTINATION_TYPES = %w[UNDEFINED WEBSITE APP MESSENGER APPLINKS_AUTOMATIC FACEBOOK].freeze
+  MULTI_OPTIMIZATION_GOAL_WEIGHTS = %w[UNDEFINED BALANCED PREFER_INSTALL PREFER_EVENT].freeze
+  OPTIMIZATION_GOALS = %w[
+    NONE APP_INSTALLS BRAND_AWARENESS AD_RECALL_LIFT CLICKS ENGAGED_USERS EVENT_RESPONSES IMPRESSIONS LEAD_GENERATION QUALITY_LEAD LINK_CLICKS OFFER_CLAIMS
+    OFFSITE_CONVERSIONS PAGE_ENGAGEMENT PAGE_LIKES POST_ENGAGEMENT QUALITY_CALL REACH SOCIAL_IMPRESSIONS APP_DOWNLOADS TWO_SECOND_CONTINUOUS_VIDEO_VIEWS
+    LANDING_PAGE_VIEWS VISIT_INSTAGRAM_PROFILE VALUE THRUPLAY REPLIES DERIVED_EVENTS
+  ].freeze
+  OPTIMIZATION_SUB_EVENTS = %w[
+    NONE VIDEO_SOUND_ON TRIP_CONSIDERATION TRAVEL_INTENT TRAVEL_INTENT_NO_DESTINATION_INTENT TRAVEL_INTENT_BUCKET_01 TRAVEL_INTENT_BUCKET_02
+    TRAVEL_INTENT_BUCKET_03 TRAVEL_INTENT_BUCKET_04 TRAVEL_INTENT_BUCKET_05
+  ].freeze
+  STATUS = %w[ACTIVE PAUSED DELETED ARCHIVED].freeze
+  TUNE_FOR_CATEGORIES = %w[NONE EMPLOYMENT HOUSING CREDIT ISSUES_ELECTIONS_POLITICS].freeze
+
   belongs_to :account
   belongs_to :campaign
   has_many :ads
@@ -47,15 +63,18 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   attribute :budget_remaining, :big_integer
   # attribute :campaign # Clashes with the `belongs_to :campaign` relationship.
   attribute :campaign_id, :big_integer
+  attribute :campaign_spec
   attribute :configured_status, :string
   attribute :contextual_bundling_spec
   attribute :created_at, :datetime
   attribute :creative_sequence, array: true
   attribute :daily_budget, :big_integer
+  attribute :daily_imps, :big_integer
   attribute :daily_min_spend_target, :big_integer
   attribute :daily_spend_cap, :big_integer
   attribute :destination_type, :string
   attribute :effective_status, :string
+  attribute :execution_options, array: true
   attribute :end_at, :datetime
   attribute :frequency_control_specs, array: true
   attribute :instagram_actor_id, :big_integer
@@ -83,6 +102,9 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   attribute :targeting
   attribute :time_based_ad_rotation_id_blocks, array: true
   attribute :time_based_ad_rotation_intervals, array: true
+  attribute :time_start, :datetime
+  attribute :time_stop, :datetime
+  attribute :tune_for_category, :string
   attribute :updated_at, :datetime
   attribute :use_new_app_click, :boolean
 
@@ -91,6 +113,19 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
   validates_presence_of :name, :status, on: :create
+
+  validates_inclusion_of :bid_strategy, in: BID_STRATEGIES, allow_blank: true, message: validates_inclusion_of_message(BID_STRATEGIES)
+  validates_inclusion_of :billing_event, in: BILLING_EVENTS, allow_blank: true, message: validates_inclusion_of_message(BILLING_EVENTS)
+  validates_inclusion_of :destination_type, in: DESTINATION_TYPES, allow_blank: true, message: validates_inclusion_of_message(DESTINATION_TYPES)
+  validates_inclusion_of :multi_optimization_goal_weight, in: MULTI_OPTIMIZATION_GOAL_WEIGHTS,
+                                                          allow_blank: true,
+                                                          message: validates_inclusion_of_message(MULTI_OPTIMIZATION_GOAL_WEIGHTS)
+  validates_inclusion_of :optimization_goal, in: OPTIMIZATION_GOALS, allow_blank: true, message: validates_inclusion_of_message(OPTIMIZATION_GOALS)
+  validates_inclusion_of :optimization_sub_event, in: OPTIMIZATION_SUB_EVENTS,
+                                                  allow_blank: true,
+                                                  message: validates_inclusion_of_message(OPTIMIZATION_SUB_EVENTS)
+  validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
+  validates_inclusion_of :tune_for_category, in: TUNE_FOR_CATEGORIES, allow_blank: true, message: validates_inclusion_of_message(TUNE_FOR_CATEGORIES)
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
