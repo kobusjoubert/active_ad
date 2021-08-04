@@ -16,6 +16,8 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
     status template_url template_url_spec thumbnail_url title url_tags use_page_actor_override video_id
   ].freeze
 
+  STATUS = %w[ACTIVE IN_PROCESS WITH_ISSUES DELETED].freeze
+
   belongs_to :account
 
   attribute :id, :big_integer
@@ -89,6 +91,8 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
   validates_presence_of :name, on: :create
+
+  validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
