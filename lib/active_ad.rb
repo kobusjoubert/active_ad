@@ -40,11 +40,11 @@ module ActiveAd
     end
 
     def parameter_filter
-      @_parameter_filter ||= ActiveSupport::ParameterFilter.new(%i[access_token client_secret fb_exchange_token])
+      @_parameter_filter ||= ActiveSupport::ParameterFilter.new([/_secret/i, /_token/i])
     end
   end
 end
-
+[/\Apin\z/i, /\Apin_/i]
 ActiveAd.logger.level = ActiveAd.env.development? ? Logger::DEBUG : Logger::INFO
 
 require 'zeitwerk'
