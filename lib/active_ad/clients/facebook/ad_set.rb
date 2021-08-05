@@ -35,8 +35,6 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   belongs_to :campaign
   has_many :ads
 
-  attribute :id, :big_integer
-
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
   # getting back an ID instead of an object.
@@ -49,6 +47,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   alias_attribute :updated_time, :updated_at
 
   # ActiveAd object attributes.
+  attribute :id, :big_integer
   attribute :account_id, :big_integer
   attribute :ad_labels, array: true
   attribute :adset_schedule, array: true

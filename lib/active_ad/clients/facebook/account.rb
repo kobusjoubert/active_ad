@@ -34,8 +34,6 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   has_many :ads
   has_many :ad_creatives
 
-  attribute :id, :big_integer
-
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
   # getting back an ID instead of an object.
@@ -51,6 +49,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   alias_attribute :partner, :partner_id
 
   # ActiveAd object attributes.
+  attribute :id, :big_integer
   attribute :ad_account_promotable_objects
   attribute :age, :float
   attribute :agency_client_declaration
@@ -127,6 +126,12 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
   after_find :set_business_id
+
+  class << self
+    def index_request(**kwargs)
+      raise NotImplementedError
+    end
+  end
 
   def read_request(**kwargs)
     params = kwargs.dup

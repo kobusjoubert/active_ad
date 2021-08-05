@@ -2,10 +2,6 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   # Requesting the following fields causes status `400` error with messages.
   #
   #   'referral_id' => "(#3) User must be on allowlist".
-  #
-  # Attributes that clashes with the relational methods.
-  #
-  #   ''
   READ_FIELDS = %i[
     id account_id actor_id adlabels applink_treatment asset_feed_spec authorization_category body branded_content_sponsor_page_id bundle_folder_id
     call_to_action_type categorization_criteria category_media_source destination_set_id dynamic_ad_voice effective_authorization_category
@@ -20,8 +16,6 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   belongs_to :account
 
-  attribute :id, :big_integer
-
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
   # getting back an ID instead of an object.
@@ -30,6 +24,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   alias_attribute :adlabels, :ad_labels
 
   # ActiveAd object attributes.
+  attribute :id, :big_integer
   attribute :account_id, :big_integer
   attribute :actor_id, :big_integer
   attribute :ad_labels, array: true
