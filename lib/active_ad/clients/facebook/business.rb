@@ -76,7 +76,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/#{id}",
+      get: "#{client.base_url}/#{id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
@@ -85,14 +85,14 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     ActiveAd.logger.warn("Calling untested endpoint #{self.class}##{__method__}")
 
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{user_id}/businesses",
+      post: "#{client.base_url}/#{user_id}/businesses",
       body: create_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def update_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{id}",
+      post: "#{client.base_url}/#{id}",
       body: update_request_attributes.merge(access_token: client.access_token)
     }
   end
@@ -118,7 +118,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     end
 
     {
-      delete: "https://graph.facebook.com/v#{client.api_version}/#{id}/#{UNLINK_REQUEST_MAPPING[key][:path]}",
+      delete: "#{client.base_url}/#{id}/#{UNLINK_REQUEST_MAPPING[key][:path]}",
       params: params.merge(access_token: client.access_token)
     }
   end

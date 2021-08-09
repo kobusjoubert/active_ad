@@ -27,6 +27,15 @@ class ActiveAd::Client
   #   Client.api_version # => '1.0'
   class_attribute :api_version, instance_reader: true, instance_writer: false
 
+  # Returns the API version.
+  #
+  #   class Client
+  #     base_url 'https://platform/v1.0'
+  #   end
+  #
+  #   Client.base_url # => 'https://platform/v1.0'
+  class_attribute :base_url, instance_reader: true, instance_writer: false
+
   # Returns the pagination strategy. Can be one of `:offset`, `:cursor` or `:relay_cursor`.
   #
   #   class Client
@@ -43,6 +52,10 @@ class ActiveAd::Client
 
     def api_version(version)
       self.api_version = version.to_s
+    end
+
+    def base_url(url)
+      self.base_url = url
     end
 
     def pagination_type(type)

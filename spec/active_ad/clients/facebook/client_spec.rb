@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ActiveAd::Facebook::Client do
-  let(:api_version) { described_class.api_version }
-  let(:client)      { described_class.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c') }
+  let(:client) { described_class.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c') }
 
   describe '#platform' do
     it 'returns the platform name' do
@@ -29,7 +28,7 @@ RSpec.describe ActiveAd::Facebook::Client do
 
   describe '#login' do
     it 'retrieves and sets a long lived access_token in exchange for a short lived access_token' do
-      stub_request(:get, "https://graph.facebook.com/v#{api_version}/oauth/access_token").with(query: {
+      stub_request(:get, "#{described_class.base_url}/oauth/access_token").with(query: {
         client_id: 'client_123', client_secret: '1a2b3c', grant_type: 'fb_exchange_token', fb_exchange_token: 'secret_short_access_token'
       }).to_return(status: 200, body: {
         access_token: 'secret_access_token'
@@ -44,7 +43,7 @@ RSpec.describe ActiveAd::Facebook::Client do
 
   describe '#refresh_token' do
     it 'retrieves and sets a refreshed long lived access_token in exchange for the current long lived access_token' do
-      stub_request(:get, "https://graph.facebook.com/v#{api_version}/oauth/access_token").with(query: {
+      stub_request(:get, "#{described_class.base_url}/oauth/access_token").with(query: {
         client_id: 'client_123', client_secret: '1a2b3c', grant_type: 'fb_exchange_token', fb_exchange_token: 'secret_access_token'
       }).to_return(status: 200, body: {
         access_token: 'refreshed_secret_access_token'

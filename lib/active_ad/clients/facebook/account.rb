@@ -138,7 +138,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/act_#{id}",
+      get: "#{client.base_url}/act_#{id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
@@ -153,14 +153,14 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # partner: This could be Facebook Marketing Partner, if there is one.
   def create_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{business_id}/adaccount",
+      post: "#{client.base_url}/#{business_id}/adaccount",
       body: create_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def update_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/act_#{id}",
+      post: "#{client.base_url}/act_#{id}",
       body: update_request_attributes.merge(access_token: client.access_token)
     }
   end

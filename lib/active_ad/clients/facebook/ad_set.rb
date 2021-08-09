@@ -139,7 +139,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
       fields = params.delete(:fields) || READ_FIELDS
 
       {
-        get: "https://graph.facebook.com/v#{client.api_version}/#{id}/adsets",
+        get: "#{client.base_url}/#{id}/adsets",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end
@@ -150,28 +150,28 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "https://graph.facebook.com/v#{client.api_version}/#{id}",
+      get: "#{client.base_url}/#{id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
 
   def create_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/act_#{account_id}/adsets",
+      post: "#{client.base_url}/act_#{account_id}/adsets",
       body: create_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def update_request
     {
-      post: "https://graph.facebook.com/v#{client.api_version}/#{id}",
+      post: "#{client.base_url}/#{id}",
       body: update_request_attributes.merge(access_token: client.access_token)
     }
   end
 
   def delete_request
     {
-      delete: "https://graph.facebook.com/v#{client.api_version}/#{id}",
+      delete: "#{client.base_url}/#{id}",
       params: { access_token: client.access_token }
     }
   end

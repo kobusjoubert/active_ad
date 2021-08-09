@@ -11,7 +11,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '.find' do
     it 'returns an account when found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_123").with(query:
+      stub_request(:get, "#{client.base_url}/act_123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         id: 'act_123', name: 'Account Name'
@@ -21,7 +21,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
 
     it 'returns nil if no account found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_999").with(query:
+      stub_request(:get, "#{client.base_url}/act_999").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
@@ -31,7 +31,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
 
     it 'returns nil when requesting an invalid id' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_0").with(query:
+      stub_request(:get, "#{client.base_url}/act_0").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
@@ -43,7 +43,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '.find!' do
     it 'returns an account when found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_123").with(query:
+      stub_request(:get, "#{client.base_url}/act_123").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         id: 'act_123', name: 'Account Name'
@@ -53,7 +53,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
 
     it 'raises exception if no account found' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_999").with(query:
+      stub_request(:get, "#{client.base_url}/act_999").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
@@ -63,7 +63,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     end
 
     it 'raises exception when requesting an invalid id' do
-      stub_request(:get, "https://graph.facebook.com/v#{client.api_version}/act_0").with(query:
+      stub_request(:get, "#{client.base_url}/act_0").with(query:
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 404, body: {
         error: { message: 'no no no!' }
