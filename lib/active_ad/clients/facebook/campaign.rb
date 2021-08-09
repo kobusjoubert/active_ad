@@ -5,7 +5,6 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
     last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object recommendations smart_promotion_type source_campaign source_campaign_id
     special_ad_categories special_ad_category special_ad_category_country spend_cap start_time status stop_time topline_id updated_time
   ].freeze
-
   BID_STRATEGIES = %w[LOWEST_COST_WITHOUT_CAP LOWEST_COST_WITH_BID_CAP COST_CAP].freeze
   BUYING_TYPES = %w[AUCTION RESERVED].freeze
   CAMPAIGN_OPTIMIZATION_TYPES = %w[NONE ICO_ONLY].freeze

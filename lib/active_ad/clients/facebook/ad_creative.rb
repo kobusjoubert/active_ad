@@ -1,7 +1,7 @@
 class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   # Requesting the following fields causes status `400` error with messages.
   #
-  #   'referral_id' => "(#3) User must be on allowlist".
+  #   'referral_id' => "(#3) User must be on allowlist"
   READ_FIELDS = %i[
     id account_id actor_id adlabels applink_treatment asset_feed_spec authorization_category body branded_content_sponsor_page_id bundle_folder_id
     call_to_action_type categorization_criteria category_media_source destination_set_id dynamic_ad_voice effective_authorization_category
@@ -11,7 +11,6 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
     object_url place_page_set_id platform_customizations playable_asset_id portrait_customizations product_set_id recommender_settings source_instagram_media_id
     status template_url template_url_spec thumbnail_url title url_tags use_page_actor_override video_id
   ].freeze
-
   STATUS = %w[ACTIVE IN_PROCESS WITH_ISSUES DELETED].freeze
 
   belongs_to :account

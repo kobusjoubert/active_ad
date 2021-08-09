@@ -1,7 +1,7 @@
 class ActiveAd::Facebook::AdSet < ActiveAd::Base
   # Requesting the following fields causes status `400` error with messages.
   #
-  #   'contextual_bundling_spec' => "(#3) Ad Account must be on allowlist".
+  #   'contextual_bundling_spec' => "(#3) Ad Account must be on allowlist"
   #
   # Attributes that clashes with the relational methods.
   #
@@ -14,7 +14,6 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
     recommendations recurring_budget_semantics review_feedback rf_prediction_id source_adset source_adset_id start_time status targeting
     time_based_ad_rotation_id_blocks time_based_ad_rotation_intervals updated_time use_new_app_click
   ].freeze
-
   BID_STRATEGIES = %w[LOWEST_COST_WITHOUT_CAP LOWEST_COST_WITH_BID_CAP COST_CAP].freeze
   BILLING_EVENTS = %w[APP_INSTALLS CLICKS IMPRESSIONS LINK_CLICKS NONE OFFER_CLAIMS PAGE_LIKES POST_ENGAGEMENT THRUPLAY PURCHASE LISTING_INTERACTION].freeze
   DESTINATION_TYPES = %w[UNDEFINED WEBSITE APP MESSENGER APPLINKS_AUTOMATIC FACEBOOK].freeze
