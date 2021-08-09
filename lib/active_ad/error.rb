@@ -11,5 +11,9 @@ module ActiveAd
 
   class RecordNotFound < Error; end
 
+  class RecordNotLinked < Error; end
+
+  class RecordNotUnlinked < Error; end
+
   class LoginError < Error; end
 end

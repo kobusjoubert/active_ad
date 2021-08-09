@@ -1,8 +1,10 @@
 # Active Ad
 
-Active Ad allows you to talk to different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn all the different social media APIs out there.
+Active Ad allows you to talk to different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn
+all the different social media APIs out there.
 
-The aim of the project is to feel natural to Ruby users and is developed to be used in Ruby on Rails applications, but can also be used as a stand alone library in any Ruby project.
+The aim of the project is to feel natural to Ruby users and is developed to be used in Ruby on Rails applications, but can also be used as a stand alone library
+in any Ruby project.
 
 ## Installation
 
@@ -22,11 +24,17 @@ Or install it yourself as:
 
 ## Usage
 
-Validation happens before `create`, `update` and `destroy` methods are called. When successful, the object will be returned, when unsuccessful, `false`
-will be returned. This might also mean that the external API didn't accept the request.
+Validation happens on `save`, `create` and `update`. When successful, `true` will be returned for `save` and `update`, and the object will be returned for
+`create`. When validation fails or the external API request fails, `false` will be returned.
 
-Each method also implements the bang method, `create!`, `update!` and `destroy!` which will raise an `ActiveAd::RecordInvalid` exception on create or update
-failure or an `ActiveAd::RecordNotDeleted` on destruction failure.
+Each method also implements a bang method, `save!`, `create!` and `update!` which will raise an `ActiveAd::RecordInvalid` exception when validation fails or the
+external API request fails.
+
+Method `delete` will return `false` when the external API request fails, while `delete!` will raise an `ActiveAd::RecordNotDeleted` exception. In both cases
+`true` will be returned when successful.
+
+Method `unlink` will return `false` when the external API request fails, while `unlink!` will raise an `ActiveAd::RecordNotUnlinked` exception. In both cases
+`true` will be returned when successful.
 
 Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
@@ -290,13 +298,18 @@ If we look at Facebook, the classes to be used in the base classes will look lik
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive
+prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run
+`bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to
+[rubygems.org](https://rubygems.org).
 
-You can set the environment of the gem to `development` to make life easier while extending the gem. Setting it to any other environment will not require or load development dependencies like `listen` and `byebug` which we don't want in production.
+You can set the environment of the gem to `development` to make life easier while extending the gem. Setting it to any other environment will not require or
+load development dependencies like `listen` and `byebug` which we don't want in production.
 
-If you're building a Rails or Rack app, it will use those environments. If you're using this gem as a standalone library, you'll have to set the `ACTIVE_AD_ENV` environment variable to `development`.
+If you're building a Rails or Rack app, it will use those environments. If you're using this gem as a standalone library, you'll have to set the `ACTIVE_AD_ENV`
+environment variable to `development`.
 
 Environment lookup happens in the following order: `ENV['ACTIVE_AD_ENV'] || ENV['RAILS_ENV'] || ENV['RACK_ENV'] || ''`
 
@@ -316,7 +329,8 @@ If the logger gets too noisy while developing, you can change the log level.
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/ClickAds/active_ad. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/ClickAds/active_ad/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/ClickAds/active_ad. This project is intended to be a safe, welcoming space for
+collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/ClickAds/active_ad/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
@@ -324,4 +338,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the ActiveAd project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/ClickAds/active_ad/blob/main/CODE_OF_CONDUCT.md).
+Everyone interacting in the ActiveAd project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the
+[code of conduct](https://github.com/ClickAds/active_ad/blob/main/CODE_OF_CONDUCT.md).

@@ -1,9 +1,9 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
   # Requesting the following fields causes status `400` error with messages.
   #
-  #   'direct_deals_tos_accepted' => "(#3) Ad Account must be on allowlist".
-  #   'has_page_authorized_adaccount' => "(#100) For field 'has_page_authorized_adaccount': The parameter page_id is required".
-  #   'show_checkout_experience' => "(#100) For field 'show_checkout_experience': The parameter page_id is required".
+  #   'direct_deals_tos_accepted' => "(#3) Ad Account must be on allowlist"
+  #   'has_page_authorized_adaccount' => "(#100) For field 'has_page_authorized_adaccount': The parameter page_id is required"
+  #   'show_checkout_experience' => "(#100) For field 'show_checkout_experience': The parameter page_id is required"
   #
   # The 'id' field returns an 'act_' prefixed value, possibly a Facebook hack because they might have needed values to be globally unique ¯\_(ツ)_/¯. When you
   # look at things like 'campaign.account_id' it doesn't return the 'act_' prefixed value. So whenever the 'id' attribute is being set on an object, we remove
@@ -20,7 +20,6 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     offsite_pixels_tos_accepted owner partner rf_spec spend_cap tax_id tax_id_status tax_id_type timezone_id timezone_name timezone_offset_hours_utc
     tos_accepted user_tasks user_tos_accepted
   ].freeze
-
   ISO_4217_CURRENCY_CODES = %w[
     AED AFN ALL AMD ANG AOA ARS AUD AWG AZN BAM BBD BDT BGN BHD BIF BMD BND BOB BOV BRL BSD BTN BWP BYN BZD CAD CDF CHE CHF CHW CLF CLP CNY COP COU CRC CUC CUP
     CVE CZK DJF DKK DOP DZD EGP ERN ETB EUR FJD FKP GBP GEL GHS GIP GMD GNF GTQ GYD HKD HNL HRK HTG HUF IDR ILS INR IQD IRR ISK JMD JOD JPY KES KGS KHR KMF KPW
@@ -29,6 +28,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     VUV WST XAF XAG XAU XBA XBB XBC XBD XCD XDR XOF XPD XPF XPT XSU XTS XUA XXX YER ZAR ZMW ZWL
   ].freeze
 
+  belongs_to :business
   has_many :campaigns
   has_many :ad_sets
   has_many :ads
@@ -176,6 +176,10 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   end
 
   private
+
+  def create_response_id(response)
+    response.body['id']
+  end
 
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes

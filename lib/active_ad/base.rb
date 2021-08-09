@@ -13,7 +13,7 @@ class ActiveAd::Base
   # Overwrite in child classes if the field is actually an :integer or :big_integer and not a :string.
   attribute :id, :string
 
-  define_model_callbacks :find, :save, :create, :update, :destroy
+  define_model_callbacks :find, :save, :create, :update, :destroy, :link, :unlink
 
   delegate :entity, :entity_class, :platform, :platform_class, to: :class
 
@@ -185,8 +185,8 @@ class ActiveAd::Base
       object.save!(**kwargs) && object
     end
 
-    def index_request
-      raise NotImplementedError, 'Subclasses must implement a index_request method'
+    def index_request(**_kwargs)
+      raise NotImplementedError, 'Subclasses must implement an index_request method'
     end
 
     # Mutates the params by removing the relational key injected by the `has_many` method.
@@ -278,6 +278,46 @@ class ActiveAd::Base
   def destroy!
     destroy
     raise ActiveAd::RecordNotDeleted, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+
+    response.success?
+  end
+
+  # Returns true or false.
+  def link(**kwargs)
+    @response = nil
+
+    run_callbacks(:link) do
+      ActiveAd.logger.debug("Calling link_request with id: #{id}; kwargs: #{kwargs}")
+      @response = request(link_request(**kwargs))
+    end
+
+    response.success?
+  end
+
+  # Returns true or exception.
+  def link!(**kwargs)
+    link(**kwargs)
+    raise ActiveAd::RecordNotLinked, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+
+    response.success?
+  end
+
+  # Returns true or false.
+  def unlink(**kwargs)
+    @response = nil
+
+    run_callbacks(:unlink) do
+      ActiveAd.logger.debug("Calling unlink_request with id: #{id}; kwargs: #{kwargs}")
+      @response = request(unlink_request(**kwargs))
+    end
+
+    response.success?
+  end
+
+  # Returns true or exception.
+  def unlink!(**kwargs)
+    unlink(**kwargs)
+    raise ActiveAd::RecordNotUnlinked, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
 
     response.success?
   end
@@ -396,7 +436,7 @@ class ActiveAd::Base
     keys.map { |key| attribute_aliases[key] || key }
   end
 
-  def read_request
+  def read_request(**_kwargs)
     raise NotImplementedError, 'Subclasses must implement a read_request method'
   end
 
@@ -405,14 +445,22 @@ class ActiveAd::Base
   end
 
   def update_request
-    raise NotImplementedError, 'Subclasses must implement a update_request method'
+    raise NotImplementedError, 'Subclasses must implement an update_request method'
   end
 
   def delete_request
     raise NotImplementedError, 'Subclasses must implement a delete_request method'
   end
 
-  def create_response_id
+  def link_request(**_kwargs)
+    raise NotImplementedError, 'Subclasses must implement a link_request method'
+  end
+
+  def unlink_request(**_kwargs)
+    raise NotImplementedError, 'Subclasses must implement an unlink_request method'
+  end
+
+  def create_response_id(_response)
     raise NotImplementedError, 'Subclasses must implement a create_response_id method'
   end
 end
