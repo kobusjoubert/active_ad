@@ -231,7 +231,7 @@ Or if you don't require fresh data and have it persisted already, you can create
 
 To refresh the data.
 
-  ad.reload
+    ad.reload
 
 Save an ad.
 
