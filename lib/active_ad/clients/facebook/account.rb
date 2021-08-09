@@ -71,7 +71,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :currency, :string # default: 'USD'
   attribute :direct_deals_tos_accepted, :boolean
   attribute :disable_reason, :integer
-  attribute :end_advertiser_id, :big_integer # default: 'NONE'
+  attribute :end_advertiser_id, :string # default: 'NONE'
   attribute :end_advertiser_name, :string
   attribute :extended_credit_invoice_group
   attribute :failed_delivery_checks, array: true
@@ -90,13 +90,13 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :is_prepay_account, :boolean
   attribute :is_tax_id_required, :boolean
   attribute :line_numbers, array: true
-  attribute :media_agency_id, :big_integer # default: 'NONE'
+  attribute :media_agency_id, :string # default: 'NONE'
   attribute :min_campaign_group_spend_cap, :big_integer
   attribute :min_daily_budget, :integer
   attribute :name, :string
   attribute :offsite_pixels_tos_accepted, :boolean
   attribute :owner_id, :big_integer
-  attribute :partner_id, :big_integer # default: 'NONE'
+  attribute :partner_id, :string # default: 'NONE'
   attribute :rf_spec
   attribute :show_checkout_experience, :boolean
   attribute :spend_cap, :big_integer
@@ -120,6 +120,9 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   validates_presence_of :name, :currency, :timezone_id, :end_advertiser_id, :media_agency_id, :partner_id, :business_id, on: :create
 
   validates_inclusion_of :currency, in: ISO_4217_CURRENCY_CODES, allow_blank: true, message: validates_inclusion_of_message(ISO_4217_CURRENCY_CODES)
+
+  validates_numericality_of :timezone_id, allow_nil: true
+  validates_numericality_of :business_id, allow_nil: true, greater_than: 0
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
