@@ -108,6 +108,8 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
                                                        allow_blank: true,
                                                        message: validates_inclusion_of_message(SPECIAL_AD_CATEGORY_COUNTRIES)
 
+  validates_numericality_of :daily_budget, :lifetime_budget, :source_campaign_id, :spend_cap, :topline_id, allow_nil: true, greater_than: 0
+
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something

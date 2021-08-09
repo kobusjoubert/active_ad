@@ -35,7 +35,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   # attribute :ad_set # Clashes with the `belongs_to :ad_set` relationship.
   attribute :ad_set_id, :big_integer
   attribute :ad_set_spec
-  attribute :audience_id, :string
+  attribute :audience_id, :big_integer # Facebook docs specify 'string' in some parts, and 'integer' in other parts.
   attribute :bid_amount, :integer
   # attribute :campaign # Clashes with the `belongs_to :campaign` relationship.
   attribute :campaign_id, :big_integer
@@ -69,6 +69,8 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   validates_presence_of :name, :status, on: :create
 
   validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
+
+  validates_numericality_of :ad_set_id, :audience_id, :bid_amount, :draft_ad_group_id, :source_ad_id, allow_nil: true, greater_than: 0
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #

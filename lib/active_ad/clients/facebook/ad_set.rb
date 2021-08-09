@@ -125,6 +125,9 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
   validates_inclusion_of :tune_for_category, in: TUNE_FOR_CATEGORIES, allow_blank: true, message: validates_inclusion_of_message(TUNE_FOR_CATEGORIES)
 
+  validates_numericality_of :account_id, :campaign_id, :bid_amount, :daily_budget, :daily_imps, :daily_min_spend_target, :daily_spend_cap, :lifetime_budget,
+                            :lifetime_imps, :lifetime_min_spend_target, :lifetime_spend_cap, :rf_prediction_id, allow_nil: true, greater_than: 0
+
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something

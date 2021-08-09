@@ -71,6 +71,10 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   validates_inclusion_of :survey_business_type, in: SURVEY_BUSINESS_TYPES, allow_blank: true, message: validates_inclusion_of_message(SURVEY_BUSINESS_TYPES)
   validates_inclusion_of :vertical, in: VERTICALS, allow_blank: true, message: validates_inclusion_of_message(VERTICALS)
 
+  validates_numericality_of :primary_page, allow_nil: true, greater_than: 0, on: :create
+  validates_numericality_of :timezone_id, allow_nil: true
+  validates_numericality_of :survey_num_assets, :survey_num_people, allow_nil: true, greater_than: 0
+
   def read_request(**kwargs)
     params = kwargs.dup
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq

@@ -88,6 +88,8 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
 
+  validates_numericality_of :account_id, allow_nil: true, greater_than: 0
+
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something
