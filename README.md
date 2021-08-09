@@ -30,7 +30,7 @@ Validation happens on `save`, `create` and `update`. When successful, `true` wil
 Each method also implements a bang method, `save!`, `create!` and `update!` which will raise an `ActiveAd::RecordInvalid` exception when validation fails or the
 external API request fails.
 
-Method `delete` will return `false` when the external API request fails, while `delete!` will raise an `ActiveAd::RecordNotDeleted` exception. In both cases
+Method `destroy` will return `false` when the external API request fails, while `destroy!` will raise an `ActiveAd::RecordNotDeleted` exception. In both cases
 `true` will be returned when successful.
 
 Method `unlink` will return `false` when the external API request fails, while `unlink!` will raise an `ActiveAd::RecordNotUnlinked` exception. In both cases
