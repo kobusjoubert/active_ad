@@ -128,6 +128,8 @@ Metrics/BlockLength:
 
 Metrics/ClassLength:
   Max: 250
+  Exclude:
+    - lib/active_ad/base.rb
 
 Metrics/CyclomaticComplexity:
   Max: 8
