@@ -22,6 +22,8 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     OTHER
   ].freeze
 
+  private_constant :UNLINK_REQUEST_MAPPING
+
   has_many :accounts
 
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
