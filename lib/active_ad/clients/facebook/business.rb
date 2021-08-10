@@ -8,7 +8,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     two_factor_type updated_by updated_time verification_status vertical vertical_id
   ].freeze
   UNLINK_REQUEST_MAPPING = {
-    ad_account_id: { path: 'ad_accounts', param: :adaccount_id },
+    account_id: { path: 'ad_accounts', param: :adaccount_id },
     agency_id: { path: 'agencies', param: :business },
     client_id: { path: 'clients', param: :business },
     instagram_account_id: { path: 'instagram_accounts', param: :instagram_account },
@@ -109,7 +109,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
 
   # Request examples.
   #
-  #   business.unlink(ad_account_id: '1')
+  #   business.unlink(account_id: '1')
   #   business.unlink(agency_id: '1')
   #   business.unlink(client_id: '1')
   #   business.unlink(instagram_account_id: '1')
