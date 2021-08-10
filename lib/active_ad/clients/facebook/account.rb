@@ -33,6 +33,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   has_many :ad_sets
   has_many :ads
   has_many :ad_creatives
+  has_many :pixels
 
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
   # suffix. For example 'platform_attribute' should be aliased as 'platform_attribute_id'. This way when we call 'object.platform_attribute_id' we know we're
@@ -155,6 +156,9 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   # media_agency: The agency, this could be your own business.
   # partner: This could be Facebook Marketing Partner, if there is one.
   def create_request
+    # /:business_id/adaccount
+    # /:business_id/ad_accounts
+    # /:business_id/owned_ad_accounts
     {
       post: "#{client.base_url}/#{business_id}/adaccount",
       body: create_request_attributes.merge(access_token: client.access_token)
