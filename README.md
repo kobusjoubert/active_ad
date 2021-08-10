@@ -59,6 +59,38 @@ Every day or so you should refresh your current access token.
     client.access_token # => 'g7h8i9'
     client.valid? # => true
 
+### Business
+
+Create a business.
+
+    business = ActiveAd::Facebook::Business.create(user_id: '123', primary_page: '123', name: 'Business Name', vertical: 'OTHER')
+
+Find a previously created account by it's identifier.
+
+    business = ActiveAd::Facebook::Business.find('123')
+
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
+
+    business = ActiveAd::Facebook::Business.new(stale: true, id: '123', name: 'Business Name')
+
+To refresh the data.
+
+    business.reload
+
+Save an business.
+
+    business.name = 'New Business Name'
+    business.save
+
+Update a business.
+
+    business.update(name: 'New Business Name')
+
+Unlink a business.
+
+    business.unlink(account_id: '123')
+    business.unlink(page_id: '123')
+
 ### Account
 
 Create an account.
@@ -97,6 +129,10 @@ Delete an account.
 Get an account's campaigns.
 
     campaigns = account.campaigns.where(status: ['ACTIVE']).limit(10)
+
+Get an account's pixels.
+
+    pixels = account.pixels.limit(10)
 
 ### Campaign
 
@@ -253,6 +289,45 @@ Get an ad's ad creative.
 Get an ad's ad group.
 
     campaign = ad.ad_set
+
+### Pixel
+
+Create a pixel.
+
+    pixel = ActiveAd::Facebook::Pixel.create(account_id: '123', name: 'Pixel Name')
+
+Find pixels.
+
+    pixels = ActiveAd::Facebook::Pixel.where(account_id: '123').limit(10)
+
+Find a previously created pixel by it's identifier.
+
+    pixel = ActiveAd::Facebook::Pixel.find('123')
+
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
+
+    pixel = ActiveAd::Facebook::Pixel.new(stale: true, id: '123', name: 'Pixel Name')
+
+To refresh the data.
+
+    pixel.reload
+
+Save a pixel.
+
+    pixel.name = 'New Pixel Name'
+    pixel.save
+
+Update a pixel.
+
+    pixel.update(name: 'New Pixel Name')
+
+Get a pixel's account.
+
+    pixel.account
+
+Get a pixel's business.
+
+    pixel.business
 
 ### Paging
 
