@@ -164,7 +164,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   private
 
   def create_request_attributes
-    super.except('account_id')
+    super.except('account_id') # Using `account_id` in the request url only.
   end
 
   def create_response_id(response)
