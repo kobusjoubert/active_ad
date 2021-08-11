@@ -134,6 +134,10 @@ Get an account's pixels.
 
     pixels = account.pixels.limit(10)
 
+Get an account's saved audiences.
+
+    saved_audiences = account.saved_audiences.limit(10)
+
 ### Campaign
 
 Create a campaign.
@@ -328,6 +332,28 @@ Get a pixel's account.
 Get a pixel's business.
 
     pixel.business
+
+### Saved Audience
+
+Find saved audiences.
+
+    saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123').limit(10)
+
+Find a previously created saved audience by it's identifier.
+
+    saved_audience = ActiveAd::Facebook::SavedAudience.find('123')
+
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
+
+    saved_audience = ActiveAd::Facebook::SavedAudience.new(stale: true, id: '123', name: 'Saved Audience Name')
+
+To refresh the data.
+
+    saved_audience.reload
+
+Get a saved audience's account.
+
+    saved_audience.account
 
 ### Paging
 
