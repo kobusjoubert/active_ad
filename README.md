@@ -36,6 +36,10 @@ Method `destroy` will return `false` when the external API request fails, while 
 Method `unlink` will return `false` when the external API request fails, while `unlink!` will raise an `ActiveAd::RecordNotUnlinked` exception. In both cases
 `true` will be returned when successful.
 
+When using `where`, an enumerable will be returned and all results will be queried when calling `each` or `map` on it and will result in API rate limiting when
+being abused. It is up to you to enforce a `limit` if you don't want all results, for example `where.limit(10)`. The same goes for relational scopes
+like `account.campaigns`, you can use `account.campaigns.limit(10)`.
+
 Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
 ### Client
@@ -99,7 +103,7 @@ Create an account.
 
 Find accounts.
 
-    accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE']).limit(10)
+    accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE'])
 
 Find a previously created account by it's identifier.
 
@@ -128,15 +132,15 @@ Delete an account.
 
 Get an account's campaigns.
 
-    campaigns = account.campaigns.where(status: ['ACTIVE']).limit(10)
+    campaigns = account.campaigns.where(status: ['ACTIVE'])
 
 Get an account's pixels.
 
-    pixels = account.pixels.limit(10)
+    pixels = account.pixels
 
 Get an account's saved audiences.
 
-    saved_audiences = account.saved_audiences.limit(10)
+    saved_audiences = account.saved_audiences
 
 ### Campaign
 
@@ -146,7 +150,7 @@ Create a campaign.
 
 Find campaigns.
 
-    campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE']).limit(10)
+    campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE'])
 
 Find a previously created campaign by it's identifier.
 
@@ -175,7 +179,7 @@ Delete a campaign.
 
 Get a campaign's ad groups.
 
-    ad_sets = campaign.ad_sets.where(status: ['ACTIVE']).limit(10)
+    ad_sets = campaign.ad_sets.where(status: ['ACTIVE'])
 
 Get a campaign's account.
 
@@ -206,7 +210,7 @@ Create an ad group.
     
 Find ad groups.
 
-    ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED']).limit(10)
+    ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED'])
 
 Find a previously created ad group by it's identifier.
 
@@ -235,7 +239,7 @@ Delete an ad group.
 
 Get an ad group's ads.
 
-    ads = ad_set.ads.where(status: ['ACTIVE']).limit(10)
+    ads = ad_set.ads.where(status: ['ACTIVE'])
 
 Get an ad group's campaign.
 
@@ -259,7 +263,7 @@ Create an ad.
 
 Find ads.
 
-    ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED']).limit(10)
+    ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED'])
 
 Find a previously created ad by it's identifier.
 
@@ -302,7 +306,7 @@ Create a pixel.
 
 Find pixels.
 
-    pixels = ActiveAd::Facebook::Pixel.where(account_id: '123').limit(10)
+    pixels = ActiveAd::Facebook::Pixel.where(account_id: '123')
 
 Find a previously created pixel by it's identifier.
 
@@ -337,7 +341,7 @@ Get a pixel's business.
 
 Find saved audiences.
 
-    saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123').limit(10)
+    saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123')
 
 Find a previously created saved audience by it's identifier.
 
@@ -360,6 +364,7 @@ Get a saved audience's account.
 Lists can be paged by using the `next_offset_value` attribute returned from each result set.
 
     ads = ActiveAd::Facebook::Ad.limit(10)
+
     loop do
       ads.map { |ad| ad.id }
       break unless (offset = ads.next_offset_value)
