@@ -359,6 +359,56 @@ Get a saved audience's account.
 
     saved_audience.account
 
+### Custom Audience
+
+Create a custom audience.
+
+    options = {
+      account_id: '123',
+      name: 'Custom Audience Name',
+      subtype: 'CUSTOM',
+      customer_file_source: 'USER_PROVIDED_ONLY'
+    }
+
+    ad = ActiveAd::Facebook::Ad.create!(**options)
+
+Find custom audiences.
+
+    custom_audiences = ActiveAd::Facebook::CustomAudience.where(account_id: '123')
+
+Find a previously created custom audience by it's identifier.
+
+    custom_audience = ActiveAd::Facebook::CustomAudience.find('123')
+
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
+
+    custom_audience = ActiveAd::Facebook::CustomAudience.new(stale: true, id: '123', name: 'Custom Audience Name')
+
+To refresh the data.
+
+    custom_audience.reload
+
+Save a custom audience.
+
+    custom_audience.name = 'New Custom Audience Name'
+    custom_audience.save
+
+Update a custom audience.
+
+    custom_audience.update(name: 'New Custom Audience Name')
+
+Delete a custom audience.
+
+    custom_audience.destroy
+
+Get a custom audience's account.
+
+    custom_audience.account
+
+Get a custom audience's pixel.
+
+    custom_audience.pixel
+
 ### Paging
 
 Lists can be paged by using the `next_offset_value` attribute returned from each result set.

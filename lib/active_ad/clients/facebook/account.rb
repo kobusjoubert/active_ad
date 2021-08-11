@@ -30,6 +30,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
   belongs_to :business
   has_many :campaigns
+  has_many :custom_audiences
   has_many :ad_sets
   has_many :ads
   has_many :ad_creatives
@@ -134,7 +135,16 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
   class << self
     def index_request(**kwargs)
-      raise NotImplementedError
+      params = kwargs.dup
+      id, id_key = index_request_id_and_key(params)
+
+      id = "act_#{id}" if id_key == :account_id
+      fields = params.delete(:fields) || READ_FIELDS
+
+      {
+        get: "#{client.base_url}/#{id}/adaccounts",
+        params: params.merge(access_token: client.access_token, fields: fields.join(','))
+      }
     end
   end
 
