@@ -1,18 +1,21 @@
 # Active Ad
 
-Active Ad allows you to talk to different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn
-all the different social media APIs out there.
+Active Ad allows you to talk to different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs without needing to
+learn all the marketing API libraries available.
 
-The aim of the project is to feel natural to Ruby users and is developed to be used in Ruby on Rails applications, but can also be used as a stand alone library
-in any Ruby project.
+The goal is to expose the necessary features from all the different marketing APIs so that you can create ads using a simple unified interface that feels
+natural to Ruby users without the need to learn all the differences between the marketing APIs.
+
+You can use this gem in Ruby on Rails applications or as a stand-alone library in any Ruby project.
+
+Active Ad will allow you to start running ads quickly. When you need to have more control over every feature of the different marketing APIs, you could use the
+libraries from the vendors themselves.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-```ruby
-gem 'active_ad'
-```
+    gem 'active_ad'
 
 And then execute:
 
