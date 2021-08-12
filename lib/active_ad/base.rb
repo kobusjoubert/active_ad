@@ -93,7 +93,7 @@ class ActiveAd::Base
   class << self
     # TODO: Thread safety?
     def client
-      "ActiveAd::#{platform_class}::Connection".constantize.client
+      "ActiveAd::#{platform_class}".constantize.client
     end
 
     # Returns a symobol in underscore style: `:entity_name`.

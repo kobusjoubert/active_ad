@@ -53,29 +53,30 @@ Using Facebook's implementation to demonstrate usage. All of the platforms follo
 
 ### Client
 
-Create a client and exchange your short lived access token for a long lived access token.
+If you don't have a long lived access token yet, create a client and exchange your short lived access token for a long lived access token.
 
 ```ruby
 client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
 client.valid? # => false
-client.login # => true
+client.login! # => true
 client.access_token # => 'd4e5f6'
 client.valid? # => true
 ```
 
-Assign the client connection.
+Configure the platform with the client connection.
 
 ```ruby
-ActiveAd::Facebook::Connection.client = client
+ActiveAd::Facebook.configure do |config|
+  config.client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
+end
 ```
 
 Every day or so you should refresh your current access token.
 
 ```ruby
-client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
-client.refresh_token # => true
-client.access_token # => 'g7h8i9'
-client.valid? # => true
+ActiveAd::Facebook.client.refresh_token! # => true
+ActiveAd::Facebook.client.access_token # => 'g7h8i9'
+ActiveAd::Facebook.client.valid? # => true
 ```
 
 ### Business

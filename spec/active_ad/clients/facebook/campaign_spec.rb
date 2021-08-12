@@ -2,8 +2,9 @@ require 'spec_helper'
 
 RSpec.describe ActiveAd::Facebook::Campaign do
   before(:all) do
-    client = ActiveAd::Facebook::Client.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c')
-    ActiveAd::Facebook::Connection.client = client
+    ActiveAd::Facebook.configure do |config|
+      config.client = ActiveAd::Facebook::Client.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c')
+    end
   end
 
   let(:campaign) { described_class.new(id: '123', stale: true) }
