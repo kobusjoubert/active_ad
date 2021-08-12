@@ -15,15 +15,21 @@ libraries from the vendors themselves.
 
 Add this line to your application's Gemfile:
 
-    gem 'active_ad'
+```ruby
+gem 'active_ad'
+```
 
 And then execute:
 
-    $ bundle install
+```
+$ bundle install
+```
 
 Or install it yourself as:
 
-    $ gem install active_ad
+```
+$ gem install active_ad
+```
 
 ## Usage
 
@@ -49,380 +55,531 @@ Using Facebook's implementation to demonstrate usage. All of the platforms follo
 
 Create a client and exchange your short lived access token for a long lived access token.
 
-    client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
-    client.valid? # => false
-    client.login # => true
-    client.access_token # => 'd4e5f6'
-    client.valid? # => true
+```ruby
+client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
+client.valid? # => false
+client.login # => true
+client.access_token # => 'd4e5f6'
+client.valid? # => true
+```
 
 Assign the client connection.
 
-    ActiveAd::Facebook::Connection.client = client
+```ruby
+ActiveAd::Facebook::Connection.client = client
+```
 
 Every day or so you should refresh your current access token.
 
-    client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
-    client.refresh_token # => true
-    client.access_token # => 'g7h8i9'
-    client.valid? # => true
+```ruby
+client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
+client.refresh_token # => true
+client.access_token # => 'g7h8i9'
+client.valid? # => true
+```
 
 ### Business
 
 Create a business.
 
-    business = ActiveAd::Facebook::Business.create(user_id: '123', primary_page: '123', name: 'Business Name', vertical: 'OTHER')
+```ruby
+business = ActiveAd::Facebook::Business.create(user_id: '123', primary_page: '123', name: 'Business Name', vertical: 'OTHER')
+```
 
 Find a previously created account by it's identifier.
 
-    business = ActiveAd::Facebook::Business.find('123')
+```ruby
+business = ActiveAd::Facebook::Business.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    business = ActiveAd::Facebook::Business.new(stale: true, id: '123', name: 'Business Name')
+```ruby
+business = ActiveAd::Facebook::Business.new(stale: true, id: '123', name: 'Business Name')
+```
 
 To refresh the data.
 
-    business.reload
+```ruby
+business.reload
+```
 
 Save an business.
 
-    business.name = 'New Business Name'
-    business.save
+```ruby
+business.name = 'New Business Name'
+business.save
+```
 
 Update a business.
 
-    business.update(name: 'New Business Name')
+```ruby
+business.update(name: 'New Business Name')
+```
 
 Unlink a business.
 
-    business.unlink(account_id: '123')
-    business.unlink(page_id: '123')
+```ruby
+business.unlink(account_id: '123')
+business.unlink(page_id: '123')
+```
 
 ### Account
 
 Create an account.
 
-    account = ActiveAd::Facebook::Account.create(business_id: '123', currency: 'USD', name: 'Account Name')
+```ruby
+account = ActiveAd::Facebook::Account.create(business_id: '123', currency: 'USD', name: 'Account Name')
+```
 
 Find accounts.
 
-    accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE'])
+```ruby
+accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE'])
+```
 
 Find a previously created account by it's identifier.
 
-    account = ActiveAd::Facebook::Account.find('123')
+```ruby
+account = ActiveAd::Facebook::Account.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    account = ActiveAd::Facebook::Account.new(stale: true, id: '123', name: 'Account Name')
+```ruby
+account = ActiveAd::Facebook::Account.new(stale: true, id: '123', name: 'Account Name')
+```
 
 To refresh the data.
 
-    account.reload
+```ruby
+account.reload
+```
 
 Save an account.
 
-    account.name = 'New Account Name'
-    account.save
+```ruby
+account.name = 'New Account Name'
+account.save
+```
 
 Update an account.
 
-    account.update(name: 'New Account Name')
+```ruby
+account.update(name: 'New Account Name')
+```
 
 Delete an account.
 
-    account.destroy
+```ruby
+account.destroy
+```
 
 Get an account's campaigns.
 
-    campaigns = account.campaigns.where(status: ['ACTIVE'])
+```ruby
+campaigns = account.campaigns.where(status: ['ACTIVE'])
+```
 
 Get an account's pixels.
 
-    pixels = account.pixels
+```ruby
+pixels = account.pixels
+```
 
 Get an account's saved audiences.
 
-    saved_audiences = account.saved_audiences
+```ruby
+saved_audiences = account.saved_audiences
+```
 
 ### Campaign
 
 Create a campaign.
 
-    campaign = ActiveAd::Facebook::Campaign.create(account_id: '123', name: 'Campaign Name')
+```ruby
+campaign = ActiveAd::Facebook::Campaign.create(account_id: '123', name: 'Campaign Name')
+```
 
 Find campaigns.
 
-    campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE'])
+```ruby
+campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE'])
+```
 
 Find a previously created campaign by it's identifier.
 
-    campaign = ActiveAd::Facebook::Campaign.find('123')
+```ruby
+campaign = ActiveAd::Facebook::Campaign.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    campaign = ActiveAd::Facebook::Campaign.new(stale: true, id: '123', name: 'Campaign Name')
+```ruby
+campaign = ActiveAd::Facebook::Campaign.new(stale: true, id: '123', name: 'Campaign Name')
+```
 
 To refresh the data.
 
-    campaign.reload
+```ruby
+campaign.reload
+```
 
 Save a campaign.
 
-    campaign.name = 'New Campaign Name'
-    campaign.save
+```ruby
+campaign.name = 'New Campaign Name'
+campaign.save
+```
 
 Update a campaign.
 
-    campaign.update(name: 'New Campaign Name')
+```ruby
+campaign.update(name: 'New Campaign Name')
+```
 
 Delete a campaign.
 
-    campaign.destroy
+```ruby
+campaign.destroy
+```
 
 Get a campaign's ad groups.
 
-    ad_sets = campaign.ad_sets.where(status: ['ACTIVE'])
+```ruby
+ad_sets = campaign.ad_sets.where(status: ['ACTIVE'])
+```
 
 Get a campaign's account.
 
-    account = campaign.account
+```ruby
+account = campaign.account
+```
 
 ### Ad Group
 
 Create an ad group.
 
-    options = {
-      account_id: '123',
-      campaign_id: '456',
-      name: 'Ad Set Name',
-      status: 'PAUSED',
-      bid_amount: 200,
-      daily_budget: 50000,
-      targeting: {
-        device_platforms: ['mobile'],
-        facebook_positions: ['feed'],
-        geo_locations: {
-          countries: ['ZA']
-        },
-        publisher_platforms: ['facebook']
-      }
-    }
+```ruby
+options = {
+  account_id: '123',
+  campaign_id: '456',
+  name: 'Ad Set Name',
+  status: 'PAUSED',
+  bid_amount: 200,
+  daily_budget: 50000,
+  targeting: {
+    device_platforms: ['mobile'],
+    facebook_positions: ['feed'],
+    geo_locations: {
+      countries: ['ZA']
+    },
+    publisher_platforms: ['facebook']
+  }
+}
 
-    ad_set = ActiveAd::Facebook::AdSet.create!(**options)
-    
+ad_set = ActiveAd::Facebook::AdSet.create!(**options)
+```
+
 Find ad groups.
 
-    ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED'])
+```ruby
+ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED'])
+```
 
 Find a previously created ad group by it's identifier.
 
-    ad_set = ActiveAd::Facebook::AdSet.find('123')
+```ruby
+ad_set = ActiveAd::Facebook::AdSet.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    ad_set = ActiveAd::Facebook::AdSet.new(stale: true, id: '123', name: 'Ad Set Name')
+```ruby
+ad_set = ActiveAd::Facebook::AdSet.new(stale: true, id: '123', name: 'Ad Set Name')
+```
 
 To refresh the data.
 
-    ad_set.reload
+```ruby
+ad_set.reload
+```
 
 Save an ad group.
 
-    ad_set.name = 'New Ad Set Name'
-    ad_set.save
+```ruby
+ad_set.name = 'New Ad Set Name'
+ad_set.save
+```
 
 Update an ad group.
 
-    ad_set.update(name: 'New Ad Set Name')
+```ruby
+ad_set.update(name: 'New Ad Set Name')
+```
 
 Delete an ad group.
 
-    ad_set.destroy
+```ruby
+ad_set.destroy
+```
 
 Get an ad group's ads.
 
-    ads = ad_set.ads.where(status: ['ACTIVE'])
+```ruby
+ads = ad_set.ads.where(status: ['ACTIVE'])
+```
 
 Get an ad group's campaign.
 
-    campaign = ad_set.campaign
+```ruby
+campaign = ad_set.campaign
+```
 
 ### Ad
 
 Create an ad.
+```ruby
+options = {
+  account_id: '123',
+  ad_set_id: '456',
+  creative: {
+    creative_id: '789'
+  },
+  name: 'Ad Name',
+  status: 'PAUSED'
+}
 
-    options = {
-      account_id: '123',
-      ad_set_id: '456',
-      creative: {
-        creative_id: '789'
-      },
-      name: 'Ad Name',
-      status: 'PAUSED'
-    }
-
-    ad = ActiveAd::Facebook::Ad.create!(**options)
+ad = ActiveAd::Facebook::Ad.create!(**options)
+```
 
 Find ads.
 
-    ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED'])
+```ruby
+ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED'])
+```
 
 Find a previously created ad by it's identifier.
 
-    ad = ActiveAd::Facebook::Ad.find('123')
+```ruby
+ad = ActiveAd::Facebook::Ad.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    ad = ActiveAd::Facebook::Ad.new(stale: true, id: '123', name: 'Ad Name')
+```ruby
+ad = ActiveAd::Facebook::Ad.new(stale: true, id: '123', name: 'Ad Name')
+```
 
 To refresh the data.
 
-    ad.reload
+```ruby
+ad.reload
+```
 
 Save an ad.
 
-    ad.name = 'New Ad Name'
-    ad.save
+```ruby
+ad.name = 'New Ad Name'
+ad.save
+```
 
 Update an ad.
 
-    ad.update(name: 'New Ad Name')
+```ruby
+ad.update(name: 'New Ad Name')
+```
 
 Delete an ad.
 
-    ad.destroy
+```ruby
+ad.destroy
+```
 
 Get an ad's ad creative.
 
-    ad_creative = ad.ad_creative
+```ruby
+ad_creative = ad.ad_creative
+```
 
 Get an ad's ad group.
 
-    campaign = ad.ad_set
+```ruby
+campaign = ad.ad_set
+```
 
 ### Pixel
 
 Create a pixel.
 
-    pixel = ActiveAd::Facebook::Pixel.create(account_id: '123', name: 'Pixel Name')
+```ruby
+pixel = ActiveAd::Facebook::Pixel.create(account_id: '123', name: 'Pixel Name')
+```
 
 Find pixels.
 
-    pixels = ActiveAd::Facebook::Pixel.where(account_id: '123')
+```ruby
+pixels = ActiveAd::Facebook::Pixel.where(account_id: '123')
+```
 
 Find a previously created pixel by it's identifier.
 
-    pixel = ActiveAd::Facebook::Pixel.find('123')
+```ruby
+pixel = ActiveAd::Facebook::Pixel.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    pixel = ActiveAd::Facebook::Pixel.new(stale: true, id: '123', name: 'Pixel Name')
+```ruby
+pixel = ActiveAd::Facebook::Pixel.new(stale: true, id: '123', name: 'Pixel Name')
+```
 
 To refresh the data.
 
-    pixel.reload
+```ruby
+pixel.reload
+```
 
 Save a pixel.
 
-    pixel.name = 'New Pixel Name'
-    pixel.save
+```ruby
+pixel.name = 'New Pixel Name'
+pixel.save
+```
 
 Update a pixel.
 
-    pixel.update(name: 'New Pixel Name')
+```ruby
+pixel.update(name: 'New Pixel Name')
+```
 
 Get a pixel's account.
 
-    pixel.account
+```ruby
+pixel.account
+```
 
 Get a pixel's business.
 
-    pixel.business
+```ruby
+pixel.business
+```
 
 ### Saved Audience
 
 Find saved audiences.
 
-    saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123')
+```ruby
+saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123')
+```
 
 Find a previously created saved audience by it's identifier.
 
-    saved_audience = ActiveAd::Facebook::SavedAudience.find('123')
+```ruby
+saved_audience = ActiveAd::Facebook::SavedAudience.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    saved_audience = ActiveAd::Facebook::SavedAudience.new(stale: true, id: '123', name: 'Saved Audience Name')
+```ruby
+saved_audience = ActiveAd::Facebook::SavedAudience.new(stale: true, id: '123', name: 'Saved Audience Name')
+```
 
 To refresh the data.
 
-    saved_audience.reload
+```ruby
+saved_audience.reload
+```
 
 Get a saved audience's account.
 
-    saved_audience.account
+```ruby
+saved_audience.account
+```
 
 ### Custom Audience
 
 Create a custom audience.
 
-    options = {
-      account_id: '123',
-      name: 'Custom Audience Name',
-      subtype: 'CUSTOM',
-      customer_file_source: 'USER_PROVIDED_ONLY'
-    }
+```ruby
+options = {
+  account_id: '123',
+  name: 'Custom Audience Name',
+  subtype: 'CUSTOM',
+  customer_file_source: 'USER_PROVIDED_ONLY'
+}
 
-    ad = ActiveAd::Facebook::Ad.create!(**options)
+ad = ActiveAd::Facebook::Ad.create!(**options)
+```
 
 Find custom audiences.
 
-    custom_audiences = ActiveAd::Facebook::CustomAudience.where(account_id: '123')
+```ruby
+custom_audiences = ActiveAd::Facebook::CustomAudience.where(account_id: '123')
+```
 
 Find a previously created custom audience by it's identifier.
 
-    custom_audience = ActiveAd::Facebook::CustomAudience.find('123')
+```ruby
+custom_audience = ActiveAd::Facebook::CustomAudience.find('123')
+```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
-    custom_audience = ActiveAd::Facebook::CustomAudience.new(stale: true, id: '123', name: 'Custom Audience Name')
+```ruby
+custom_audience = ActiveAd::Facebook::CustomAudience.new(stale: true, id: '123', name: 'Custom Audience Name')
+```
 
 To refresh the data.
 
-    custom_audience.reload
+```ruby
+custom_audience.reload
+```
 
 Save a custom audience.
 
-    custom_audience.name = 'New Custom Audience Name'
-    custom_audience.save
+```ruby
+custom_audience.name = 'New Custom Audience Name'
+custom_audience.save
+```
 
 Update a custom audience.
 
-    custom_audience.update(name: 'New Custom Audience Name')
+```ruby
+custom_audience.update(name: 'New Custom Audience Name')
+```
 
 Delete a custom audience.
 
-    custom_audience.destroy
+```ruby
+custom_audience.destroy
+```
 
 Get a custom audience's account.
 
-    custom_audience.account
+```ruby
+custom_audience.account
+```
 
 Get a custom audience's pixel.
 
-    custom_audience.pixel
+```ruby
+custom_audience.pixel
+```
 
 ### Paging
 
 Lists can be paged by using the `next_offset_value` attribute returned from each result set.
 
-    ads = ActiveAd::Facebook::Ad.limit(10)
+```ruby
+ads = ActiveAd::Facebook::Ad.limit(10)
 
-    loop do
-      ads.map { |ad| ad.id }
-      break unless (offset = ads.next_offset_value)
-      ads = ads.offset(offset)
-    end
+loop do
+  ads.map { |ad| ad.id }
+  break unless (offset = ads.next_offset_value)
+  ads = ads.offset(offset)
+end
+```
 
 ## Roadmap
 
@@ -476,7 +633,9 @@ If nothing has been specified, then this is not development and unnecessary libr
 
 Run console like so while extending and testing the gem.
 
-    ACTIVE_AD_ENV=development bin/console
+```
+ACTIVE_AD_ENV=development bin/console
+```
 
 ## Logger
 
@@ -484,7 +643,9 @@ The default log level while working in the development environment is set to `DE
 
 If the logger gets too noisy while developing, you can change the log level.
 
-    ActiveAd.logger.level = Logger::INFO
+```ruby
+ActiveAd.logger.level = Logger::INFO
+```
 
 ## Contributing
 
