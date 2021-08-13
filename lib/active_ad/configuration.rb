@@ -5,6 +5,8 @@
 #   ActiveAd::Facebook.configure do |config|
 #     config.client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
 #   end
+#
+#   ActiveAd::Facebook.client # => #<ActiveAd::Facebook::Client:0x...>
 class ActiveAd::Configuration
   include ActiveSupport::Configurable
 
