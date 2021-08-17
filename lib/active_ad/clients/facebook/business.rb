@@ -68,11 +68,12 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
-  validates_presence_of :name, :vertical, on: :create
+  validates_presence_of :name, :user_id, :vertical, on: :create
 
   validates_inclusion_of :survey_business_type, in: SURVEY_BUSINESS_TYPES, allow_blank: true, message: validates_inclusion_of_message(SURVEY_BUSINESS_TYPES)
   validates_inclusion_of :vertical, in: VERTICALS, allow_blank: true, message: validates_inclusion_of_message(VERTICALS)
 
+  validates_numericality_of :user_id, greater_than: 0, on: :create
   validates_numericality_of :primary_page, allow_nil: true, greater_than: 0, on: :create
   validates_numericality_of :timezone_id, allow_nil: true
   validates_numericality_of :survey_num_assets, :survey_num_people, allow_nil: true, greater_than: 0
