@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe ActiveAd::Facebook::Business do
   before(:all) do
     ActiveAd::Facebook.configure do |config|
-      config.client = ActiveAd::Facebook::Client.new(access_token: 'secret_access_token', client_id: 'client_123', client_secret: '1a2b3c')
+      config.client = ActiveAd::Facebook::Client.new(access_token: 'secret_access_token', client_id: 'client_100', client_secret: '1a2b3c')
     end
   end
 
@@ -209,7 +209,7 @@ RSpec.describe ActiveAd::Facebook::Business do
 
     it 'is not a new record after create' do
       stub_create_100
-      expect(described_class.create(user_id: '100', name: 'Business Name', validate: false).new_record?).to be(false)
+      expect(described_class.create(user_id: '100', validate: false).new_record?).to be(false)
     end
   end
 
@@ -298,8 +298,8 @@ RSpec.describe ActiveAd::Facebook::Business do
         hash_including(access_token: 'secret_access_token')
       ).to_return(status: 200, body: {
         data: [
-          { id: 'account_1', name: 'Account 1' },
-          { id: 'account_2', name: 'Account 2' }
+          { id: 'act_1', name: 'Account 1' },
+          { id: 'act_2', name: 'Account 2' }
         ],
         paging: { cursors: { before: '1' } }
       }.to_json)

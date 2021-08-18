@@ -194,7 +194,7 @@ RSpec/MultipleExpectations:
   Max: 30
 
 RSpec/MultipleMemoizedHelpers:
-  Max: 10
+  Enabled: false
 
 RSpec/NestedGroups:
   Max: 7
@@ -216,6 +216,7 @@ Style/BlockDelimiters:
   IgnoredMethods:
     - let_it_be
     - let
+    - expect
   Exclude:
     - spec/factories/**/*.rb
 
