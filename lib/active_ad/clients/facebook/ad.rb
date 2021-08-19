@@ -66,10 +66,11 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
-  validates_presence_of :name, :status, on: :create
+  validates_presence_of :name, :status, :creative, :ad_set_id, :account_id, on: :create
 
   validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
 
+  validates_numericality_of :account_id, greater_than: 0, on: :create
   validates_numericality_of :ad_set_id, :audience_id, :bid_amount, :draft_ad_group_id, :source_ad_id, allow_nil: true, greater_than: 0
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
@@ -77,6 +78,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
   after_find :set_ad_creative_id
+  after_destroy :check_response_success
 
   class << self
     def index_request(**kwargs)
@@ -141,5 +143,9 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
 
   def set_ad_creative_id
     assign_attributes(ad_creative_id: response.body.dig('creative', 'id')) if response.success?
+  end
+
+  def check_response_success
+    raise ActiveAd::RecordNotDeleted if response.body['success'] == false
   end
 end
