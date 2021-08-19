@@ -108,12 +108,14 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
                                                        allow_blank: true,
                                                        message: validates_inclusion_of_message(SPECIAL_AD_CATEGORY_COUNTRIES)
 
+  validates_numericality_of :account_id, greater_than: 0, on: :create
   validates_numericality_of :daily_budget, :lifetime_budget, :source_campaign_id, :spend_cap, :topline_id, allow_nil: true, greater_than: 0
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something
   # after_destroy :do_something
+  after_destroy :check_response_success
 
   class << self
     def index_request(**kwargs)
@@ -174,5 +176,9 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
     %i[account_id]
+  end
+
+  def check_response_success
+    raise ActiveAd::RecordNotDeleted if response.body['success'] == false
   end
 end

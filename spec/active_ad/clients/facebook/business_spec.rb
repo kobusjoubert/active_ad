@@ -41,7 +41,7 @@ RSpec.describe ActiveAd::Facebook::Business do
     stub_request(:post, "#{client.base_url}/100/businesses").with(body:
       hash_including(access_token: 'secret_access_token', name: 'Business Name', vertical: 'OTHER')
     ).to_return(status: 200, body: {
-      id: '101', name: 'Business Name', vertical: 'OTHER'
+      id: '101'
     }.to_json)
   }
 
@@ -58,7 +58,7 @@ RSpec.describe ActiveAd::Facebook::Business do
     stub_request(:post, "#{client.base_url}/101").with(body:
       hash_including(access_token: 'secret_access_token', name: 'New Business Name')
     ).to_return(status: 200, body: {
-      id: '101', name: 'New Business Name'
+      success: true
     }.to_json)
   }
 
@@ -156,7 +156,7 @@ RSpec.describe ActiveAd::Facebook::Business do
 
     it 'raises an exception when not created' do
       stub_create_900
-      expect { described_class.create!(user_id: '900', validate: false) }.to raise_error(ActiveAd::RecordInvalid)
+      expect { described_class.create!(user_id: '900', validate: false) }.to raise_error(ActiveAd::RecordNotSaved)
     end
 
     it 'raises an exception with user_id of 0' do
@@ -240,7 +240,7 @@ RSpec.describe ActiveAd::Facebook::Business do
     it 'raises an exception when not saved' do
       stub_update_901
       business_901.name = 'New Business Name'
-      expect { business_901.save! }.to raise_error(ActiveAd::RecordInvalid)
+      expect { business_901.save! }.to raise_error(ActiveAd::RecordNotSaved)
     end
   end
 
@@ -264,7 +264,7 @@ RSpec.describe ActiveAd::Facebook::Business do
 
     it 'raise an exception when not updated' do
       stub_update_901
-      expect { business_901.update!(name: 'New Business Name') }.to raise_error(ActiveAd::RecordInvalid)
+      expect { business_901.update!(name: 'New Business Name') }.to raise_error(ActiveAd::RecordNotSaved)
     end
   end
 
