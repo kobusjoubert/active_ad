@@ -251,7 +251,7 @@ class ActiveAd::Base
     return true if save(**kwargs)
 
     raise ActiveAd::RecordInvalid.new(self) if errors.any?
-    raise ActiveAd::RecordNotSaved.new(self, response)
+    raise ActiveAd::RecordNotSaved.new(self, @response)
   end
 
   # Returns true or false.
@@ -285,7 +285,7 @@ class ActiveAd::Base
 
   # Returns true or exception.
   def destroy!
-    destroy || raise(ActiveAd::RecordNotDeleted.new(self, response))
+    destroy || raise(ActiveAd::RecordNotDeleted.new(self, @response))
   end
 
   # Returns true or false.
@@ -307,7 +307,7 @@ class ActiveAd::Base
 
   # Returns true or exception.
   def link!(**kwargs)
-    link(**kwargs) || raise(ActiveAd::RecordNotLinked.new(self, response))
+    link(**kwargs) || raise(ActiveAd::RecordNotLinked.new(self, @response))
   end
 
   # Returns true or false.
@@ -329,7 +329,7 @@ class ActiveAd::Base
 
   # Returns true or exception.
   def unlink!(**kwargs)
-    unlink(**kwargs) || raise(ActiveAd::RecordNotUnlinked.new(self, response))
+    unlink(**kwargs) || raise(ActiveAd::RecordNotUnlinked.new(self, @response))
   end
 
   def reload(**kwargs)
@@ -399,7 +399,7 @@ class ActiveAd::Base
   def find!(**kwargs)
     find(**kwargs)
     # raise ActiveAd::RecordNotFound, "Couldn't find record with 'id'=#{id}" unless response.success? # TODO: Probably not what I want.
-    raise ActiveAd::RecordNotFound.new(self, response) unless response.success?
+    raise ActiveAd::RecordNotFound.new(self, @response) unless response.success?
 
     self
   end
