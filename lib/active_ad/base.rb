@@ -235,7 +235,12 @@ class ActiveAd::Base
       end
     end
 
+    # If an `:abort` was thrown by a `before_` callback or an `ActiveAd::RecordNotSaved` exception has been raised, there will be no response.
+    return false unless response
+
     response.success?
+  rescue ActiveAd::RecordNotSaved
+    false
   end
 
   # Returns true or exception.
@@ -243,11 +248,10 @@ class ActiveAd::Base
   #   ActiveAd::RecordInvalid (Validation failed: Client can't be blank).
   #   ActiveAd::RecordInvalid (400 Bad Request: {}).
   def save!(**kwargs)
-    save(**kwargs)
-    raise ActiveAd::RecordInvalid, errors.full_messages.join(', ') if errors.any?
-    raise ActiveAd::RecordInvalid, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+    return true if save(**kwargs)
 
-    response.success?
+    raise ActiveAd::RecordInvalid.new(self) if errors.any?
+    raise ActiveAd::RecordNotSaved.new(self, response)
   end
 
   # Returns true or false.
@@ -271,15 +275,17 @@ class ActiveAd::Base
       @response = request(delete_request)
     end
 
+    # If an `:abort` was thrown by a `before_destroy` callback or an `ActiveAd::RecordNotDeleted` exception has been raised, there will be no response.
+    return false unless response
+
     response.success?
+  rescue ActiveAd::RecordNotDeleted
+    false
   end
 
   # Returns true or exception.
   def destroy!
-    destroy
-    raise ActiveAd::RecordNotDeleted, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
-
-    response.success?
+    destroy || raise(ActiveAd::RecordNotDeleted.new(self, response))
   end
 
   # Returns true or false.
@@ -291,15 +297,17 @@ class ActiveAd::Base
       @response = request(link_request(**kwargs))
     end
 
+    # If an `:abort` was thrown by a `before_link` callback or an `ActiveAd::RecordNotLinked` exception has been raised, there will be no response.
+    return false unless response
+
     response.success?
+  rescue ActiveAd::RecordNotLinked
+    false
   end
 
   # Returns true or exception.
   def link!(**kwargs)
-    link(**kwargs)
-    raise ActiveAd::RecordNotLinked, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
-
-    response.success?
+    link(**kwargs) || raise(ActiveAd::RecordNotLinked.new(self, response))
   end
 
   # Returns true or false.
@@ -311,15 +319,17 @@ class ActiveAd::Base
       @response = request(unlink_request(**kwargs))
     end
 
+    # If an `:abort` was thrown by a `before_unlink` callback or an `ActiveAd::RecordNotUnlinked` exception has been raised, there will be no response.
+    return false unless response
+
     response.success?
+  rescue ActiveAd::RecordNotUnlinked
+    false
   end
 
   # Returns true or exception.
   def unlink!(**kwargs)
-    unlink(**kwargs)
-    raise ActiveAd::RecordNotUnlinked, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
-
-    response.success?
+    unlink(**kwargs) || raise(ActiveAd::RecordNotUnlinked.new(self, response))
   end
 
   def reload(**kwargs)
@@ -389,7 +399,7 @@ class ActiveAd::Base
   def find!(**kwargs)
     find(**kwargs)
     # raise ActiveAd::RecordNotFound, "Couldn't find record with 'id'=#{id}" unless response.success? # TODO: Probably not what I want.
-    raise ActiveAd::RecordNotFound, "#{response.status} #{response.reason_phrase}: #{response.body}" unless response.success?
+    raise ActiveAd::RecordNotFound.new(self, response) unless response.success?
 
     self
   end

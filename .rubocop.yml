@@ -55,7 +55,11 @@ Layout/ClassStructure:
 Layout/ClosingParenthesisIndentation:
   Exclude:
     - spec/**/*.rb
-  
+
+Layout/EmptyLineAfterGuardClause:
+  Exclude:
+    - lib/active_ad/base.rb
+
 Layout/EndOfLine:
   EnforcedStyle: lf
 
@@ -133,6 +137,8 @@ Metrics/ClassLength:
 
 Metrics/CyclomaticComplexity:
   Max: 8
+  IgnoredMethods:
+    - save
 
 Metrics/MethodLength:
   Max: 50
@@ -144,6 +150,10 @@ Metrics/ModuleLength:
 
 Metrics/ParameterLists:
   Enabled: false
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - lib/active_ad/base.rb
 
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required
@@ -239,6 +249,10 @@ Style/FrozenStringLiteralComment:
 
 Style/PreferredHashMethods:
   Enabled: false
+
+Style/RaiseArgs:
+  AllowedCompactTypes:
+    - ActiveAd::RecordInvalid
 
 Style/RedundantBegin:
   Enabled: false

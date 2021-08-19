@@ -45,14 +45,6 @@ RSpec.describe ActiveAd::Facebook::Business do
     }.to_json)
   }
 
-  let(:stub_create_200_with_attributes) {
-    stub_request(:post, "#{client.base_url}/200/businesses").with(body:
-      hash_including(access_token: 'secret_access_token', name: 'Business Name', vertical: 'OTHER')
-    ).to_return(status: 200, body: {
-      id: '201', name: 'Business Name', vertical: 'OTHER'
-    }.to_json)
-  }
-
   let(:stub_create_900) {
     stub_request(:post, "#{client.base_url}/900/businesses").with(body:
       hash_including(access_token: 'secret_access_token')

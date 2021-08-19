@@ -36,8 +36,8 @@ $ gem install active_ad
 Validation happens on `save`, `create` and `update`. When successful, `true` will be returned for `save` and `update`, and the object will be returned for
 `create`. When validation fails or the external API request fails, `false` will be returned.
 
-Each method also implements a bang method, `save!`, `create!` and `update!` which will raise an `ActiveAd::RecordInvalid` exception when validation fails or the
-external API request fails.
+Each method also implements a bang method, `save!`, `create!` and `update!` which will raise an `ActiveAd::RecordInvalid` exception when validation fails or an
+`ActiveAd::RecordNotSaved` when the external API request fails.
 
 Method `destroy` will return `false` when the external API request fails, while `destroy!` will raise an `ActiveAd::RecordNotDeleted` exception. In both cases
 `true` will be returned when successful.
@@ -579,6 +579,30 @@ loop do
   ads.map { |ad| ad.id }
   break unless (offset = ads.next_offset_value)
   ads = ads.offset(offset)
+end
+```
+
+### Exceptions
+
+Validation callbacks run before any request is made to the external APIs. When validation fails, you can inspect the `record` attribute.
+
+```ruby
+begin
+  record.save!
+rescue RecordInvalid => e
+  puts e.record.errors
+end
+```
+
+After successful validation, requests will be made to the external APIs. Any exception being raised at this point will include a `record` and a `response`
+attribute which can be inspected.
+
+```ruby
+begin
+  record.save!
+rescue RecordNotSaved => e
+  puts "#{e.response.status} #{e.response.reason_phrase}: #{e.response.body}"
+  puts e.record.attributes
 end
 ```
 
