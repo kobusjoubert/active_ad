@@ -110,7 +110,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
-  validates_presence_of :name, :status, on: :create
+  validates_presence_of :name, :status, :billing_event, :targeting, :campaign_id, :account_id, on: :create
 
   validates_inclusion_of :bid_strategy, in: BID_STRATEGIES, allow_blank: true, message: validates_inclusion_of_message(BID_STRATEGIES)
   validates_inclusion_of :billing_event, in: BILLING_EVENTS, allow_blank: true, message: validates_inclusion_of_message(BILLING_EVENTS)
@@ -125,13 +125,15 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
   validates_inclusion_of :tune_for_category, in: TUNE_FOR_CATEGORIES, allow_blank: true, message: validates_inclusion_of_message(TUNE_FOR_CATEGORIES)
 
-  validates_numericality_of :account_id, :campaign_id, :bid_amount, :daily_budget, :daily_imps, :daily_min_spend_target, :daily_spend_cap, :lifetime_budget,
-                            :lifetime_imps, :lifetime_min_spend_target, :lifetime_spend_cap, :rf_prediction_id, allow_nil: true, greater_than: 0
+  validates_numericality_of :account_id, greater_than: 0, on: :create
+  validates_numericality_of :campaign_id, :bid_amount, :daily_budget, :daily_imps, :daily_min_spend_target, :daily_spend_cap, :lifetime_budget, :lifetime_imps,
+                            :lifetime_min_spend_target, :lifetime_spend_cap, :rf_prediction_id, allow_nil: true, greater_than: 0
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something
   # after_destroy :do_something
+  after_destroy :check_response_success
 
   class << self
     def index_request(**kwargs)
@@ -192,5 +194,9 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
     %i[account_id campaign_id]
+  end
+
+  def check_response_success
+    raise ActiveAd::RecordNotDeleted if response.body['success'] == false
   end
 end
