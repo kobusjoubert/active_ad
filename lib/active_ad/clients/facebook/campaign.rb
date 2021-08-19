@@ -90,7 +90,7 @@ class ActiveAd::Facebook::Campaign < ActiveAd::Base
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
-  validates_presence_of :name, :status, :objective, :special_ad_categories, on: :create
+  validates_presence_of :name, :status, :objective, :special_ad_categories, :account_id, on: :create
 
   validates_inclusion_of :bid_strategy, in: BID_STRATEGIES, allow_blank: true, message: validates_inclusion_of_message(BID_STRATEGIES)
   validates_inclusion_of :buying_type, in: BUYING_TYPES, allow_blank: true, message: validates_inclusion_of_message(BUYING_TYPES)
