@@ -84,16 +84,17 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   #
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
-  validates_presence_of :name, on: :create
+  validates_presence_of :name, :account_id, :object_story_spec, on: :create
 
   validates_inclusion_of :status, in: STATUS, allow_blank: true, message: validates_inclusion_of_message(STATUS)
 
-  validates_numericality_of :account_id, allow_nil: true, greater_than: 0
+  validates_numericality_of :account_id, greater_than: 0, on: :create
 
   # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
   #
   # before_save :do_something
   # after_destroy :do_something
+  after_destroy :check_response_success
 
   class << self
     def index_request(**kwargs)
@@ -154,5 +155,9 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
   # List all the relational attributes required for `belongs_to` to know which parent to request.
   def relational_attributes
     %i[account_id]
+  end
+
+  def check_response_success
+    raise ActiveAd::RecordNotDeleted if response.body['success'] == false
   end
 end
