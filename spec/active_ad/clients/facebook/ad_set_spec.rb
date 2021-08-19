@@ -7,7 +7,7 @@ RSpec.describe ActiveAd::Facebook::AdSet do
     end
   end
 
-  let(:client)       { ActiveAd::Base.client }
+  let(:client)     { ActiveAd::Base.client }
   let(:ad_set_101) { described_class.new(id: '101', stale: true) }
   let(:ad_set_801) { described_class.new(id: '801', stale: true) }
   let(:ad_set_901) { described_class.new(id: '901', stale: true) }
