@@ -63,7 +63,7 @@ end
 loader.setup
 
 if ActiveAd.env.development?
-  require 'byebug'
+  require 'debug'
   require 'listen'
   Listen.to('lib') { loader.reload }.start
 end

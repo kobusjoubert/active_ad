@@ -647,7 +647,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 [rubygems.org](https://rubygems.org).
 
 You can set the environment of the gem to `development` to make life easier while extending the gem. Setting it to any other environment will not require or
-load development dependencies like `listen` and `byebug` which we don't want in production.
+load development dependencies like `listen` and `debug` which we don't want in production.
 
 If you're building a Rails or Rack app, it will use those environments. If you're using this gem as a standalone library, you'll have to set the `ACTIVE_AD_ENV`
 environment variable to `development`.

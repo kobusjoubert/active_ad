@@ -1,6 +1,6 @@
 require 'active_ad'
 require 'webmock/rspec'
-require 'byebug'
+require 'debug'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 

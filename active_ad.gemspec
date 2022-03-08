@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'i18n',                '~> 1.8'
   spec.add_dependency 'zeitwerk',            '~> 2.4'
 
-  spec.add_development_dependency 'byebug',              '~> 11.0'
+  spec.add_development_dependency 'debug',               '~> 1.0'
   spec.add_development_dependency 'listen',              '~> 3.5'
   spec.add_development_dependency 'rake',                '~> 13.0'
   spec.add_development_dependency 'rspec',               '~> 3.0'
