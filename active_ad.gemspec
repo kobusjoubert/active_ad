@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Framework to manage ads.'
   spec.description   = 'Active Ad allows you to talk to different marketing APIs in a simple unified way giving you a consistent interface across all marketing APIs, no need to learn all the different social media APIs out there. The aim of the project is to feel natural to Ruby users and is developed to be used in Ruby on Rails applications, but can also be used as a stand alone library in any Ruby project.'
-  spec.homepage      = 'https://github.com/ClickAds/active_ad'
+  spec.homepage      = 'https://github.com/kobusjoubert/active_ad'
   spec.license       = 'MIT'
 
   spec.required_ruby_version = '>= 3.0.0'
@@ -16,8 +16,8 @@ Gem::Specification.new do |spec|
   spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
   spec.metadata['homepage_uri']    = spec.homepage
-  spec.metadata['source_code_uri'] = 'https://github.com/ClickAds/active_ad'
-  spec.metadata['changelog_uri']   = 'https://github.com/ClickAds/active_ad/CHANGELOG.md'
+  spec.metadata['source_code_uri'] = 'https://github.com/kobusjoubert/active_ad'
+  spec.metadata['changelog_uri']   = 'https://github.com/kobusjoubert/active_ad/CHANGELOG.md'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

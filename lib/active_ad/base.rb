@@ -26,10 +26,10 @@ class ActiveAd::Base
   #           7: from bin/console:14:in `<main>'
   #           6: from (irb):92:in `<main>'
   #           5: from (irb):93:in `rescue in <main>'
-  #           4: from /Users/kobus/Development/ClickAds/active_ad/lib/active_ad/base.rb:45:in `create!'
-  #           3: from /Users/kobus/Development/ClickAds/active_ad/lib/active_ad/base.rb:45:in `new'
+  #           4: from /Users/kobus/Development/active_ad/lib/active_ad/base.rb:45:in `create!'
+  #           3: from /Users/kobus/Development/active_ad/lib/active_ad/base.rb:45:in `new'
   #           2: from /Users/kobus/.rbenv/versions/3.0.0/lib/ruby/gems/3.0.0/gems/activemodel-6.1.3.2/lib/active_model/attributes.rb:77:in `initialize'
-  #           1: from /Users/kobus/Development/ClickAds/active_ad/lib/active_ad/base.rb:12:in `initialize'
+  #           1: from /Users/kobus/Development/active_ad/lib/active_ad/base.rb:12:in `initialize'
   #   ArgumentError (wrong number of arguments (given 1, expected 0))
   #
   # def initialize(**kwargs)
