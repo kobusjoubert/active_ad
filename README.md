@@ -51,6 +51,14 @@ like `account.campaigns`, you can use `account.campaigns.limit(10)`.
 
 Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
+```mermaid
+  graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+```
+
 ![ActiveAd Diagram](https://user-images.githubusercontent.com/3071529/157600831-2b243ebf-a7ca-4242-861d-8508f6440f86.png)
 
 ### Client
