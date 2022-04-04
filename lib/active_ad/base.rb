@@ -15,7 +15,7 @@ class ActiveAd::Base
 
   define_model_callbacks :find, :save, :create, :update, :destroy, :link, :unlink
 
-  delegate :entity, :entity_class, :platform, :platform_class, to: :class
+  delegate :client, :entity, :entity_class, :platform, :platform_class, to: :class
 
   # before_save :do_something
   # after_destroy :do_something
@@ -199,10 +199,6 @@ class ActiveAd::Base
 
       [id, id_key]
     end
-  end
-
-  def client
-    ActiveAd::Base.client
   end
 
   # Returns true or false.
