@@ -78,6 +78,11 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   validates_numericality_of :timezone_id, allow_nil: true
   validates_numericality_of :survey_num_assets, :survey_num_people, allow_nil: true, greater_than: 0
 
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
+  #
+  # before_save :do_something
+  # after_destroy :do_something
+
   def read_request(**kwargs)
     params = kwargs.dup
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
@@ -136,7 +141,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     response.body['id']
   end
 
-  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
     %i[]
   end

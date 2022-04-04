@@ -58,7 +58,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :agency_client_declaration
   attribute :amount_spent, :big_integer
   attribute :balance, :big_integer
-  attribute :business
+  attribute :business # {"name"=>"Business Name", "id"=>"123"}
   attribute :business_city, :string
   attribute :business_country_code, :string
   attribute :business_id, :big_integer
@@ -127,7 +127,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   validates_numericality_of :timezone_id, allow_nil: true
   validates_numericality_of :business_id, allow_nil: true, greater_than: 0
 
-  # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
   #
   # before_save :do_something
   # after_destroy :do_something
@@ -199,7 +199,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     response.body['id']
   end
 
-  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
     %i[business]
   end

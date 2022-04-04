@@ -71,7 +71,7 @@ end
 ActiveModel::Type.register(:enum, ActiveAd::Type::Enum)
 
 # The documentation says to put your code here, but some have reported problems in production, which is why it's at the top for now.
-# https://rewind.com/blog/zeitwerk-autoloader-rails-app/
+# [https://rewind.com/blog/zeitwerk-autoloader-rails-app/]
 # module ActiveAd; end
 
 loader.eager_load # Optional, useful to test all files while developing.

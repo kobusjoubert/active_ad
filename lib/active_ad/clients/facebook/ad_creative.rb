@@ -90,7 +90,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
 
   validates_numericality_of :account_id, greater_than: 0, on: :create
 
-  # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
   #
   # before_save :do_something
   # after_destroy :do_something
@@ -152,7 +152,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
     response.body['id']
   end
 
-  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
     %i[account_id]
   end

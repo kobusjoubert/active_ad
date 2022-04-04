@@ -1,5 +1,5 @@
-# https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/
-# https://developers.facebook.com/docs/marketing-api/reference/ad-account/adspixels/
+# [https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/]
+# [https://developers.facebook.com/docs/marketing-api/reference/ad-account/adspixels/]
 class ActiveAd::Facebook::Pixel < ActiveAd::Base
   # Requesting the following fields causes status `400` error with messages.
   #
@@ -64,7 +64,7 @@ class ActiveAd::Facebook::Pixel < ActiveAd::Base
                                                      allow_blank: true,
                                                      message: validates_inclusion_of_message(FIRST_PARTY_COOKIE_STATUS)
 
-  # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
   #
   # before_save :do_something
   # after_destroy :do_something
@@ -141,7 +141,7 @@ class ActiveAd::Facebook::Pixel < ActiveAd::Base
     response.body['id']
   end
 
-  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
     %i[owner_ad_account owner_business]
   end

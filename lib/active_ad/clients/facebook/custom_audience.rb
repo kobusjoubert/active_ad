@@ -1,5 +1,5 @@
-# https://developers.facebook.com/docs/marketing-api/reference/custom-audience/
-# https://developers.facebook.com/docs/marketing-api/reference/ad-account/customaudiences/
+# [https://developers.facebook.com/docs/marketing-api/reference/custom-audience/]
+# [https://developers.facebook.com/docs/marketing-api/reference/ad-account/customaudiences/]
 class ActiveAd::Facebook::CustomAudience < ActiveAd::Base
   READ_FIELDS = %i[
     id account_id approximate_count customer_file_source data_source delivery_status description external_event_source is_value_based lookalike_audience_ids
@@ -80,7 +80,7 @@ class ActiveAd::Facebook::CustomAudience < ActiveAd::Base
   validates_numericality_of :dataset_id, :origin_audience_id, :pixel_id, :product_set_id, allow_nil: true, greater_than: 0, on: :create
   validates_numericality_of :product_set_id, allow_nil: true, greater_than: 0
 
-  # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
   #
   # before_save :do_something
   # after_destroy :do_something
@@ -141,7 +141,7 @@ class ActiveAd::Facebook::CustomAudience < ActiveAd::Base
     response.body['id']
   end
 
-  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
     %i[account_id pixel_id]
   end

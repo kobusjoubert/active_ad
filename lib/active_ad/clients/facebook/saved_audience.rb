@@ -1,5 +1,5 @@
-# https://developers.facebook.com/docs/marketing-api/reference/saved-audience/
-# https://developers.facebook.com/docs/marketing-api/audiences/overview
+# [https://developers.facebook.com/docs/marketing-api/reference/saved-audience/]
+# [https://developers.facebook.com/docs/marketing-api/audiences/overview]
 class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
   READ_FIELDS = %i[
     id account approximate_count approximate_count_64bit delete_time description extra_info name operation_status permission_for_actions run_status
@@ -40,7 +40,7 @@ class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
   # validates_length_of :title, maximum: 24
   # validates :titles, titles_length: { maximums: [24, 50] }
 
-  # Use callbacks to execute code that should happen before or after `create`, `update`, `save` or `destroy`.
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
   #
   # before_save :do_something
   # after_destroy :do_something
@@ -85,7 +85,7 @@ class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
 
   private
 
-  # List all the relational attributes required for `belongs_to` to know which parent to request.
+  # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
     %i[account]
   end
