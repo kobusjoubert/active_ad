@@ -121,8 +121,8 @@ class ActiveAd::Base
       self.has_many_relations += [model_name]
       "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.has_many_relations_ids += [:"#{entity}_id"]
 
-      define_method(model_name) do
-        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id)
+      define_method(model_name) do |kwargs = {}|
+        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id, **kwargs)
       end
     end
 
