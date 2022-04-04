@@ -16,7 +16,7 @@ class ActiveAd::Client
   after_login :set_access_token
   after_refresh_token :set_access_token
 
-  delegate :platform, to: :class
+  delegate :platform, :platform_class, to: :class
 
   # Returns the API version.
   #
@@ -46,8 +46,14 @@ class ActiveAd::Client
   class_attribute :pagination_type, instance_reader: true, instance_writer: false
 
   class << self
+    # Returns a symobol in underscore style: `:platform_name`.
     def platform
-      to_s.split('::')[1].underscore
+      platform_class.underscore.to_sym
+    end
+
+    # Returns a string in classify style: `"PlatformClassName"`.
+    def platform_class
+      to_s.split('::')[1]
     end
 
     def api_version(version)
