@@ -1,12 +1,12 @@
 # When including into a class, the `@klass` attribute should be set if the class making the request cannot be determined with `self.class`. An example of this
 # would be when calling `request` from a Relation class instead of an `Ad` or `Campaign` class for instance.
 #
-# Logging colors: https://misc.flogisoft.com/bash/tip_colors_and_formatting
+# Logging colors: [https://misc.flogisoft.com/bash/tip_colors_and_formatting]
 module ActiveAd::Requestable
   extend ActiveSupport::Concern
 
   REQUEST_METHODS = %i[get head delete trace post put patch].freeze
-  ANSI_COLORS = { red: "\e[31m", green: "\e[32m", yellow: "\e[33m", blue: "\e[34m", magenta: "\e[35m", cyan: "\e[36m" }.freeze
+  ANSI_COLORS = { red: "\e[31m", green: "\e[32m", yellow: "\e[33m", blue: "\e[34m", magenta: "\e[35m", cyan: "\e[36m", reset: "\e[0m" }.freeze
 
   # Expect a hash with the first key being one of `REQUEST_METHODS`.
   #
@@ -26,7 +26,7 @@ module ActiveAd::Requestable
 
     ActiveAd.logger.info(
       "#{ANSI_COLORS[:blue]}  ActiveAd #{request_log_color(request_method)} #{request_method.upcase} #{url} with options: " \
-      "#{ActiveAd.parameter_filter.filter(options)}\e[0m"
+      "#{ActiveAd.parameter_filter.filter(options)}#{ANSI_COLORS[:reset]}"
     )
 
     ActiveAd.connection.send(request_method, url) do |req|
