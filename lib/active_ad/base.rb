@@ -131,15 +131,9 @@ class ActiveAd::Base
       self.belongs_to_relations += [model_name]
       self.belongs_to_relations_ids += [:"#{model_name}_id"]
 
-      define_method(model_name) do
-        return instance_variable_get("@#{model_name}") if instance_variable_defined?("@#{model_name}")
-
-        find_related = lambda do |model|
-          relation_id = public_send("#{model}_id")
-          "ActiveAd::#{platform_class}::#{model.to_s.classify}".constantize.find(relation_id)
-        end
-
-        instance_variable_set("@#{model_name}", find_related.call(model_name))
+      define_method(model_name) do |kwargs = {}|
+        relation_id = public_send("#{model}_id")
+        "ActiveAd::#{platform_class}::#{model.to_s.classify}".constantize.find(relation_id, **kwargs)
       end
     end
 
