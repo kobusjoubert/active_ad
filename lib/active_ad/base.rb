@@ -132,8 +132,8 @@ class ActiveAd::Base
       self.belongs_to_relations_ids += [:"#{model_name}_id"]
 
       define_method(model_name) do |kwargs = {}|
-        relation_id = public_send("#{model}_id")
-        "ActiveAd::#{platform_class}::#{model.to_s.classify}".constantize.find(relation_id, **kwargs)
+        relation_id = public_send("#{model_name}_id")
+        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.find(relation_id, **kwargs)
       end
     end
 
