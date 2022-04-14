@@ -130,10 +130,11 @@ class ActiveAd::Base
     def belongs_to(model_name)
       self.belongs_to_relations += [model_name]
       self.belongs_to_relations_ids += [:"#{model_name}_id"]
+      method = ActiveAd.raise_relational_errors ? 'find!' : 'find'
 
       define_method(model_name) do |kwargs = {}|
         relation_id = public_send("#{model_name}_id")
-        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.find(relation_id, **kwargs)
+        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.public_send(method, relation_id, **kwargs)
       end
     end
 
@@ -384,11 +385,10 @@ class ActiveAd::Base
 
   # Returns object or exception.
   #
-  #   ActiveAd::RecordNotFound (Couldn't find record with 'id'=#{id}).
+  #   ActiveAd::RecordNotFound (400 Bad Request: {}).
   #   ActiveAd::RecordNotFound (404 Not Found: {}).
   def find!(**kwargs)
     find(**kwargs)
-    # raise ActiveAd::RecordNotFound, "Couldn't find record with 'id'=#{id}" unless response.success? # TODO: Probably not what I want.
     raise ActiveAd::RecordNotFound.new(self, @response) unless response.success?
 
     self

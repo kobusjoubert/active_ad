@@ -12,6 +12,10 @@ require 'faraday'
 require 'faraday_middleware'
 
 module ActiveAd
+  include ActiveSupport::Configurable
+
+  config_accessor :raise_relational_errors, instance_accessor: false, default: true
+
   class << self
     # Returns the current ActiveAd environment. Set to `development` only when requested.
     #

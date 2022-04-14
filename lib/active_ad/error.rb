@@ -70,5 +70,16 @@ module ActiveAd
     end
   end
 
+  class RelationNotFound < Error
+    attr_reader :record, :response
+
+    def initialize(record = nil, response = nil)
+      @record = record
+      @response = response
+      message = response ? "#{response.status} #{response.reason_phrase}: #{response.body}" : 'Failed to find the relation'
+      super(message)
+    end
+  end
+
   class LoginError < Error; end
 end

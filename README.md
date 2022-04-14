@@ -39,15 +39,24 @@ Validation happens on `save`, `create` and `update`. When successful, `true` wil
 Each method also implements a bang method, `save!`, `create!` and `update!` which will raise an `ActiveAd::RecordInvalid` exception when validation fails or an
 `ActiveAd::RecordNotSaved` when the external API request fails.
 
-Method `destroy` will return `false` when the external API request fails, while `destroy!` will raise an `ActiveAd::RecordNotDeleted` exception. In both cases
-`true` will be returned when successful.
+Method `destroy` will return `false` when the external API request fails, while `destroy!` will raise an `ActiveAd::RecordNotDeleted` exception. In both cases `true` will be returned when
+successful.
 
-Method `unlink` will return `false` when the external API request fails, while `unlink!` will raise an `ActiveAd::RecordNotUnlinked` exception. In both cases
-`true` will be returned when successful.
+Method `unlink` will return `false` when the external API request fails, while `unlink!` will raise an `ActiveAd::RecordNotUnlinked` exception. In both cases `true` will be returned when
+successful.
+
+Method `find` will return `nil` when the external API request fails, while `find!` will raise an `ActiveAd::RecordNotFound` exception. In both cases a subclass of `ActiveAd::Base` will be
+returned when successful.
 
 When using `where`, an enumerable will be returned and all results will be queried when calling `each` or `map` on it and will result in API rate limiting when
 being abused. It is up to you to enforce a `limit` if you don't want all results, for example `where.limit(10)`. The same goes for relational scopes
 like `account.campaigns`, you can use `account.campaigns.limit(10)`.
+
+Method `where` and models with `has_many` relations like `account.campaigns`, when calling `first`, `each`,  `map` and so on, will raise an `ActiveAd::RelationNotFound` exception when an
+external API request fails. To have it return `nil` instead, set `ActiveAd.raise_relational_errors` to `false` on initialization.
+
+Models with `belongs_to` relations like `campaign.account` will raise an `ActiveAd::RecordNotFound` exception when the external API request fails. To have it return `nil` instead, set
+`ActiveAd.raise_relational_errors` to `false` on initialization.
 
 Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
@@ -590,6 +599,14 @@ loop do
   ads.map { |ad| ad.id }
   break unless (offset = ads.next_offset_value)
   ads = ads.offset(offset)
+end
+```
+
+### Configuration
+
+```ruby
+ActiveAd.configure do |config|
+  config.raise_relational_errors = true # Return nil or raise an exception when relational models aren't found? Eg: 'campaign.account', 'account.campaigns'.
 end
 ```
 

@@ -41,7 +41,10 @@ class ActiveAd::Relation
 
     loop do
       ActiveAd.logger.debug("ActiveAd::Relation#each looping at index: #{index}")
-      raise index_response_error.to_s unless index_response.success?
+
+      unless index_response.success?
+        ActiveAd.raise_relational_errors ? raise(ActiveAd::RelationNotFound.new(self, index_response)) : break
+      end
 
       # It is possible to get back less results than what was requested for.
       attributes = index_response_data(index)
@@ -185,15 +188,6 @@ class ActiveAd::Relation
   end
 
   # TODO: Maybe move the different strategies into their own modules.
-
-  def index_response_error
-    case strategy
-    when :cursor
-      index_response.body['error']
-    when :offset
-      # index_response.body['error']
-    end
-  end
 
   def index_response_data(index)
     case strategy
