@@ -7,7 +7,7 @@
 #   end
 #
 #   ActiveAd::Facebook.client # => #<ActiveAd::Facebook::Client:0x...>
-class ActiveAd::Configuration
+class ActiveAd::Platform
   include ActiveSupport::Configurable
 
   config_accessor :client, instance_reader: false

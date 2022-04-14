@@ -1,1 +1,1 @@
-class ActiveAd::Facebook < ActiveAd::Configuration; end
+class ActiveAd::Facebook < ActiveAd::Platform; end
