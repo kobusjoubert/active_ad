@@ -29,11 +29,20 @@ module ActiveAd::Requestable
       "#{ActiveAd.parameter_filter.filter(options)}#{ANSI_COLORS[:reset]}"
     )
 
-    ActiveAd.connection.send(request_method, url) do |req|
+    response = ActiveAd.connection.send(request_method, url) do |req|
       req.headers = options[:headers] if options[:headers]
       req.params  = options[:params] if options[:params]
       req.body    = options[:body].to_json if options[:body]
     end
+
+    unless response.success?
+      ActiveAd.logger.warn(
+        "#{ANSI_COLORS[:yellow]}  ActiveAd  #{request_method.upcase} #{url} with options: #{ActiveAd.parameter_filter.filter(options)} failed with reason: " \
+        "#{response.body}#{ANSI_COLORS[:reset]}"
+      )
+    end
+
+    response
   end
 
   private
