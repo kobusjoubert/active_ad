@@ -1,17 +1,22 @@
-# [https://developers.facebook.com/docs/marketing-api/reference/custom-audience/]
-# [https://developers.facebook.com/docs/marketing-api/reference/ad-account/customaudiences/]
 class ActiveAd::Facebook::CustomAudience < ActiveAd::Base
+  # References:
+  # - [https://developers.facebook.com/docs/marketing-api/reference/custom-audience/]
+  # - [https://developers.facebook.com/docs/marketing-api/reference/ad-account/customaudiences/]
   READ_FIELDS = %i[
     id account_id approximate_count customer_file_source data_source delivery_status description external_event_source is_value_based lookalike_audience_ids
     lookalike_spec name operation_status opt_out_link permission_for_actions pixel_id retention_days rule rule_aggregation sharing_status subtype
     time_content_updated time_created time_updated
   ].freeze
+
   CLAIM_OBJECTIVE = %w[AUTOMOTIVE_MODEL COLLABORATIVE_ADS HOME_LISTING MEDIA_TITLE PRODUCT TRAVEL VEHICLE VEHICLE_OFFER].freeze
+
   CONTENT_TYPES = %w[
     AUTOMOTIVE_MODEL DESTINATION FLIGHT HOME_LISTING HOTEL JOB LOCAL_SERVICE_BUSINESS LOCATION_BASED_ITEM MEDIA_TITLE OFFLINE_PRODUCT PRODUCT VEHICLE
     VEHICLE_OFFER
   ].freeze
+
   CUSTOMER_FILE_SOURCES = %w[USER_PROVIDED_ONLY PARTNER_PROVIDED_ONLY BOTH_USER_AND_PARTNER_PROVIDED].freeze
+
   SUBTYPES = %w[
     CUSTOM WEBSITE APP OFFLINE_CONVERSION CLAIM PARTNER MANAGED VIDEO LOOKALIKE ENGAGEMENT BAG_OF_ACCOUNTS STUDY_RULE_AUDIENCE FOX MEASUREMENT
     REGULATED_CATEGORIES_AUDIENCE

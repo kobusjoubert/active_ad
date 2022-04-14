@@ -1,6 +1,8 @@
-# [https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/]
-# [https://developers.facebook.com/docs/marketing-api/reference/ad-account/adspixels/]
 class ActiveAd::Facebook::Pixel < ActiveAd::Base
+  # References:
+  # - [https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/]
+  # - [https://developers.facebook.com/docs/marketing-api/reference/ad-account/adspixels/]
+  #
   # Requesting the following fields causes status `400` error with messages.
   #
   #   'creator' => "(#10) To use ads_management, your use of this endpoint must be reviewed and approved by Facebook. To submit this permission for review
@@ -9,10 +11,12 @@ class ActiveAd::Facebook::Pixel < ActiveAd::Base
     id automatic_matching_fields can_proxy code creation_time data_use_setting enable_automatic_matching first_party_cookie_status is_created_by_business is_crm
     is_unavailable last_fired_time name owner_ad_account owner_business
   ].freeze
+
   UNLINK_REQUEST_MAPPING = {
     account_id: { path: 'shared_accounts', param: :account_id },
     business_id: { path: 'shared_accounts', param: :business }
   }.freeze
+
   DATA_USE_SETTINGS = %w[EMPTY ADVERTISING_AND_ANALYTICS ANALYTICS_ONLY].freeze
   FIRST_PARTY_COOKIE_STATUS = %w[EMPTY FIRST_PARTY_COOKIE_ENABLED FIRST_PARTY_COOKIE_DISABLED].freeze
 

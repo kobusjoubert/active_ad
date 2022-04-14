@@ -1,4 +1,6 @@
 class ActiveAd::Facebook::Ad < ActiveAd::Base
+  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/adgroup/]
+  #
   # Attributes that clashes with the relational methods.
   #
   #   'adset'
@@ -6,6 +8,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
     id account_id ad_review_feedback adlabels adset_id bid_amount campaign campaign_id configured_status conversion_domain created_time creative
     effective_status issues_info last_updated_by_app_id name preview_shareable_link recommendations source_ad source_ad_id status tracking_specs updated_time
   ].freeze
+
   STATUS = %w[ACTIVE PAUSED DELETED ARCHIVED].freeze
 
   belongs_to :account

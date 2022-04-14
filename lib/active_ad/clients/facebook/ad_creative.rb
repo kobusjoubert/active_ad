@@ -1,4 +1,6 @@
 class ActiveAd::Facebook::AdCreative < ActiveAd::Base
+  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-creative/]
+  #
   # Requesting the following fields causes status `400` error with messages.
   #
   #   'referral_id' => "(#3) User must be on allowlist"
@@ -11,6 +13,7 @@ class ActiveAd::Facebook::AdCreative < ActiveAd::Base
     object_url place_page_set_id platform_customizations playable_asset_id portrait_customizations product_set_id recommender_settings source_instagram_media_id
     status template_url template_url_spec thumbnail_url title url_tags use_page_actor_override video_id
   ].freeze
+
   STATUS = %w[ACTIVE IN_PROCESS WITH_ISSUES DELETED].freeze
 
   belongs_to :account

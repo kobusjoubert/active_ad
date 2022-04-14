@@ -1,4 +1,6 @@
 class ActiveAd::Facebook::AdSet < ActiveAd::Base
+  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-campaign/]
+  #
   # Requesting the following fields causes status `400` error with messages.
   #
   #   'contextual_bundling_spec' => "(#3) Ad Account must be on allowlist"

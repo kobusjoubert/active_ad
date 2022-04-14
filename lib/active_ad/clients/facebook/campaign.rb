@@ -1,19 +1,24 @@
 class ActiveAd::Facebook::Campaign < ActiveAd::Base
+  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-group/]
   READ_FIELDS = %i[
     id account_id ad_strategy_id adlabels bid_strategy boosted_object_id brand_lift_studies budget_rebalance_flag budget_remaining buying_type
     can_create_brand_lift_study can_use_spend_cap configured_status created_time daily_budget effective_status is_skadnetwork_attribution issues_info
     last_budget_toggling_time lifetime_budget name objective pacing_type promoted_object recommendations smart_promotion_type source_campaign source_campaign_id
     special_ad_categories special_ad_category special_ad_category_country spend_cap start_time status stop_time topline_id updated_time
   ].freeze
+
   BID_STRATEGIES = %w[LOWEST_COST_WITHOUT_CAP LOWEST_COST_WITH_BID_CAP COST_CAP].freeze
   BUYING_TYPES = %w[AUCTION RESERVED].freeze
   CAMPAIGN_OPTIMIZATION_TYPES = %w[NONE ICO_ONLY].freeze
+
   OBJECTIVES = %w[
     APP_INSTALLS BRAND_AWARENESS CONVERSIONS EVENT_RESPONSES LEAD_GENERATION LINK_CLICKS LOCAL_AWARENESS MESSAGES OFFER_CLAIMS PAGE_LIKES POST_ENGAGEMENT
     PRODUCT_CATALOG_SALES REACH STORE_VISITS VIDEO_VIEWS
   ].freeze
+
   STATUS = %w[ACTIVE PAUSED DELETED ARCHIVED].freeze
   SPECIAL_AD_CATEGORIES = %w[NONE EMPLOYMENT HOUSING CREDIT ISSUES_ELECTIONS_POLITICS].freeze
+
   SPECIAL_AD_CATEGORY_COUNTRIES = %w[
     AD AE AF AG AI AL AM AN AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG CH CI CK CL CM CN CO CR CU
     CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR GS GT GU GW GY HK HM HN HR HT HU ID IE IL

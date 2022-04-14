@@ -1,10 +1,12 @@
-# [https://developers.facebook.com/docs/marketing-api/reference/saved-audience/]
-# [https://developers.facebook.com/docs/marketing-api/audiences/overview]
 class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
+  # References:
+  # - [https://developers.facebook.com/docs/marketing-api/reference/saved-audience/]
+  # - [https://developers.facebook.com/docs/marketing-api/audiences/overview/]
   READ_FIELDS = %i[
     id account approximate_count approximate_count_64bit delete_time description extra_info name operation_status permission_for_actions run_status
     sentence_lines targeting time_created time_updated
   ].freeze
+
   RUN_STATUS = %w[ACTIVE EXPIRING DELETED].freeze # TODO: Confirm that these are correct.
 
   belongs_to :account
