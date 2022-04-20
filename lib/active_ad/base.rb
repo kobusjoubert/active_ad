@@ -138,6 +138,8 @@ class ActiveAd::Base
       end
     end
 
+    alias_method :has_one, :belongs_to
+
     # Returns an ActiveAd::Relation object.
     def where(**kwargs)
       ActiveAd::Relation.new(self, **kwargs)
