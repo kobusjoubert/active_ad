@@ -1,4 +1,6 @@
 class ActiveAd::Facebook::Business < ActiveAd::Base
+  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/business]
+  #
   # Requesting the following fields causes status `400` error with messages.
   #
   #   'collaborative_ads_managed_partner_eligibility' => "(#100) The parameter catalog_id is required"
@@ -7,6 +9,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     id block_offline_analytics created_by created_time extended_updated_time is_hidden link name payment_account_id primary_page profile_picture_uri timezone_id
     two_factor_type updated_by updated_time verification_status vertical vertical_id
   ].freeze
+
   UNLINK_REQUEST_MAPPING = {
     account_id: { path: 'ad_accounts', param: :adaccount_id },
     agency_id: { path: 'agencies', param: :business },
@@ -15,7 +18,9 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
     owned_business_id: { path: 'owned_businesses', param: :client_id },
     page_id: { path: 'pages', param: :page_id }
   }.freeze
+
   SURVEY_BUSINESS_TYPES = %w[AGENCY ADVERTISER APP_DEVELOPER PUBLISHER].freeze
+
   VERTICALS = %w[
     ADVERTISING AUTOMOTIVE CONSUMER_PACKAGED_GOODS ECOMMERCE EDUCATION ENERGY_AND_UTILITIES ENTERTAINMENT_AND_MEDIA FINANCIAL_SERVICES GAMING
     GOVERNMENT_AND_POLITICS MARKETING ORGANIZATIONS_AND_ASSOCIATIONS PROFESSIONAL_SERVICES RETAIL TECHNOLOGY TELECOM TRAVEL NON_PROFIT RESTAURANT HEALTH LUXURY
@@ -24,6 +29,8 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
 
   private_constant :UNLINK_REQUEST_MAPPING
 
+  belongs_to :user
+  has_one :page # The 'primary_page' attribute is not always set on the business response, although the 'business' attribute is always set on the page response.
   has_many :accounts
 
   # Use aliases to map external API attributes to the ActiveAd object attributes. We especially want to make sure identitfication attributes end with an '_id'
@@ -48,6 +55,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   attribute :is_hidden, :boolean
   attribute :link, :string
   attribute :name, :string
+  attribute :page_id, :big_integer
   attribute :payment_account_id, :big_integer
   attribute :primary_page # {"name"=>"Page Name", "id"=>"123"}
   attribute :profile_picture_uri, :string
@@ -82,6 +90,22 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   #
   # before_save :do_something
   # after_destroy :do_something
+  after_find :set_user_id, :set_page_id
+
+  class << self
+    def index_request(**kwargs)
+      params = kwargs.dup
+      id, id_key = index_request_id_and_key(params)
+
+      id = "act_#{id}" if id_key == :account_id
+      fields = params.delete(:fields) || READ_FIELDS
+
+      {
+        get: "#{client.base_url}/#{id}/businesses",
+        params: params.merge(access_token: client.access_token, fields: fields.join(','))
+      }
+    end
+  end
 
   def read_request(**kwargs)
     params = kwargs.dup
@@ -143,6 +167,14 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
 
   # Attributes to be requested from the external API which are required by `belongs_to` to work.
   def relational_attributes
-    %i[]
+    %i[created_by primary_page]
+  end
+
+  def set_user_id
+    assign_attributes(user_id: response.body.dig('created_by', 'id')) if response.success?
+  end
+
+  def set_page_id
+    assign_attributes(page_id: response.body.dig('primary_page', 'id')) if response.success?
   end
 end

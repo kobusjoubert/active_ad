@@ -58,11 +58,63 @@ external API request fails. To have it return `nil` instead, set `ActiveAd.raise
 Models with `belongs_to` relations like `campaign.account` will raise an `ActiveAd::RecordNotFound` exception when the external API request fails. To have it return `nil` instead, set
 `ActiveAd.raise_relational_errors` to `false` on initialization.
 
+### Configuration
+
+Defatault configuration options.
+
+```ruby
+ActiveAd.configure do |config|
+  config.raise_relational_errors = true # Return nil or raise an exception when relational models aren't found? Eg: 'campaign.account', 'account.campaigns'.
+end
+```
+
+### Exceptions
+
+Validation callbacks run before any mutating request is sent to the external APIs. When validation fails, you can inspect the `record` attribute.
+
+```ruby
+begin
+  record.save!
+rescue RecordInvalid => e
+  puts e.record.errors
+end
+```
+
+After successful validation, requests will be made to the external APIs. Any exception being raised at this point will include a `record` and a `response`
+attribute which can be inspected.
+
+```ruby
+begin
+  record.save!
+rescue RecordNotSaved => e
+  puts "#{e.response.status} #{e.response.reason_phrase}: #{e.response.body}"
+  puts e.record.attributes
+end
+```
+
+### Paging
+
+Lists can be paged by using the `next_offset_value` attribute returned from each result set.
+
+```ruby
+ads = ActiveAd::Facebook::Ad.limit(10)
+
+loop do
+  ads.map { |ad| ad.id }
+  break unless (offset = ads.next_offset_value)
+  ads = ads.offset(offset)
+end
+```
+
+## Facebook
+
 Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
 ```mermaid
   erDiagram
-    Client ||--|| Business : ""
+    Client ||--|| User : ""
+    User ||--|{ Business : ""
+    Page ||..|| Business : ""
     Business ||--|{ Account : ""
     Account ||--|{ Audience : ""
     Account ||--|{ Pixel : ""
@@ -97,6 +149,74 @@ Every day or so you should refresh your current access token.
 ActiveAd::Facebook.client.refresh_token! # => true
 ActiveAd::Facebook.client.access_token # => 'g7h8i9'
 ActiveAd::Facebook.client.valid? # => true
+```
+
+By default all **fields** will be returned from Facebook's API. To return only the fields you need, use the `fields` parameter when using `find`, `where` or any relational methods.
+
+```ruby
+ActiveAd::Facebook::Ad.find('123', fields: [:name])
+ActiveAd::Facebook::Ad.find('123', fields: []).ad_set(fields: [:name])
+ActiveAd::Facebook::AdSet.find('123', fields: []).ads(fields: [:name])
+ActiveAd::Facebook::AdSet.where(campaign_id: '123', fields: [:name])
+```
+
+Get a client's user.
+
+```ruby
+user = client.user
+```
+
+### User
+
+Find a previously created user by it's identifier.
+
+```ruby
+user = ActiveAd::Facebook::User.find('me')
+user = ActiveAd::Facebook::User.find('123')
+```
+
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
+
+```ruby
+user = ActiveAd::Facebook::User.new(stale: true, id: '123', name: 'User Name')
+```
+
+To refresh the data.
+
+```ruby
+user.reload
+```
+
+Get a user's businesses.
+
+```ruby
+businesses = user.businesses
+```
+
+### Page
+
+Find a previously created page by it's identifier.
+
+```ruby
+page = ActiveAd::Facebook::Page.find('123')
+```
+
+Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
+
+```ruby
+page = ActiveAd::Facebook::Page.new(stale: true, id: '123', name: 'Page Name')
+```
+
+To refresh the data.
+
+```ruby
+page.reload
+```
+
+Get a page's business.
+
+```ruby
+business = page.business(fields: [:name])
 ```
 
 ### Business
@@ -143,6 +263,12 @@ Unlink a business.
 ```ruby
 business.unlink(account_id: '123')
 business.unlink(page_id: '123')
+```
+
+Get a business' page.
+
+```ruby
+page = business.page
 ```
 
 ### Account
@@ -586,52 +712,6 @@ Get a custom audience's pixel.
 
 ```ruby
 custom_audience.pixel
-```
-
-### Paging
-
-Lists can be paged by using the `next_offset_value` attribute returned from each result set.
-
-```ruby
-ads = ActiveAd::Facebook::Ad.limit(10)
-
-loop do
-  ads.map { |ad| ad.id }
-  break unless (offset = ads.next_offset_value)
-  ads = ads.offset(offset)
-end
-```
-
-### Configuration
-
-```ruby
-ActiveAd.configure do |config|
-  config.raise_relational_errors = true # Return nil or raise an exception when relational models aren't found? Eg: 'campaign.account', 'account.campaigns'.
-end
-```
-
-### Exceptions
-
-Validation callbacks run before any request is made to the external APIs. When validation fails, you can inspect the `record` attribute.
-
-```ruby
-begin
-  record.save!
-rescue RecordInvalid => e
-  puts e.record.errors
-end
-```
-
-After successful validation, requests will be made to the external APIs. Any exception being raised at this point will include a `record` and a `response`
-attribute which can be inspected.
-
-```ruby
-begin
-  record.save!
-rescue RecordNotSaved => e
-  puts "#{e.response.status} #{e.response.reason_phrase}: #{e.response.body}"
-  puts e.record.attributes
-end
 ```
 
 ## Roadmap

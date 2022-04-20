@@ -9,7 +9,16 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
 
   validates_presence_of :client_id, :client_secret
 
-  # Permissions required on the short_lived_access_token: email, ads_management, business_management, leads_retrieval
+  # Useful permissions required on the short_lived_access_token.
+  #
+  #   - public_profile
+  #   - email
+  #   - pages_show_list
+  #   - pages_manage_ads
+  #   - read_insights
+  #   - ads_management
+  #   - business_management
+  #   - leads_retrieval
   def login_request
     {
       get: "#{base_url}/oauth/access_token",
@@ -32,6 +41,10 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
         fb_exchange_token: access_token
       }
     }
+  end
+
+  def user(**kwargs)
+    "ActiveAd::#{platform_class}::User".constantize.find('me', **kwargs)
   end
 
   private
