@@ -1,4 +1,6 @@
 class ActiveAd::Facebook::Account < ActiveAd::Base
+  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-account/]
+  #
   # Requesting the following fields causes status `400` error with messages.
   #
   #   'direct_deals_tos_accepted' => "(#3) Ad Account must be on allowlist"
@@ -15,11 +17,11 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
     id account_id account_status age agency_client_declaration amount_spent balance business business_city business_country_code business_name business_state
     business_street business_street2 business_zip can_create_brand_lift_study capabilities created_time currency disable_reason end_advertiser
     end_advertiser_name extended_credit_invoice_group failed_delivery_checks fb_entity funding_source funding_source_details has_migrated_permissions
-    io_number is_attribution_spec_system_default is_direct_deals_enabled is_in_3ds_authorization_enabled_market is_in_middle_of_local_entity_migration
-    is_notifications_enabled is_personal is_prepay_account is_tax_id_required line_numbers media_agency min_campaign_group_spend_cap min_daily_budget name
-    offsite_pixels_tos_accepted owner partner rf_spec spend_cap tax_id tax_id_status tax_id_type timezone_id timezone_name timezone_offset_hours_utc
-    tos_accepted user_tasks user_tos_accepted
+    io_number is_attribution_spec_system_default is_direct_deals_enabled is_in_3ds_authorization_enabled_market is_notifications_enabled is_personal
+    is_prepay_account is_tax_id_required line_numbers media_agency min_campaign_group_spend_cap min_daily_budget name offsite_pixels_tos_accepted owner
+    partner rf_spec spend_cap tax_id tax_id_status tax_id_type timezone_id timezone_name timezone_offset_hours_utc tos_accepted user_tasks user_tos_accepted
   ].freeze
+
   ISO_4217_CURRENCY_CODES = %w[
     AED AFN ALL AMD ANG AOA ARS AUD AWG AZN BAM BBD BDT BGN BHD BIF BMD BND BOB BOV BRL BSD BTN BWP BYN BZD CAD CDF CHE CHF CHW CLF CLP CNY COP COU CRC CUC CUP
     CVE CZK DJF DKK DOP DZD EGP ERN ETB EUR FJD FKP GBP GEL GHS GIP GMD GNF GTQ GYD HKD HNL HRK HTG HUF IDR ILS INR IQD IRR ISK JMD JOD JPY KES KGS KHR KMF KPW
