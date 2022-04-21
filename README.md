@@ -111,6 +111,18 @@ end
 Using Facebook's implementation to demonstrate usage. All of the platforms follow similar patterns, though their own implementations may differ slightly.
 
 ```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#f8f9fa',
+      'primaryTextColor': '#192b3a',
+      'primaryBorderColor': '#192b3a',
+      'textColor': '#192b3a',
+      'lineColor': '#657786'
+    }
+  }
+}%%
   erDiagram
     Client ||--|| User : ""
     User ||--|{ Business : ""
