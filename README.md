@@ -151,7 +151,7 @@ ActiveAd::Facebook.client.access_token # => 'g7h8i9'
 ActiveAd::Facebook.client.valid? # => true
 ```
 
-By default all **fields** will be returned from Facebook's API. To return only the fields you need, use the `fields` parameter when using `find`, `where` or any relational methods.
+By default all fields will be returned from Facebook's API. To return only the fields you need, use the `fields` parameter when using `find`, `where` or any relational methods.
 
 ```ruby
 ActiveAd::Facebook::Ad.find('123', fields: [:name])
@@ -216,7 +216,7 @@ page.reload
 Get a page's business.
 
 ```ruby
-business = page.business(fields: [:name])
+business = page.business
 ```
 
 ### Business
@@ -747,18 +747,16 @@ If we look at Facebook, the classes to be used in the base classes will look lik
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive
-prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/rake spec` to run the tests and run `bin/rake rubocop` to check your style. You can also run `bin/console`
+for an interactive prompt that will allow you to experiment.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run
-`bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to
-[rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`,
+which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
-You can set the environment of the gem to `development` to make life easier while extending the gem. Setting it to any other environment will not require or
-load development dependencies like `listen` and `debug` which we don't want in production.
+You can set the environment of the gem to `development` to make life easier while extending the gem. Setting it to any other environment will not require or load development dependencies like
+`listen` and `debug` which we don't want in production.
 
-If you're building a Rails or Rack app, it will use those environments. If you're using this gem as a standalone library, you'll have to set the `ACTIVE_AD_ENV`
-environment variable to `development`.
+If you're building a Rails or Rack app, it will use those environments. If you're using this gem as a standalone library, you'll have to set the `ACTIVE_AD_ENV` environment variable to `development`.
 
 Environment lookup happens in the following order: `ENV['ACTIVE_AD_ENV'] || ENV['RAILS_ENV'] || ENV['RACK_ENV'] || ''`
 
@@ -782,8 +780,8 @@ ActiveAd.logger.level = Logger::INFO
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/kobusjoubert/active_ad. This project is intended to be a safe, welcoming space for
-collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/kobusjoubert/active_ad/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/kobusjoubert/active_ad. This project is intended to be a safe, welcoming space for collaboration, and contributors are
+expected to adhere to the [code of conduct](https://github.com/kobusjoubert/active_ad/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
