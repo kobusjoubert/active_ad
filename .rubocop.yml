@@ -154,6 +154,8 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Exclude:
     - lib/active_ad/base.rb
+  IgnoredMethods:
+    - each
 
 Naming/MemoizedInstanceVariableName:
   EnforcedStyleForLeadingUnderscores: required

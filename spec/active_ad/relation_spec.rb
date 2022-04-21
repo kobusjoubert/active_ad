@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 RSpec.describe ActiveAd::Relation do
-  let(:klass)        { OpenStruct.new(client: OpenStruct.new(pagination_type: nil)) }
+  let(:klass)        { Struct.new(:client).new(Struct.new(:pagination_type).new(nil)) }
   let(:relationable) { described_class.new(klass) }
 
   describe '.where' do

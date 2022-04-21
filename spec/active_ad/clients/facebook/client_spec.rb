@@ -5,13 +5,13 @@ RSpec.describe ActiveAd::Facebook::Client do
 
   describe '#platform' do
     it 'returns the platform name' do
-      expect(client.platform).to eq('facebook')
+      expect(client.platform).to eq(:facebook)
     end
   end
 
   describe '#api_version' do
     it 'returns the api version' do
-      expect(client.api_version).to eq('11.0')
+      expect(client.api_version).to eq('13.0')
     end
   end
 

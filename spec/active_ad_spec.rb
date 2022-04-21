@@ -1,6 +1,6 @@
 RSpec.describe ActiveAd do
   it 'has a version number' do
-    expect(ActiveAd::VERSION).not_to be nil
+    expect(ActiveAd::VERSION).not_to be_nil
   end
 
   describe '.env' do

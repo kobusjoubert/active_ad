@@ -173,7 +173,7 @@ class ActiveAd::Base
     # Returns object or blank object.
     def create(**kwargs)
       object = new(**kwargs)
-      object.save(**kwargs) && object || new
+      (object.save(**kwargs) && object) || new
     end
 
     # Returns object or exception.
