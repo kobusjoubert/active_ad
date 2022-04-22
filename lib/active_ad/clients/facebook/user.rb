@@ -55,12 +55,17 @@ class ActiveAd::Facebook::User < ActiveAd::Base
   attribute :website, :string
   attribute :work, array: true
 
+  # Use callbacks to execute code that should happen before or after `find`, `create`, `update`, `save`, `destroy`, `link` or `unlink`.
+  #
+  # before_save :do_something
+  # after_destroy :do_something
+
   def read_request(**kwargs)
     params = kwargs.dup
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
     {
-      get: "#{client.base_url}/me",
+      get: "#{client.base_url}/#{id.zero? ? 'me' : id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
   end
