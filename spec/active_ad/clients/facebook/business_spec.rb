@@ -280,6 +280,26 @@ RSpec.describe ActiveAd::Facebook::Business do
     end
   end
 
+  describe '#page' do
+    before(:each) do
+      stub_request(:get, "#{client.base_url}/100").with(query:
+        hash_including(access_token: 'secret_access_token')
+      ).to_return(status: 200, body: {
+        id: '100', name: 'Page Name'
+      }.to_json)
+    end
+
+    it 'returns the object type' do
+      business_101.page_id = '100'
+      expect(business_101.page.class).to be(ActiveAd::Facebook::Page)
+    end
+
+    it 'returns the object' do
+      business_101.page_id = '100'
+      expect(business_101.page.name).to eq('Page Name')
+    end
+  end
+
   describe '#accounts' do
     it 'returns a relation' do
       expect(business_101.accounts).to be_a_kind_of(ActiveAd::Relation)
