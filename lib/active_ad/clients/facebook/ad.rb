@@ -87,7 +87,6 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
     def index_request(**kwargs)
       params = kwargs.dup
       id, id_key = index_request_id_and_key(params)
-
       id = "act_#{id}" if id_key == :account_id
       fields = params.delete(:fields) || READ_FIELDS
 
