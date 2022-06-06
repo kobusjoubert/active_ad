@@ -765,14 +765,8 @@ for an interactive prompt that will allow you to experiment.
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`,
 which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
-You can set the environment of the gem to `development` to make life easier while extending the gem. Setting it to any other environment will not require or load development dependencies like
+You can set the `ACTIVE_AD_ENV` environment variable to `development` to make life easier while extending the gem. Setting it to any other environment will not require or load development dependencies like
 `listen` and `debug` which we don't want in production.
-
-If you're building a Rails or Rack app, it will use those environments. If you're using this gem as a standalone library, you'll have to set the `ACTIVE_AD_ENV` environment variable to `development`.
-
-Environment lookup happens in the following order: `ENV['ACTIVE_AD_ENV'] || ENV['RAILS_ENV'] || ENV['RACK_ENV'] || ''`
-
-If nothing has been specified, then this is not development and unnecessary libraries won't be required.
 
 Run console like so while extending and testing the gem.
 

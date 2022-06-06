@@ -24,7 +24,7 @@ module ActiveAd
     #   ActiveAd.env.production? # => false
     def env
       @_env ||= ActiveSupport::EnvironmentInquirer.new(
-        ENV['ACTIVE_AD_ENV'].presence || ENV['RAILS_ENV'].presence || ENV['RACK_ENV'].presence || ''
+        ENV['ACTIVE_AD_ENV'].presence || ''
       )
     end
 
