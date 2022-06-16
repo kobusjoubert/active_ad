@@ -199,6 +199,12 @@ To refresh the data.
 user.reload
 ```
 
+Get a user's pages.
+
+```ruby
+pages = user.pages
+```
+
 Get a user's businesses.
 
 ```ruby

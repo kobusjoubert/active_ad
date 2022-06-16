@@ -1,5 +1,5 @@
 class ActiveAd::Facebook::Page < ActiveAd::Base
-  # Reference: [https://developers.facebook.com/docs/graph-api/reference/page/]
+  # Reference: [https://developers.facebook.com/docs/graph-api/reference/page/], [https://developers.facebook.com/docs/graph-api/reference/user/accounts/]
   READ_FIELDS = %i[
     id about access_token ad_campaign affiliation app_id artists_we_like attire awards band_interests band_members best_page bio birthday booking_agent built
     business can_checkin can_post category category_list checkins company_overview connected_instagram_account connected_page_backed_instagram_account
@@ -163,6 +163,7 @@ class ActiveAd::Facebook::Page < ActiveAd::Base
   attribute :supports_donate_button_in_live_video, :boolean
   attribute :supports_instant_articles, :boolean
   attribute :talking_about_count, :big_integer
+  attribute :tasks, array: true
   attribute :temporary_status, :string
   attribute :unread_message_count, :big_integer
   attribute :unread_notif_count, :big_integer
@@ -189,7 +190,7 @@ class ActiveAd::Facebook::Page < ActiveAd::Base
       fields = params.delete(:fields) || READ_FIELDS
 
       {
-        get: "#{client.base_url}/#{id}/pages",
+        get: "#{client.base_url}/#{id}/accounts",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
     end

@@ -9,6 +9,7 @@ class ActiveAd::Facebook::User < ActiveAd::Base
     video_upload_limits website work
   ].freeze
 
+  has_many :pages
   has_many :businesses
 
   attribute :id, :big_integer
