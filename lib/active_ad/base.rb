@@ -146,18 +146,14 @@ class ActiveAd::Base
     end
 
     # Allows us to call `ActiveAd::Base.limit` without creating an `ActiveAd::Base.where` instance first.
-    def limit(value)
-      where.limit(value)
-    end
+    delegate :limit, to: :where
 
     # Allows us to call `ActiveAd::Base.offset` without creating an `ActiveAd::Base.where` instance first.
-    def offset(value)
-      where.offset(value)
-    end
+    delegate :offset, to: :where
 
     # Returns object or nil.
     def find(id, **kwargs)
-      return nil unless id.present?
+      return nil if id.blank?
 
       object = new(id: id).send(:find, **kwargs)
       object.response.success? ? object : nil
@@ -165,7 +161,7 @@ class ActiveAd::Base
 
     # Returns object or exception.
     def find!(id, **kwargs)
-      raise ArgumentError, 'missing keyword: :id' unless id.present?
+      raise ArgumentError, 'missing keyword: :id' if id.blank?
 
       new(id: id).send(:find!, **kwargs)
     end
