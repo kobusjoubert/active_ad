@@ -5,15 +5,20 @@ class ActiveAd::Relation
   include Enumerable
   include ActiveAd::Requestable
 
-  attr_reader :klass, :kwargs, :strategy, :limit_value, :offset_value, :next_offset_value
+  attr_reader :klass, :kwargs, :client, :strategy, :limit_value, :offset_value, :next_offset_value
+
+  class Response < Struct.new(:success?, :body); end
 
   def initialize(klass, **kwargs)
+    raise ArgumentError, 'missing keyword: :client' unless (client = kwargs.delete(:client))
+
     @klass = klass
     @kwargs = kwargs
     @limit_value = Float::INFINITY
     @offset_value = nil
     @next_offset_value = nil
-    @strategy = klass.client.pagination_type # :offset, :cursor, :relay_cursor
+    @client = client
+    @strategy = client.pagination_type # :offset, :cursor, :relay_cursor
     @model_type = klass.to_s.split('::').last.underscore.to_sym # :account, :campaign, :ad_group, :ad
   end
 
@@ -53,7 +58,16 @@ class ActiveAd::Relation
       attributes.merge!(relational_attributes)
 
       if attributes
-        object = klass.new(**attributes)
+        response = Response.new(true, attributes)
+        object = klass.new(client:, **attributes)
+
+        object.run_callbacks(:find) do
+          object.instance_variable_set(:@response, response)
+        end
+
+        object.send(:assign_attributes, response.body)
+        object.clear_changes_information
+
         yield object
       else
         index = 0
@@ -62,7 +76,7 @@ class ActiveAd::Relation
 
         request_kwargs = kwargs.merge(offset)
         ActiveAd.logger.debug("Calling index_request with kwargs: #{request_kwargs}")
-        @_index_response = request(klass.index_request(**request_kwargs))
+        @_index_response = request(klass.index_request(client:, **request_kwargs))
         @next_offset_value = index_response_offset.values.first
       end
 
@@ -183,7 +197,7 @@ class ActiveAd::Relation
 
     @_index_response ||= begin
       ActiveAd.logger.debug("Calling index_request with kwargs: #{kwargs}")
-      request(klass.index_request(**kwargs))
+      request(klass.index_request(client:, **kwargs))
     end
   end
 

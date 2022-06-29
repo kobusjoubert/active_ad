@@ -3,11 +3,9 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
   base_url "https://graph.facebook.com/v#{api_version}"
   pagination_type :cursor
 
-  attribute :client_id
-  attribute :client_secret
+  attribute :app_id, :string, default: ActiveAd::Facebook.app_id
+  attribute :app_secret, :string, default: ActiveAd::Facebook.app_secret
   attribute :short_lived_access_token
-
-  validates_presence_of :client_id, :client_secret
 
   # Useful permissions required on the short_lived_access_token.
   #
@@ -23,8 +21,8 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
     {
       get: "#{base_url}/oauth/access_token",
       params: {
-        client_id: client_id,
-        client_secret: client_secret,
+        client_id: app_id,
+        client_secret: app_secret,
         grant_type: 'fb_exchange_token',
         fb_exchange_token: short_lived_access_token
       }
@@ -35,16 +33,12 @@ class ActiveAd::Facebook::Client < ActiveAd::Client
     {
       get: "#{base_url}/oauth/access_token",
       params: {
-        client_id: client_id,
-        client_secret: client_secret,
+        client_id: app_id,
+        client_secret: app_secret,
         grant_type: 'fb_exchange_token',
         fb_exchange_token: access_token
       }
     }
-  end
-
-  def user(**kwargs)
-    "ActiveAd::#{platform_class}::User".constantize.find('me', **kwargs)
   end
 
   private

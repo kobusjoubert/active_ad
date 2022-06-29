@@ -60,7 +60,7 @@ Models with `belongs_to` relations like `campaign.account` will raise an `Active
 
 ### Configuration
 
-Defatault configuration options.
+Defatault configuration options to be set in an initializer somewhere. If you're using Rails put it in a file called `config/initializers/active_ad.rb`
 
 ```ruby
 ActiveAd.configure do |config|
@@ -97,7 +97,7 @@ end
 Lists can be paged by using the `next_offset_value` attribute returned from each result set.
 
 ```ruby
-ads = ActiveAd::Facebook::Ad.limit(10)
+ads = ActiveAd::Facebook::Ad.limit(10, client: client)
 
 loop do
   ads.map { |ad| ad.id }
@@ -124,7 +124,6 @@ Using Facebook's implementation to demonstrate usage. All of the platforms follo
   }
 }%%
   erDiagram
-    Client ||--|| User : ""
     User ||--|{ Business : ""
     Page ||..|| Business : ""
     Business ||--|{ Account : ""
@@ -135,41 +134,51 @@ Using Facebook's implementation to demonstrate usage. All of the platforms follo
     AdGroup ||--|{ Ad : ""
 ```
 
+By default all fields will be returned from Facebook's API. To return only the fields you need, use the `fields` parameter when using `find`, `where` or any relational methods.
+
+```ruby
+ActiveAd::Facebook::Ad.find('123', fields: [:name], client: client)
+ActiveAd::Facebook::Ad.find('123', fields: [], client: client).ad_set(fields: [:name])
+ActiveAd::Facebook::AdSet.find('123', fields: [], client: client).ads(fields: [:name])
+ActiveAd::Facebook::AdSet.where(campaign_id: '123', fields: [:name], client: client)
+```
+
+### Configuration
+
+Set your Facebook app id and secret somewhere in an initializer. If you're using Rails put it in a file called `config/initializers/active_ad.rb`
+
+```ruby
+ActiveAd::Facebook.configure do |config|
+  config.app_id = '123'
+  config.app_secret = 'a1b2c3'
+end
+```
+
 ### Client
 
 If you don't have a long lived access token yet, create a client and exchange your short lived access token for a long lived access token.
 
 ```ruby
-client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3', client_id: '123', client_secret: 'a1b2c3')
+client = ActiveAd::Facebook::Client.new(short_lived_access_token: 'a1b2c3')
 client.valid? # => false
 client.login! # => true
 client.access_token # => 'd4e5f6'
 client.valid? # => true
 ```
 
-Configure the platform with the client connection.
+Or if you do have your long lived access token.
 
 ```ruby
-ActiveAd::Facebook.configure do |config|
-  config.client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6', client_id: '123', client_secret: 'a1b2c3')
-end
+client = ActiveAd::Facebook::Client.new(access_token: 'd4e5f6')
+client.valid? # => true
 ```
 
 Every day or so you should refresh your current access token.
 
 ```ruby
-ActiveAd::Facebook.client.refresh_token! # => true
-ActiveAd::Facebook.client.access_token # => 'g7h8i9'
-ActiveAd::Facebook.client.valid? # => true
-```
-
-By default all fields will be returned from Facebook's API. To return only the fields you need, use the `fields` parameter when using `find`, `where` or any relational methods.
-
-```ruby
-ActiveAd::Facebook::Ad.find('123', fields: [:name])
-ActiveAd::Facebook::Ad.find('123', fields: []).ad_set(fields: [:name])
-ActiveAd::Facebook::AdSet.find('123', fields: []).ads(fields: [:name])
-ActiveAd::Facebook::AdSet.where(campaign_id: '123', fields: [:name])
+client.refresh_token! # => true
+client.access_token # => 'g7h8i9'
+client.valid? # => true
 ```
 
 Get a client's user.
@@ -183,14 +192,14 @@ user = client.user
 Find a previously created user by it's identifier.
 
 ```ruby
-user = ActiveAd::Facebook::User.find('me')
-user = ActiveAd::Facebook::User.find('123')
+user = ActiveAd::Facebook::User.find('me', client: client)
+user = ActiveAd::Facebook::User.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-user = ActiveAd::Facebook::User.new(stale: true, id: '123', name: 'User Name')
+user = ActiveAd::Facebook::User.new(stale: true, id: '123', name: 'User Name', client: client)
 ```
 
 To refresh the data.
@@ -216,13 +225,13 @@ businesses = user.businesses
 Find a previously created page by it's identifier.
 
 ```ruby
-page = ActiveAd::Facebook::Page.find('123')
+page = ActiveAd::Facebook::Page.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-page = ActiveAd::Facebook::Page.new(stale: true, id: '123', name: 'Page Name')
+page = ActiveAd::Facebook::Page.new(stale: true, id: '123', name: 'Page Name', client: client)
 ```
 
 To refresh the data.
@@ -242,19 +251,19 @@ business = page.business
 Create a business.
 
 ```ruby
-business = ActiveAd::Facebook::Business.create(user_id: '123', primary_page: '123', name: 'Business Name', vertical: 'OTHER')
+business = ActiveAd::Facebook::Business.create(user_id: '123', primary_page: '123', name: 'Business Name', vertical: 'OTHER', client: client)
 ```
 
 Find a previously created account by it's identifier.
 
 ```ruby
-business = ActiveAd::Facebook::Business.find('123')
+business = ActiveAd::Facebook::Business.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-business = ActiveAd::Facebook::Business.new(stale: true, id: '123', name: 'Business Name')
+business = ActiveAd::Facebook::Business.new(stale: true, id: '123', name: 'Business Name', client: client)
 ```
 
 To refresh the data.
@@ -294,25 +303,25 @@ page = business.page
 Create an account.
 
 ```ruby
-account = ActiveAd::Facebook::Account.create(business_id: '123', currency: 'USD', name: 'Account Name')
+account = ActiveAd::Facebook::Account.create(business_id: '123', currency: 'USD', name: 'Account Name', client: client)
 ```
 
 Find accounts.
 
 ```ruby
-accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE'])
+accounts = ActiveAd::Facebook::Account.where(business_id: '123', status: ['ACTIVE'], client: client)
 ```
 
 Find a previously created account by it's identifier.
 
 ```ruby
-account = ActiveAd::Facebook::Account.find('123')
+account = ActiveAd::Facebook::Account.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-account = ActiveAd::Facebook::Account.new(stale: true, id: '123', name: 'Account Name')
+account = ActiveAd::Facebook::Account.new(stale: true, id: '123', name: 'Account Name', client: client)
 ```
 
 To refresh the data.
@@ -363,25 +372,25 @@ saved_audiences = account.saved_audiences
 Create a campaign.
 
 ```ruby
-campaign = ActiveAd::Facebook::Campaign.create(account_id: '123', name: 'Campaign Name')
+campaign = ActiveAd::Facebook::Campaign.create(account_id: '123', name: 'Campaign Name', client: client)
 ```
 
 Find campaigns.
 
 ```ruby
-campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE'])
+campaigns = ActiveAd::Facebook::Campaign.where(account_id: '123', status: ['ACTIVE'], client: client)
 ```
 
 Find a previously created campaign by it's identifier.
 
 ```ruby
-campaign = ActiveAd::Facebook::Campaign.find('123')
+campaign = ActiveAd::Facebook::Campaign.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-campaign = ActiveAd::Facebook::Campaign.new(stale: true, id: '123', name: 'Campaign Name')
+campaign = ActiveAd::Facebook::Campaign.new(stale: true, id: '123', name: 'Campaign Name', client: client)
 ```
 
 To refresh the data.
@@ -443,25 +452,25 @@ options = {
   }
 }
 
-ad_set = ActiveAd::Facebook::AdSet.create!(**options)
+ad_set = ActiveAd::Facebook::AdSet.create!(**options, client: client)
 ```
 
 Find ad groups.
 
 ```ruby
-ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED'])
+ad_sets = ActiveAd::Facebook::AdSet.where(campaign_id: '123', status: ['PAUSED'], client: client)
 ```
 
 Find a previously created ad group by it's identifier.
 
 ```ruby
-ad_set = ActiveAd::Facebook::AdSet.find('123')
+ad_set = ActiveAd::Facebook::AdSet.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-ad_set = ActiveAd::Facebook::AdSet.new(stale: true, id: '123', name: 'Ad Set Name')
+ad_set = ActiveAd::Facebook::AdSet.new(stale: true, id: '123', name: 'Ad Set Name', client: client)
 ```
 
 To refresh the data.
@@ -515,25 +524,25 @@ options = {
   status: 'PAUSED'
 }
 
-ad = ActiveAd::Facebook::Ad.create!(**options)
+ad = ActiveAd::Facebook::Ad.create!(**options, client: client)
 ```
 
 Find ads.
 
 ```ruby
-ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED'])
+ads = ActiveAd::Facebook::Ad.where(ad_set_id: '123', status: ['PAUSED'], client: client)
 ```
 
 Find a previously created ad by it's identifier.
 
 ```ruby
-ad = ActiveAd::Facebook::Ad.find('123')
+ad = ActiveAd::Facebook::Ad.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-ad = ActiveAd::Facebook::Ad.new(stale: true, id: '123', name: 'Ad Name')
+ad = ActiveAd::Facebook::Ad.new(stale: true, id: '123', name: 'Ad Name', client: client)
 ```
 
 To refresh the data.
@@ -578,25 +587,25 @@ campaign = ad.ad_set
 Create a pixel.
 
 ```ruby
-pixel = ActiveAd::Facebook::Pixel.create(account_id: '123', name: 'Pixel Name')
+pixel = ActiveAd::Facebook::Pixel.create(account_id: '123', name: 'Pixel Name', client: client)
 ```
 
 Find pixels.
 
 ```ruby
-pixels = ActiveAd::Facebook::Pixel.where(account_id: '123')
+pixels = ActiveAd::Facebook::Pixel.where(account_id: '123', client: client)
 ```
 
 Find a previously created pixel by it's identifier.
 
 ```ruby
-pixel = ActiveAd::Facebook::Pixel.find('123')
+pixel = ActiveAd::Facebook::Pixel.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-pixel = ActiveAd::Facebook::Pixel.new(stale: true, id: '123', name: 'Pixel Name')
+pixel = ActiveAd::Facebook::Pixel.new(stale: true, id: '123', name: 'Pixel Name', client: client)
 ```
 
 To refresh the data.
@@ -635,19 +644,19 @@ pixel.business
 Find saved audiences.
 
 ```ruby
-saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123')
+saved_audiences = ActiveAd::Facebook::SavedAudience.where(account_id: '123', client: client)
 ```
 
 Find a previously created saved audience by it's identifier.
 
 ```ruby
-saved_audience = ActiveAd::Facebook::SavedAudience.find('123')
+saved_audience = ActiveAd::Facebook::SavedAudience.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-saved_audience = ActiveAd::Facebook::SavedAudience.new(stale: true, id: '123', name: 'Saved Audience Name')
+saved_audience = ActiveAd::Facebook::SavedAudience.new(stale: true, id: '123', name: 'Saved Audience Name', client: client)
 ```
 
 To refresh the data.
@@ -674,25 +683,25 @@ options = {
   customer_file_source: 'USER_PROVIDED_ONLY'
 }
 
-ad = ActiveAd::Facebook::Ad.create!(**options)
+ad = ActiveAd::Facebook::Ad.create!(**options, client: client)
 ```
 
 Find custom audiences.
 
 ```ruby
-custom_audiences = ActiveAd::Facebook::CustomAudience.where(account_id: '123')
+custom_audiences = ActiveAd::Facebook::CustomAudience.where(account_id: '123', client: client)
 ```
 
 Find a previously created custom audience by it's identifier.
 
 ```ruby
-custom_audience = ActiveAd::Facebook::CustomAudience.find('123')
+custom_audience = ActiveAd::Facebook::CustomAudience.find('123', client: client)
 ```
 
 Or if you don't require fresh data and have it persisted already, you can create a new object with `stale: true`.
 
 ```ruby
-custom_audience = ActiveAd::Facebook::CustomAudience.new(stale: true, id: '123', name: 'Custom Audience Name')
+custom_audience = ActiveAd::Facebook::CustomAudience.new(stale: true, id: '123', name: 'Custom Audience Name', client: client)
 ```
 
 To refresh the data.

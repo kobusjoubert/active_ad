@@ -10,12 +10,16 @@ class ActiveAd::Base
 
   attr_reader :response
 
+  attribute :client
+
   # Overwrite in child classes if the field is actually an :integer or :big_integer and not a :string.
   attribute :id, :string
 
   define_model_callbacks :find, :save, :create, :update, :destroy, :link, :unlink
 
-  delegate :client, :entity, :entity_class, :platform, :platform_class, to: :class
+  delegate :entity, :entity_class, :platform, :platform_class, :relational_attributes, to: :class
+
+  validates_presence_of :client
 
   # before_save :do_something
   # after_destroy :do_something
@@ -91,11 +95,6 @@ class ActiveAd::Base
   end
 
   class << self
-    # TODO: Thread safety?
-    def client
-      "ActiveAd::#{platform_class}".constantize.client
-    end
-
     # Returns a symobol in underscore style: `:entity_name`.
     def entity
       entity_class.underscore.to_sym
@@ -122,7 +121,7 @@ class ActiveAd::Base
       "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.has_many_relations_ids += [:"#{entity}_id"]
 
       define_method(model_name) do |kwargs = {}|
-        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id, **kwargs)
+        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.where("#{entity}_id".to_sym => id, client:, **kwargs)
       end
     end
 
@@ -134,7 +133,7 @@ class ActiveAd::Base
 
       define_method(model_name) do |kwargs = {}|
         relation_id = public_send("#{model_name}_id")
-        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.public_send(method, relation_id, **kwargs)
+        "ActiveAd::#{platform_class}::#{model_name.to_s.classify}".constantize.public_send(method, relation_id, client:, **kwargs)
       end
     end
 
@@ -146,16 +145,21 @@ class ActiveAd::Base
     end
 
     # Allows us to call `ActiveAd::Base.limit` without creating an `ActiveAd::Base.where` instance first.
-    delegate :limit, to: :where
+    def limit(limit, **kwargs)
+      where(**kwargs).limit(limit)
+    end
 
     # Allows us to call `ActiveAd::Base.offset` without creating an `ActiveAd::Base.where` instance first.
-    delegate :offset, to: :where
+    def offset(offset, **kwargs)
+      where(**kwargs).offset(offset)
+    end
 
     # Returns object or nil.
     def find(id, **kwargs)
       return nil if id.blank?
 
-      object = new(id: id).send(:find, **kwargs)
+      client = kwargs.delete(:client)
+      object = new(id:, client:).send(:find, **kwargs)
       object.response.success? ? object : nil
     end
 
@@ -163,7 +167,8 @@ class ActiveAd::Base
     def find!(id, **kwargs)
       raise ArgumentError, 'missing keyword: :id' if id.blank?
 
-      new(id: id).send(:find!, **kwargs)
+      client = kwargs.delete(:client)
+      new(id:, client:).send(:find!, **kwargs)
     end
 
     # Returns object or blank object.
@@ -178,7 +183,7 @@ class ActiveAd::Base
       object.save!(**kwargs) && object
     end
 
-    def index_request(**_kwargs)
+    def index_request(client:, **_kwargs)
       raise NotImplementedError, 'Subclasses must implement an index_request method'
     end
 
@@ -191,6 +196,11 @@ class ActiveAd::Base
       raise ArgumentError, "missing keyword: must include one of #{has_many_relations_ids}; received #{params}" unless (id = params.delete(id_key))
 
       [id, id_key]
+    end
+
+    # Attributes to be requested from the external API which are required by `belongs_to` to work.
+    def relational_attributes
+      %i[]
     end
   end
 

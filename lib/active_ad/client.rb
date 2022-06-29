@@ -7,9 +7,11 @@ class ActiveAd::Client
 
   attr_reader :response
 
+  attribute :app_id, :string
+  attribute :app_secret, :string
   attribute :access_token, :string
 
-  validates_presence_of :access_token
+  validates_presence_of :access_token, :app_id, :app_secret
 
   define_model_callbacks :login, :refresh_token
 
@@ -119,12 +121,6 @@ class ActiveAd::Client
 
   def refresh_token_request
     raise NotImplementedError, 'Subclasses must implement a refresh_request method'
-  end
-
-  # TODO: This is needed for Facebook to retrieve the user's pages. If this does not work the same for Google, Twitter etc, move this method to
-  # ActiveAd::Facebook::Client instead.
-  def user
-    raise NotImplementedError, 'Subclasses must implement a user method'
   end
 
   private

@@ -136,16 +136,21 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   after_find :set_business_id
 
   class << self
-    def index_request(**kwargs)
+    def index_request(client:, **kwargs)
       params = kwargs.dup
       id, id_key = index_request_id_and_key(params)
       id = "act_#{id}" if id_key == :account_id
-      fields = params.delete(:fields) || READ_FIELDS
+      fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
       {
         get: "#{client.base_url}/#{id}/adaccounts",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
+    end
+
+    # Attributes to be requested from the external API which are required by `belongs_to` to work.
+    def relational_attributes
+      %i[business]
     end
   end
 
@@ -198,11 +203,6 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
 
   def create_response_id(response)
     response.body['id']
-  end
-
-  # Attributes to be requested from the external API which are required by `belongs_to` to work.
-  def relational_attributes
-    %i[business]
   end
 
   def set_business_id

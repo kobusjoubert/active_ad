@@ -61,6 +61,13 @@ class ActiveAd::Facebook::User < ActiveAd::Base
   # before_save :do_something
   # after_destroy :do_something
 
+  class << self
+    # Attributes to be requested from the external API which are required by `belongs_to` to work.
+    def relational_attributes
+      %i[]
+    end
+  end
+
   def read_request(**kwargs)
     params = kwargs.dup
     fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
@@ -69,12 +76,5 @@ class ActiveAd::Facebook::User < ActiveAd::Base
       get: "#{client.base_url}/#{id.zero? ? 'me' : id}",
       params: params.merge(access_token: client.access_token, fields: fields.join(','))
     }
-  end
-
-  private
-
-  # Attributes to be requested from the external API which are required by `belongs_to` to work.
-  def relational_attributes
-    %i[]
   end
 end

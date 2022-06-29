@@ -49,16 +49,21 @@ class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
   after_find :set_account_id
 
   class << self
-    def index_request(**kwargs)
+    def index_request(client:, **kwargs)
       params = kwargs.dup
       id, id_key = index_request_id_and_key(params)
       id = "act_#{id}" if id_key == :account_id
-      fields = params.delete(:fields) || READ_FIELDS
+      fields = ((params.delete(:fields) || READ_FIELDS) + relational_attributes).uniq
 
       {
         get: "#{client.base_url}/#{id}/saved_audiences",
         params: params.merge(access_token: client.access_token, fields: fields.join(','))
       }
+    end
+
+    # Attributes to be requested from the external API which are required by `belongs_to` to work.
+    def relational_attributes
+      %i[account]
     end
   end
 
@@ -85,11 +90,6 @@ class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
   end
 
   private
-
-  # Attributes to be requested from the external API which are required by `belongs_to` to work.
-  def relational_attributes
-    %i[account]
-  end
 
   def set_account_id
     assign_attributes(account_id: response.body.dig('account', 'account_id')) if response.success?
