@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe ActiveAd::Relation do
-  let(:klass)        { Struct.new(:client).new(Struct.new(:pagination_type).new(nil)) }
-  let(:relationable) { described_class.new(klass) }
+  let(:klass)        { Struct.new(:id) }
+  let(:client)       { Struct.new(:pagination_type).new(nil) }
+  let(:relationable) { described_class.new(klass, client:) }
 
   describe '.where' do
     it 'sets kwargs primitive values' do

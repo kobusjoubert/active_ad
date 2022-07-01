@@ -5,9 +5,9 @@ class ActiveAd::Relation
   include Enumerable
   include ActiveAd::Requestable
 
-  attr_reader :klass, :kwargs, :client, :strategy, :limit_value, :offset_value, :next_offset_value
+  Response = Struct.new(:success?, :body)
 
-  class Response < Struct.new(:success?, :body); end
+  attr_reader :klass, :kwargs, :client, :strategy, :limit_value, :offset_value, :next_offset_value
 
   def initialize(klass, **kwargs)
     raise ArgumentError, 'missing keyword: :client' unless (client = kwargs.delete(:client))
@@ -58,17 +58,7 @@ class ActiveAd::Relation
       attributes.merge!(relational_attributes)
 
       if attributes
-        response = Response.new(true, attributes)
-        object = klass.new(client:, **attributes)
-
-        object.run_callbacks(:find) do
-          object.instance_variable_set(:@response, response)
-        end
-
-        object.send(:assign_attributes, response.body)
-        object.clear_changes_information
-
-        yield object
+        yield new_object(attributes)
       else
         index = 0
         offset = index_response_offset
@@ -245,5 +235,18 @@ class ActiveAd::Relation
   def relational_attributes
     attributes = kwargs.dup.deep_stringify_keys
     attributes.keep_if { |key, _| key.include?('_id') && klass.public_method_defined?(key.chomp('_id')) }
+  end
+
+  def new_object(attributes)
+    response = Response.new(true, attributes)
+    object = klass.new(client:, **attributes)
+
+    object.run_callbacks(:find) do
+      object.instance_variable_set(:@response, response)
+    end
+
+    object.send(:assign_attributes, response.body)
+    object.clear_changes_information
+    object
   end
 end

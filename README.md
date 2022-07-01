@@ -181,12 +181,6 @@ client.access_token # => 'g7h8i9'
 client.valid? # => true
 ```
 
-Get a client's user.
-
-```ruby
-user = client.user
-```
-
 ### User
 
 Find a previously created user by it's identifier.

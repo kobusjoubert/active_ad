@@ -157,8 +157,8 @@ class ActiveAd::Base
     # Returns object or nil.
     def find(id, **kwargs)
       return nil if id.blank?
+      return nil unless (client = kwargs.delete(:client))
 
-      client = kwargs.delete(:client)
       object = new(id:, client:).send(:find, **kwargs)
       object.response.success? ? object : nil
     end
@@ -166,8 +166,8 @@ class ActiveAd::Base
     # Returns object or exception.
     def find!(id, **kwargs)
       raise ArgumentError, 'missing keyword: :id' if id.blank?
+      raise ArgumentError, 'missing keyword: :client' unless (client = kwargs.delete(:client))
 
-      client = kwargs.delete(:client)
       new(id:, client:).send(:find!, **kwargs)
     end
 
