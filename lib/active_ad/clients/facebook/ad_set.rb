@@ -16,19 +16,23 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
     recommendations recurring_budget_semantics review_feedback rf_prediction_id source_adset source_adset_id start_time status targeting
     time_based_ad_rotation_id_blocks time_based_ad_rotation_intervals updated_time use_new_app_click
   ].freeze
+
   BID_STRATEGIES = %w[LOWEST_COST_WITHOUT_CAP LOWEST_COST_WITH_BID_CAP COST_CAP].freeze
   BILLING_EVENTS = %w[APP_INSTALLS IMPRESSIONS LINK_CLICKS NONE OFFER_CLAIMS PAGE_LIKES POST_ENGAGEMENT THRUPLAY PURCHASE LISTING_INTERACTION].freeze
   DESTINATION_TYPES = %w[UNDEFINED WEBSITE APP MESSENGER APPLINKS_AUTOMATIC FACEBOOK].freeze
   MULTI_OPTIMIZATION_GOAL_WEIGHTS = %w[UNDEFINED BALANCED PREFER_INSTALL PREFER_EVENT].freeze
+
   OPTIMIZATION_GOALS = %w[
     NONE APP_INSTALLS BRAND_AWARENESS AD_RECALL_LIFT CLICKS ENGAGED_USERS EVENT_RESPONSES IMPRESSIONS LEAD_GENERATION QUALITY_LEAD LINK_CLICKS OFFER_CLAIMS
     OFFSITE_CONVERSIONS PAGE_ENGAGEMENT PAGE_LIKES POST_ENGAGEMENT QUALITY_CALL REACH SOCIAL_IMPRESSIONS APP_DOWNLOADS TWO_SECOND_CONTINUOUS_VIDEO_VIEWS
     LANDING_PAGE_VIEWS VISIT_INSTAGRAM_PROFILE VALUE THRUPLAY REPLIES DERIVED_EVENTS
   ].freeze
+
   OPTIMIZATION_SUB_EVENTS = %w[
     NONE VIDEO_SOUND_ON TRIP_CONSIDERATION TRAVEL_INTENT TRAVEL_INTENT_NO_DESTINATION_INTENT TRAVEL_INTENT_BUCKET_01 TRAVEL_INTENT_BUCKET_02
     TRAVEL_INTENT_BUCKET_03 TRAVEL_INTENT_BUCKET_04 TRAVEL_INTENT_BUCKET_05
   ].freeze
+
   STATUS = %w[ACTIVE PAUSED DELETED ARCHIVED].freeze
   TUNE_FOR_CATEGORIES = %w[NONE EMPLOYMENT HOUSING CREDIT ISSUES_ELECTIONS_POLITICS].freeze
 
@@ -61,7 +65,7 @@ class ActiveAd::Facebook::AdSet < ActiveAd::Base
   attribute :bid_strategy, :string
   attribute :billing_event, :string # default: 'LINK_CLICKS'
   attribute :budget_remaining, :big_integer
-  # attribute :campaign # Clashes with the `belongs_to :campaign` relationship.
+  attribute :campaign # Clashes with the `belongs_to :campaign` relationship. Access using `attributes['campaign']`.
   attribute :campaign_id, :big_integer
   attribute :campaign_spec
   attribute :configured_status, :string

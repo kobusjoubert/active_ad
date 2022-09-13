@@ -150,10 +150,10 @@ class ActiveAd::Facebook::Pixel < ActiveAd::Base
   end
 
   def set_account_id
-    assign_attributes(account_id: response.body.dig('owner_ad_account', 'account_id')) if response.success?
+    assign_attributes(account_id: attributes.dig('owner_ad_account', 'account_id'))
   end
 
   def set_business_id
-    assign_attributes(business_id: response.body.dig('owner_business', 'id')) if response.success?
+    assign_attributes(business_id: attributes.dig('owner_business', 'id'))
   end
 end

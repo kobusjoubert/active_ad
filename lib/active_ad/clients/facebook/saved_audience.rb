@@ -92,6 +92,6 @@ class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
   private
 
   def set_account_id
-    assign_attributes(account_id: response.body.dig('account', 'account_id')) if response.success?
+    assign_attributes(account_id: attributes.dig('account', 'account_id'))
   end
 end

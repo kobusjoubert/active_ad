@@ -124,6 +124,7 @@ Using Facebook's implementation to demonstrate usage. All of the platforms follo
   }
 }%%
   erDiagram
+    User ||--|{ Page : ""
     User ||--|{ Business : ""
     Page ||..|| Business : ""
     Business ||--|{ Account : ""

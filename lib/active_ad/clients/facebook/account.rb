@@ -60,7 +60,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   attribute :agency_client_declaration
   attribute :amount_spent, :big_integer
   attribute :balance, :big_integer
-  attribute :business # {"name"=>"Business Name", "id"=>"123"}
+  attribute :business # Clashes with the `belongs_to :business` relationship. Access using `attributes['business']` => {'name'=>'Business Name', 'id'=>'123'}
   attribute :business_city, :string
   attribute :business_country_code, :string
   attribute :business_id, :big_integer
@@ -206,7 +206,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Base
   end
 
   def set_business_id
-    assign_attributes(business_id: response.body.dig('business', 'id')) if response.success?
+    assign_attributes(business_id: attributes.dig('business', 'id'))
   end
 
   # Remove 'act_' prefixes from the 'id' attribute.

@@ -1,5 +1,8 @@
 class ActiveAd::Facebook::Business < ActiveAd::Base
-  # Reference: [https://developers.facebook.com/docs/marketing-api/reference/business]
+  # References:
+  # - [https://developers.facebook.com/docs/marketing-api/business-manager/get-started]
+  # - [https://developers.facebook.com/docs/business-management-apis]
+  # - [https://developers.facebook.com/docs/marketing-api/reference/business]
   #
   # Requesting the following fields causes status `400` error with messages.
   #
@@ -48,7 +51,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   attribute :child_business_external_id, :string
   attribute :collaborative_ads_managed_partner_business_info
   attribute :collaborative_ads_managed_partner_eligibility
-  attribute :created_by # {"id"=>"123", "name"=>"Kobus Joubert", "business"=>{"id"=>"123", "name"=>"Business Name"}}
+  attribute :created_by # {'id'=>'123', 'name'=>'Kobus Joubert', 'business'=>{'id'=>'123', 'name'=>'Business Name'}}
   attribute :created_at, :datetime
   attribute :email, :string
   attribute :extended_updated_at, :datetime
@@ -57,7 +60,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   attribute :name, :string
   attribute :page_id, :big_integer
   attribute :payment_account_id, :big_integer
-  attribute :primary_page # {"name"=>"Page Name", "id"=>"123"}
+  attribute :primary_page # {'name'=>'Page Name', 'id'=>'123'}
   attribute :profile_picture_uri, :string
   attribute :sales_rep_email, :string
   attribute :survey_business_type, :string
@@ -65,7 +68,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   attribute :survey_num_people, :big_integer
   attribute :timezone_id, :big_integer
   attribute :two_factor_type, :string
-  attribute :updated_by # {"id"=>"123", "name"=>"Kobus Joubert", "business"=>{"id"=>"123", "name"=>"Business Name"}}
+  attribute :updated_by # {'id'=>'123', 'name'=>'Kobus Joubert', 'business'=>{'id'=>'123', 'name'=>'Business Name'}}
   attribute :updated_at, :datetime
   attribute :user_id, :big_integer
   attribute :verification_status, :string
@@ -170,10 +173,10 @@ class ActiveAd::Facebook::Business < ActiveAd::Base
   end
 
   def set_user_id
-    assign_attributes(user_id: response.body.dig('created_by', 'id')) if response.success?
+    assign_attributes(user_id: attributes.dig('created_by', 'id'))
   end
 
   def set_page_id
-    assign_attributes(page_id: response.body.dig('primary_page', 'id')) if response.success?
+    assign_attributes(page_id: attributes.dig('primary_page', 'id'))
   end
 end

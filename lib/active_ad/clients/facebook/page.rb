@@ -46,7 +46,7 @@ class ActiveAd::Facebook::Page < ActiveAd::Base
   attribute :birthday, :string
   attribute :booking_agent, :string
   attribute :built, :string
-  attribute :business
+  attribute :business # Clashes with the `belongs_to :business` relationship. Access using `attributes['business']`.
   attribute :business_id, :big_integer
   attribute :can_checkin, :boolean
   attribute :can_post, :boolean
@@ -214,6 +214,6 @@ class ActiveAd::Facebook::Page < ActiveAd::Base
   private
 
   def set_business_id
-    assign_attributes(business_id: response.body.dig('business', 'id')) if response.success?
+    assign_attributes(business_id: attributes.dig('business', 'id'))
   end
 end

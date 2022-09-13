@@ -91,7 +91,12 @@ class ActiveAd::Base
 
     # Allows us to instantiate a known record using `.new(id: 'id', stale: true)` without needing a network request when calling `.find('id')`.
     @new_record = kwargs[:id].blank?
-    clear_changes_information if kwargs[:stale].present?
+
+    if kwargs[:stale].present?
+      run_callbacks(:find) do
+        clear_changes_information
+      end
+    end
   end
 
   class << self
@@ -381,11 +386,11 @@ class ActiveAd::Base
     run_callbacks(:find) do
       ActiveAd.logger.debug("Calling read_request with id: #{id}; kwargs: #{kwargs}")
       @response = request(read_request(**kwargs))
-    end
 
-    if response.success?
-      assign_attributes(response.body)
-      clear_changes_information
+      if response.success?
+        assign_attributes(response.body)
+        clear_changes_information
+      end
     end
 
     self

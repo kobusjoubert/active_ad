@@ -22,7 +22,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   #
   # alias_attribute :platform_attribute, :active_ad_attribute
   alias_attribute :adlabels, :ad_labels
-  # alias_attribute :adset, :ad_set # Clashes with the `belongs_to :ad_set` relationship.
+  alias_attribute :adset, :ad_set # Clashes with the `belongs_to :ad_set` relationship.
   alias_attribute :adset_id, :ad_set_id
   alias_attribute :adset_spec, :ad_set_spec
   alias_attribute :created_time, :created_at
@@ -35,12 +35,12 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   attribute :ad_creative_id, :big_integer
   attribute :ad_review_feedback
   attribute :ad_labels, array: true
-  # attribute :ad_set # Clashes with the `belongs_to :ad_set` relationship.
+  attribute :ad_set # Clashes with the `belongs_to :ad_set` relationship. Access using `attributes['ad_set']`.
   attribute :ad_set_id, :big_integer
   attribute :ad_set_spec
   attribute :audience_id, :big_integer # Facebook docs specify 'string' in some parts, and 'integer' in other parts.
   attribute :bid_amount, :integer
-  # attribute :campaign # Clashes with the `belongs_to :campaign` relationship.
+  attribute :campaign # Clashes with the `belongs_to :campaign` relationship. Access using `attributes['campaign']`.
   attribute :campaign_id, :big_integer
   attribute :configured_status, :string
   attribute :conversion_domain, :string
@@ -144,7 +144,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Base
   end
 
   def set_ad_creative_id
-    assign_attributes(ad_creative_id: response.body.dig('creative', 'id')) if response.success?
+    assign_attributes(ad_creative_id: attributes.dig('creative', 'id'))
   end
 
   def check_response_success
