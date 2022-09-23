@@ -179,7 +179,7 @@ class ActiveAd::Base
     # Returns object or blank object.
     def create(**kwargs)
       object = new(**kwargs)
-      (object.save(**kwargs) && object) || new
+      (object.save(**kwargs) && object) || new.tap { |empty_object| empty_object.errors.merge!(object.errors) }
     end
 
     # Returns object or exception.
@@ -254,7 +254,7 @@ class ActiveAd::Base
   def save!(**kwargs)
     return true if save(**kwargs)
 
-    raise ActiveAd::RecordInvalid.new(self) if errors.any?
+    raise ActiveAd::RecordInvalid.new(self) if errors.any? && !errors.of_kind?(:base, :api)
     raise ActiveAd::RecordNotSaved.new(self, @response)
   end
 

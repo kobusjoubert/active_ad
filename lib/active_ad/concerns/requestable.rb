@@ -40,6 +40,8 @@ module ActiveAd::Requestable
         "#{ANSI_COLORS[:yellow]}  ActiveAd  #{request_method.upcase} #{url} with options: #{ActiveAd.parameter_filter.filter(options)} failed with reason: " \
         "#{response.body}#{ANSI_COLORS[:reset]}"
       )
+
+      errors.add(:base, :api, message: api_error_message(response))
     end
 
     response
@@ -65,6 +67,10 @@ module ActiveAd::Requestable
     kwargs.deep_transform_keys do |key|
       (klass.attribute_aliases[key] || key).to_sym
     end
+  end
+
+  def api_error_message(response)
+    raise NotImplementedError, 'Subclasses must implement a api_error_message method'
   end
 
   def request_log_color(request_method)

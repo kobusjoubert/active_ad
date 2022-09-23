@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Page < ActiveAd::Base
+class ActiveAd::Facebook::Page < ActiveAd::Facebook::Base
   # Reference: [https://developers.facebook.com/docs/graph-api/reference/page/], [https://developers.facebook.com/docs/graph-api/reference/user/accounts/]
   READ_FIELDS = %i[
     id about access_token ad_campaign affiliation app_id artists_we_like attire awards band_interests band_members best_page bio birthday booking_agent built

@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Account < ActiveAd::Base
+class ActiveAd::Facebook::Account < ActiveAd::Facebook::Base
   # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-account/]
   #
   # Requesting the following fields causes status `400` error with messages.

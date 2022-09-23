@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Pixel < ActiveAd::Base
+class ActiveAd::Facebook::Pixel < ActiveAd::Facebook::Base
   # References:
   # - [https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/]
   # - [https://developers.facebook.com/docs/marketing-api/reference/ad-account/adspixels/]

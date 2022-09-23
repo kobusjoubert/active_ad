@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::AdCreative < ActiveAd::Base
+class ActiveAd::Facebook::AdCreative < ActiveAd::Facebook::Base
   # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-creative/]
   #
   # Requesting the following fields causes status `400` error with messages.

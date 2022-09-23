@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::CustomAudience < ActiveAd::Base
+class ActiveAd::Facebook::CustomAudience < ActiveAd::Facebook::Base
   # References:
   # - [https://developers.facebook.com/docs/marketing-api/reference/custom-audience/]
   # - [https://developers.facebook.com/docs/marketing-api/reference/ad-account/customaudiences/]

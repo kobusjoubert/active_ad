@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Ad < ActiveAd::Base
+class ActiveAd::Facebook::Ad < ActiveAd::Facebook::Base
   # Reference: [https://developers.facebook.com/docs/marketing-api/reference/adgroup/]
   #
   # Attributes that clashes with the relational methods.

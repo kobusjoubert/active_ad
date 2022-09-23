@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::SavedAudience < ActiveAd::Base
+class ActiveAd::Facebook::SavedAudience < ActiveAd::Facebook::Base
   # References:
   # - [https://developers.facebook.com/docs/marketing-api/reference/saved-audience/]
   # - [https://developers.facebook.com/docs/marketing-api/audiences/overview/]

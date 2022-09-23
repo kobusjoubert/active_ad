@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::User < ActiveAd::Base
+class ActiveAd::Facebook::User < ActiveAd::Facebook::Base
   # Reference: [https://developers.facebook.com/docs/graph-api/reference/user/]
 
   # The public_profile permission allows apps to read the following fields: id, first_name, last_name, middle_name, name, name_format, picture & short_name.

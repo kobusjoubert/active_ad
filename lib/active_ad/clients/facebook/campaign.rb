@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Campaign < ActiveAd::Base
+class ActiveAd::Facebook::Campaign < ActiveAd::Facebook::Base
   # Reference: [https://developers.facebook.com/docs/marketing-api/reference/ad-campaign-group/]
   READ_FIELDS = %i[
     id account_id ad_strategy_id adlabels bid_strategy boosted_object_id brand_lift_studies budget_rebalance_flag budget_remaining buying_type

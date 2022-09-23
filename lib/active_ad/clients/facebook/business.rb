@@ -1,4 +1,4 @@
-class ActiveAd::Facebook::Business < ActiveAd::Base
+class ActiveAd::Facebook::Business < ActiveAd::Facebook::Base
   # References:
   # - [https://developers.facebook.com/docs/marketing-api/business-manager/get-started]
   # - [https://developers.facebook.com/docs/business-management-apis]
