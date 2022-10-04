@@ -8,7 +8,7 @@ class ActiveAd::Base
 
   RESERVED_ATTRIBUTES = %i[validate stale].freeze
 
-  attr_reader :response
+  attr_reader :response, :stale
 
   attribute :client
 
@@ -88,11 +88,11 @@ class ActiveAd::Base
 
   def initialize(**kwargs)
     super
-
     # Allows us to instantiate a known record using `.new(id: 'id', stale: true)` without needing a network request when calling `.find('id')`.
     @new_record = kwargs[:id].blank?
+    @stale      = kwargs[:stale].present?
 
-    if kwargs[:stale].present?
+    if stale
       run_callbacks(:find) do
         clear_changes_information
       end
