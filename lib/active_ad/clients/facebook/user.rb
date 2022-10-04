@@ -11,6 +11,7 @@ class ActiveAd::Facebook::User < ActiveAd::Facebook::Base
 
   has_many :pages
   has_many :businesses
+  has_many :permissions
 
   attribute :id, :big_integer
   attribute :about, :string
