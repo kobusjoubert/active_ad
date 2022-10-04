@@ -206,7 +206,7 @@ class ActiveAd::Facebook::Account < ActiveAd::Facebook::Base
   end
 
   def set_business_id
-    assign_attributes(business_id: attributes.dig('business', 'id'))
+    assign_attributes(business_id: attributes.dig('business', 'id')) unless stale && business_id
   end
 
   # Remove 'act_' prefixes from the 'id' attribute.

@@ -92,6 +92,6 @@ class ActiveAd::Facebook::SavedAudience < ActiveAd::Facebook::Base
   private
 
   def set_account_id
-    assign_attributes(account_id: attributes.dig('account', 'account_id'))
+    assign_attributes(account_id: attributes.dig('account', 'account_id')) unless stale && account_id
   end
 end

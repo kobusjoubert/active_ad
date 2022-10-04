@@ -150,10 +150,10 @@ class ActiveAd::Facebook::Pixel < ActiveAd::Facebook::Base
   end
 
   def set_account_id
-    assign_attributes(account_id: attributes.dig('owner_ad_account', 'account_id'))
+    assign_attributes(account_id: attributes.dig('owner_ad_account', 'account_id')) unless stale && account_id
   end
 
   def set_business_id
-    assign_attributes(business_id: attributes.dig('owner_business', 'id'))
+    assign_attributes(business_id: attributes.dig('owner_business', 'id')) unless stale && business_id
   end
 end

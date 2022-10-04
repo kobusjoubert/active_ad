@@ -60,7 +60,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Facebook::Base
   attribute :name, :string
   attribute :page_id, :big_integer
   attribute :payment_account_id, :big_integer
-  attribute :primary_page # {'name'=>'Page Name', 'id'=>'123'}
+  attribute :primary_page # {'name'=>'Page Name', 'id'=>'123'}. When updating, set only the page id, primary_page: '123'.
   attribute :profile_picture_uri, :string
   attribute :sales_rep_email, :string
   attribute :survey_business_type, :string
@@ -173,10 +173,10 @@ class ActiveAd::Facebook::Business < ActiveAd::Facebook::Base
   end
 
   def set_user_id
-    assign_attributes(user_id: attributes.dig('created_by', 'id'))
+    assign_attributes(user_id: attributes.dig('created_by', 'id')) unless stale && user_id
   end
 
   def set_page_id
-    assign_attributes(page_id: attributes.dig('primary_page', 'id'))
+    assign_attributes(page_id: attributes.dig('primary_page', 'id')) unless stale && page_id
   end
 end

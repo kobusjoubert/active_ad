@@ -144,7 +144,7 @@ class ActiveAd::Facebook::Ad < ActiveAd::Facebook::Base
   end
 
   def set_ad_creative_id
-    assign_attributes(ad_creative_id: attributes.dig('creative', 'id'))
+    assign_attributes(ad_creative_id: attributes.dig('creative', 'id')) unless stale && ad_creative_id
   end
 
   def check_response_success
