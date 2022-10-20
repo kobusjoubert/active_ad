@@ -75,7 +75,7 @@ Validation callbacks run before any mutating request is sent to the external API
 ```ruby
 begin
   record.save!
-rescue RecordInvalid => e
+rescue ActiveAd::RecordInvalid => e
   puts e.record.errors
 end
 ```
@@ -86,7 +86,7 @@ attribute which can be inspected.
 ```ruby
 begin
   record.save!
-rescue RecordNotSaved => e
+rescue ActiveAd::RecordNotSaved => e
   puts "#{e.response.status} #{e.response.reason_phrase}: #{e.response.body}"
   puts e.record.attributes
 end
