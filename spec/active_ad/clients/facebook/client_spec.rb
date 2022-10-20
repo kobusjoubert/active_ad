@@ -11,7 +11,7 @@ RSpec.describe ActiveAd::Facebook::Client do
 
   describe '#api_version' do
     it 'returns the api version' do
-      expect(client.api_version).to eq('13.0')
+      expect(client.api_version).to eq('15.0')
     end
   end
 
