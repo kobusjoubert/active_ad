@@ -177,6 +177,7 @@ class ActiveAd::Facebook::Business < ActiveAd::Facebook::Base
   end
 
   def set_page_id
-    assign_attributes(page_id: attributes.dig('primary_page', 'id')) unless stale && page_id
+    # When creating a business, the `primary_page` attribute will be set as a string, not a hash.
+    assign_attributes(page_id: attributes.dig('primary_page', 'id')) unless stale && (page_id || primary_page.is_a?(String))
   end
 end
