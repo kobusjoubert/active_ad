@@ -88,6 +88,8 @@ class ActiveAd::Base
 
   def initialize(**kwargs)
     super
+    # kwargs.symbolize_keys! # TODO: Not too sure how I feel about this yet.
+
     # Allows us to instantiate a known record using `.new(id: 'id', stale: true)` without needing a network request when calling `.find('id')`.
     @new_record = kwargs[:id].blank?
     @stale      = kwargs[:stale].present?

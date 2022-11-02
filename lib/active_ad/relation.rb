@@ -60,7 +60,13 @@ class ActiveAd::Relation
       if attributes
         yield new_object(attributes)
       else
-        index = 0
+
+
+        # break if index.zero? # TODO: And remove above's 'break unless attributes'.
+        index = 0 # TODO: Setting this to 0, then incrementing it to 1 below and using it above 'index_response_data(index)' means we will always skip [0].
+        # index = -1
+
+
         offset = index_response_offset
         break if offset.values.last.blank?
 
@@ -74,6 +80,11 @@ class ActiveAd::Relation
       total += 1
       break if total >= limit_value
     end
+  end
+
+  # TODO: Implement in subclasses with a smaller request payload.
+  def size
+    count
   end
 
   def limit(value)

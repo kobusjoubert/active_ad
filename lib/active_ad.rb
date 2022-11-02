@@ -15,6 +15,7 @@ module ActiveAd
   include ActiveSupport::Configurable
 
   config_accessor :raise_relational_errors, instance_accessor: false, default: true
+  config_accessor :log_level, instance_accessor: false, default: :debug # See [https://github.com/guard/listen/tree/v3.7.1]
 
   class << self
     # Returns the current ActiveAd environment. Set to `development` only when requested.
@@ -50,7 +51,9 @@ module ActiveAd
   end
 end
 
-ActiveAd.logger.level = ActiveAd.env.development? ? Logger::DEBUG : Logger::INFO
+# ActiveAd.logger.level = ActiveAd.env.development? ? Logger::DEBUG : Logger::INFO
+ActiveAd.logger.level = "Logger::#{ActiveAd.config.log_level.to_s.upcase}".constantize
+# Rails.logger.level = ActiveSupport::Logger.const_get(config.log_level.to_s.upcase)
 
 require 'zeitwerk'
 
