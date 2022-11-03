@@ -102,6 +102,7 @@ ads = ActiveAd::Facebook::Ad.limit(10, client: client)
 loop do
   ads.map { |ad| ad.id }
   break unless (offset = ads.next_offset_value)
+
   ads = ads.offset(offset)
 end
 ```

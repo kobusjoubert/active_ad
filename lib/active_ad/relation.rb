@@ -51,32 +51,22 @@ class ActiveAd::Relation
         ActiveAd.raise_relational_errors ? raise(ActiveAd::RelationNotFound.new(self, index_response)) : break
       end
 
-      # It is possible to get back less results than what was requested for.
       attributes = index_response_data(index)
-      break unless attributes
-
-      attributes.merge!(relational_attributes)
 
       if attributes
+        attributes.merge!(relational_attributes)
         yield new_object(attributes)
+        index += 1
       else
+        break if index.zero?
 
-
-        # break if index.zero? # TODO: And remove above's 'break unless attributes'.
-        index = 0 # TODO: Setting this to 0, then incrementing it to 1 below and using it above 'index_response_data(index)' means we will always skip [0].
-        # index = -1
-
-
-        offset = index_response_offset
-        break if offset.values.last.blank?
-
-        request_kwargs = kwargs.merge(offset)
+        request_kwargs = kwargs.merge(index_response_offset)
         ActiveAd.logger.debug("Calling index_request with kwargs: #{request_kwargs}")
         @_index_response = request(klass.index_request(client:, **request_kwargs))
         @next_offset_value = index_response_offset.values.first
+        index = 0
       end
 
-      index += 1
       total += 1
       break if total >= limit_value
     end
