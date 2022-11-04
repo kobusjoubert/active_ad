@@ -64,6 +64,7 @@ Defatault configuration options to be set in an initializer somewhere. If you're
 
 ```ruby
 ActiveAd.configure do |config|
+  config.log_level = :debug # Log levels are :debug, :info, :warn, :error, :fatal and :unknown.
   config.raise_relational_errors = true # Return nil or raise an exception when relational models aren't found? Eg: 'campaign.account', 'account.campaigns'.
 end
 ```

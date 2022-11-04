@@ -10,14 +10,27 @@ require 'active_support/configurable'
 require 'active_model'
 require 'faraday'
 require 'faraday_middleware'
+require 'zeitwerk'
+
+Zeitwerk::Loader.for_gem.tap do |loader|
+  loader.push_dir("#{__dir__}/active_ad/concerns", namespace: ActiveAd)
+  loader.push_dir("#{__dir__}/active_ad/clients", namespace: ActiveAd)
+  loader.push_dir("#{__dir__}/active_ad/validators")
+  loader.ignore("#{__dir__}/error.rb")
+  loader.enable_reloading
+end.setup
+
+ActiveModel::Type.register(:enum, ActiveAd::Type::Enum)
 
 module ActiveAd
   include ActiveSupport::Configurable
 
   config_accessor :raise_relational_errors, instance_accessor: false, default: true
-  config_accessor :log_level, instance_accessor: false, default: :debug # See [https://github.com/guard/listen/tree/v3.7.1]
+  config_accessor :log_level, instance_accessor: false, default: :debug
 
   class << self
+    attr_writer :logger
+
     # Returns the current ActiveAd environment. Set to `development` only when requested.
     #
     #   ActiveAd.env # => 'development'
@@ -41,44 +54,23 @@ module ActiveAd
       end
     end
 
-    def logger
-      @_logger ||= Logger.new($stdout)
-    end
-
     def parameter_filter
       @_parameter_filter ||= ActiveSupport::ParameterFilter.new([/_secret/i, /_token/i])
+    end
+
+    def logger
+      @logger ||= Logger.new($stdout, level: "Logger::#{ActiveAd.config.log_level.to_s.upcase}".constantize)
     end
   end
 end
 
-# ActiveAd.logger.level = ActiveAd.env.development? ? Logger::DEBUG : Logger::INFO
-ActiveAd.logger.level = "Logger::#{ActiveAd.config.log_level.to_s.upcase}".constantize
-# Rails.logger.level = ActiveSupport::Logger.const_get(config.log_level.to_s.upcase)
+require 'debug' if ActiveAd.env.development?
 
-require 'zeitwerk'
-
-loader = Zeitwerk::Loader.for_gem
-loader.push_dir("#{__dir__}/active_ad/concerns", namespace: ActiveAd)
-loader.push_dir("#{__dir__}/active_ad/clients", namespace: ActiveAd)
-loader.push_dir("#{__dir__}/active_ad/validators")
-
-if ActiveAd.env.development?
-  loader.log!
-  loader.enable_reloading
+Zeitwerk::Loader.for_gem.tap do |loader|
+  if ActiveAd.env.development?
+    require 'listen'
+    Listen.to('lib') { loader.reload }.start
+    loader.log! if ActiveAd.config.log_level == :debug
+    loader.eager_load # Optional, useful to test all files while developing.
+  end
 end
-
-loader.setup
-
-if ActiveAd.env.development?
-  require 'debug'
-  require 'listen'
-  Listen.to('lib') { loader.reload }.start
-end
-
-ActiveModel::Type.register(:enum, ActiveAd::Type::Enum)
-
-# The documentation says to put your code here, but some have reported problems in production, which is why it's at the top for now.
-# [https://rewind.com/blog/zeitwerk-autoloader-rails-app/]
-# module ActiveAd; end
-
-loader.eager_load # Optional, useful to test all files while developing.
