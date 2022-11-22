@@ -60,10 +60,12 @@ class ActiveAd::Relation
       else
         break if index.zero?
 
+        @next_offset_value = index_response_offset.values.first
+        break unless next_offset_value
+
         request_kwargs = kwargs.merge(index_response_offset)
         ActiveAd.logger.debug("Calling index_request with kwargs: #{request_kwargs}")
         @_index_response = request(klass.index_request(client:, **request_kwargs))
-        @next_offset_value = index_response_offset.values.first
         index = 0
       end
 
