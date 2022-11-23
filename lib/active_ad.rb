@@ -20,6 +20,8 @@ Zeitwerk::Loader.for_gem.tap do |loader|
   loader.enable_reloading
 end.setup
 
+require_relative 'active_ad/error.rb'
+
 ActiveModel::Type.register(:enum, ActiveAd::Type::Enum)
 
 module ActiveAd
