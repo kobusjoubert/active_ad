@@ -7,6 +7,7 @@ require 'rubocop/rake_task'
 
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.patterns = ['lib/**/*.rb', 'spec/**/*.rb']
+  task.options =  ['--config', '.rubocop.yml']
 end
 
 task default: %i[spec rubocop]

@@ -94,10 +94,10 @@ class ActiveAd::Base
     @new_record = kwargs[:id].blank?
     @stale      = kwargs[:stale].present?
 
-    if stale
-      run_callbacks(:find) do
-        clear_changes_information
-      end
+    return unless stale
+
+    run_callbacks(:find) do
+      clear_changes_information
     end
   end
 

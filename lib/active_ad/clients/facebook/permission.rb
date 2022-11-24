@@ -46,7 +46,6 @@ class ActiveAd::Facebook::Permission < ActiveAd::Facebook::Base
   end
 
   def delete_request
-    raise ActiveAd::RequestError, 'Cannot delete a permission'
     {
       delete: "#{client.base_url}/#{id}/permissions/#{permission}",
       params: { access_token: client.access_token }

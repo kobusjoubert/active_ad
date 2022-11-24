@@ -20,7 +20,7 @@ Zeitwerk::Loader.for_gem.tap do |loader|
   loader.enable_reloading
 end.setup
 
-require_relative 'active_ad/error.rb'
+require_relative 'active_ad/error'
 
 ActiveModel::Type.register(:enum, ActiveAd::Type::Enum)
 
@@ -31,8 +31,6 @@ module ActiveAd
   config_accessor :log_level, instance_accessor: false, default: :debug
 
   class << self
-    attr_writer :logger
-
     # Returns the current ActiveAd environment. Set to `development` only when requested.
     #
     #   ActiveAd.env # => 'development'
@@ -61,7 +59,11 @@ module ActiveAd
     end
 
     def logger
-      @logger ||= Logger.new($stdout, level: "Logger::#{ActiveAd.config.log_level.to_s.upcase}".constantize)
+      @_logger ||= Logger.new($stdout, level: "Logger::#{ActiveAd.config.log_level.to_s.upcase}".constantize)
+    end
+
+    def logger=(logger)
+      @_logger = logger
     end
   end
 end
