@@ -344,7 +344,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#campaigns' do
     it 'returns a relation' do
-      expect(account_101.campaigns).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.campaigns).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -364,7 +364,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#custom_audiences' do
     it 'returns a relation' do
-      expect(account_101.custom_audiences).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.custom_audiences).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -384,7 +384,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#ad_sets' do
     it 'returns a relation' do
-      expect(account_101.ad_sets).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.ad_sets).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -404,7 +404,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#ads' do
     it 'returns a relation' do
-      expect(account_101.ads).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.ads).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -424,7 +424,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#ad_creatives' do
     it 'returns a relation' do
-      expect(account_101.ad_creatives).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.ad_creatives).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -444,7 +444,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#pixels' do
     it 'returns a relation' do
-      expect(account_101.pixels).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.pixels).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -464,7 +464,7 @@ RSpec.describe ActiveAd::Facebook::Account do
 
   describe '#saved_audiences' do
     it 'returns a relation' do
-      expect(account_101.saved_audiences).to be_a_kind_of(ActiveAd::Relation)
+      expect(account_101.saved_audiences).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do

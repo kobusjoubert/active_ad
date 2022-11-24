@@ -358,7 +358,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#ad_sets' do
     it 'returns a relation' do
-      expect(campaign_101.ad_sets).to be_a_kind_of(ActiveAd::Relation)
+      expect(campaign_101.ad_sets).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do
@@ -378,7 +378,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
 
   describe '#ads' do
     it 'returns a relation' do
-      expect(campaign_101.ads).to be_a_kind_of(ActiveAd::Relation)
+      expect(campaign_101.ads).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do

@@ -287,7 +287,7 @@ RSpec.describe ActiveAd::Facebook::Business do
 
   describe '#accounts' do
     it 'returns a relation' do
-      expect(business_101.accounts).to be_a_kind_of(ActiveAd::Relation)
+      expect(business_101.accounts).to be_a(ActiveAd::Relation)
     end
 
     it 'returns the objects when invoked' do

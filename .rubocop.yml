@@ -137,7 +137,7 @@ Metrics/ClassLength:
 
 Metrics/CyclomaticComplexity:
   Max: 8
-  IgnoredMethods:
+  AllowedMethods:
     - save
 
 Metrics/MethodLength:
@@ -154,7 +154,7 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Exclude:
     - lib/active_ad/base.rb
-  IgnoredMethods:
+  AllowedMethods:
     - each
 
 Naming/MemoizedInstanceVariableName:
@@ -225,7 +225,7 @@ Style/BlockComments:
     - spec/spec_helper.rb
 
 Style/BlockDelimiters:
-  IgnoredMethods:
+  AllowedMethods:
     - let_it_be
     - let
     - expect
