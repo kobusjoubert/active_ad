@@ -786,16 +786,6 @@ Run console like so while extending and testing the gem.
 ACTIVE_AD_ENV=development bin/console
 ```
 
-## Logger
-
-The default log level while working in the development environment is set to `DEBUG`, for all other instances it's set to `INFO`.
-
-If the logger gets too noisy while developing, you can change the log level.
-
-```ruby
-ActiveAd.logger.level = Logger::INFO
-```
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/kobusjoubert/active_ad. This project is intended to be a safe, welcoming space for collaboration, and contributors are
