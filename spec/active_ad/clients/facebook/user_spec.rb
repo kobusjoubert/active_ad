@@ -13,6 +13,12 @@ RSpec.describe ActiveAd::Facebook::User do
   let(:user_901) { described_class.new(id: '901', stale: true, client:) }
 
   # GET read_request.
+  let(:stub_read_me) {
+    stub_request(:get, "#{client.base_url}/me")
+      .with(query: hash_including(access_token: 'secret_access_token'))
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '100', name: 'Me' }.to_json)
+  }
+
   let(:stub_read_101) {
     stub_request(:get, "#{client.base_url}/101")
       .with(query: hash_including(access_token: 'secret_access_token'))
@@ -29,6 +35,11 @@ RSpec.describe ActiveAd::Facebook::User do
     it 'returns an object when found' do
       stub_read_101
       expect(described_class.find('101', client:)).to be_an_instance_of(ActiveAd::Facebook::User)
+    end
+
+    it 'returns an object when found using me' do
+      stub_read_me
+      expect(described_class.find('me', client:)).to be_an_instance_of(ActiveAd::Facebook::User)
     end
 
     it 'returns nil when not found' do

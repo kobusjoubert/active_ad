@@ -54,7 +54,7 @@ module ActiveAd
           # conn.response :follow_redirects # Follow redirects
           conn.response :json # Decode response bodies as JSON
           conn.response :logger, logger, **logger_options do |logger|
-            logger.filter(/(_secret|_token)=([^\&]+)/i, '\1=[FILTERED]')
+            logger.filter(/(_secret|_token)=([^&]+)/i, '\1=[FILTERED]')
             logger.filter(/(_secret:|_token:).*"(.+)."/i, '\1 [FILTERED]')
           end
           conn.adapter Faraday.default_adapter

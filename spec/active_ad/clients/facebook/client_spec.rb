@@ -49,27 +49,4 @@ RSpec.describe ActiveAd::Facebook::Client do
       expect(client.access_token).to eq('refreshed_secret_access_token')
     end
   end
-
-  describe '#user', skip: true do
-    before(:all) do
-      ActiveAd::Facebook.configure do |config|
-        config.app_id     = 'client_100'
-        config.app_secret = '1a2b3c'
-      end
-    end
-
-    before(:each) do
-      stub_request(:get, "#{client.base_url}/me")
-        .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '100', name: 'User Name' }.to_json)
-    end
-
-    it 'returns the object type' do
-      expect(client.user.class).to be(ActiveAd::Facebook::User)
-    end
-
-    it 'returns the object' do
-      expect(client.user.name).to eq('User Name')
-    end
-  end
 end
