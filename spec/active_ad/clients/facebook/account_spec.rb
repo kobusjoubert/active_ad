@@ -16,20 +16,20 @@ RSpec.describe ActiveAd::Facebook::Account do
   let(:stub_read_101) {
     stub_request(:get, "#{client.base_url}/act_101")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { id: 'act_101', name: 'Account Name' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: 'act_101', name: 'Account Name' }.to_json)
   }
 
   let(:stub_read_901) {
     stub_request(:get, "#{client.base_url}/act_901")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 404, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 404, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   # POST create_request.
   let(:stub_create_100) {
     stub_request(:post, "#{client.base_url}/100/adaccount")
       .with(body: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { id: 'act_101' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: 'act_101' }.to_json)
   }
 
   let(:stub_create_100_with_attributes) {
@@ -37,26 +37,26 @@ RSpec.describe ActiveAd::Facebook::Account do
       .with(body: hash_including(
         access_token: 'secret_access_token', name: 'Account Name', currency: 'USD', timezone_id: 0, partner: 'NONE', media_agency: 'NONE',
         end_advertiser: 'NONE'))
-      .to_return(status: 200, body: { id: 'act_101' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: 'act_101' }.to_json)
   }
 
   let(:stub_create_900) {
     stub_request(:post, "#{client.base_url}/900/adaccount")
       .with(body: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 400, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 400, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   # POST update_request.
   let(:stub_update_101) {
     stub_request(:post, "#{client.base_url}/act_101")
       .with(body: hash_including(access_token: 'secret_access_token', name: 'New Account Name'))
-      .to_return(status: 200, body: { success: true }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { success: true }.to_json)
   }
 
   let(:stub_update_901) {
     stub_request(:post, "#{client.base_url}/act_901")
       .with(body: hash_including(access_token: 'secret_access_token', name: 'New Account Name'))
-      .to_return(status: 400, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 400, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   describe '.find' do
@@ -328,7 +328,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     before(:each) do
       stub_request(:get, "#{client.base_url}/100")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: { id: '100', name: 'Business Name' }.to_json)
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '100', name: 'Business Name' }.to_json)
     end
 
     it 'returns the object type' do
@@ -350,7 +350,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/campaigns")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Campaign 1' },
             { id: '2', name: 'Campaign 2' }
@@ -370,7 +370,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/customaudiences")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Custom Audience 1' },
             { id: '2', name: 'Custom Audience 2' }
@@ -390,7 +390,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/adsets")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Ad Set 1' },
             { id: '2', name: 'Ad Set 2' }
@@ -410,7 +410,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/ads")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Ad 1' },
             { id: '2', name: 'Ad 2' }
@@ -430,7 +430,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/adcreatives")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Ad Creative 1' },
             { id: '2', name: 'Ad Creative 2' }
@@ -450,7 +450,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/adspixels")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Pixel 1' },
             { id: '2', name: 'Pixel 2' }
@@ -470,7 +470,7 @@ RSpec.describe ActiveAd::Facebook::Account do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/act_#{account_101.id}/saved_audiences")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1' },
             { id: '2' }

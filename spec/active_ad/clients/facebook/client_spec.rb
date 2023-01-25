@@ -30,7 +30,7 @@ RSpec.describe ActiveAd::Facebook::Client do
     it 'retrieves and sets a long lived access_token in exchange for a short lived access_token' do
       stub_request(:get, "#{described_class.base_url}/oauth/access_token")
         .with(query: { client_id: 'client_100', client_secret: '1a2b3c', grant_type: 'fb_exchange_token', fb_exchange_token: 'secret_short_access_token' })
-        .to_return(status: 200, body: { access_token: 'secret_access_token' }.to_json)
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { access_token: 'secret_access_token' }.to_json)
 
       client.access_token = nil
       client.short_lived_access_token = 'secret_short_access_token'
@@ -43,7 +43,7 @@ RSpec.describe ActiveAd::Facebook::Client do
     it 'retrieves and sets a refreshed long lived access_token in exchange for the current long lived access_token' do
       stub_request(:get, "#{described_class.base_url}/oauth/access_token")
         .with(query: { client_id: 'client_100', client_secret: '1a2b3c', grant_type: 'fb_exchange_token', fb_exchange_token: 'secret_access_token' })
-        .to_return(status: 200, body: { access_token: 'refreshed_secret_access_token' }.to_json)
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { access_token: 'refreshed_secret_access_token' }.to_json)
 
       client.refresh_token
       expect(client.access_token).to eq('refreshed_secret_access_token')
@@ -61,7 +61,7 @@ RSpec.describe ActiveAd::Facebook::Client do
     before(:each) do
       stub_request(:get, "#{client.base_url}/me")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: { id: '100', name: 'User Name' }.to_json)
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '100', name: 'User Name' }.to_json)
     end
 
     it 'returns the object type' do

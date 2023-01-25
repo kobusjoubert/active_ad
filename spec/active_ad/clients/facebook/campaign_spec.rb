@@ -17,20 +17,20 @@ RSpec.describe ActiveAd::Facebook::Campaign do
   let(:stub_read_101) {
     stub_request(:get, "#{client.base_url}/101")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { id: '101', name: 'Campaign Name' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '101', name: 'Campaign Name' }.to_json)
   }
 
   let(:stub_read_901) {
     stub_request(:get, "#{client.base_url}/901")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 404, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 404, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   # POST create_request.
   let(:stub_create_100) {
     stub_request(:post, "#{client.base_url}/act_100/campaigns")
       .with(body: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { id: '101' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '101' }.to_json)
   }
 
   let(:stub_create_100_with_attributes) {
@@ -38,45 +38,45 @@ RSpec.describe ActiveAd::Facebook::Campaign do
       .with(body: hash_including(
         access_token: 'secret_access_token', name: 'Campaign Name', status: 'PAUSED', objective: 'LINK_CLICKS', special_ad_categories: ['NONE'])
       )
-      .to_return(status: 200, body: { id: '101' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '101' }.to_json)
   }
 
   let(:stub_create_900) {
     stub_request(:post, "#{client.base_url}/act_900/campaigns")
       .with(body: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 400, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 400, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   # POST update_request.
   let(:stub_update_101) {
     stub_request(:post, "#{client.base_url}/101")
       .with(body: hash_including(access_token: 'secret_access_token', name: 'New Campaign Name'))
-      .to_return(status: 200, body: { success: true }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { success: true }.to_json)
   }
 
   let(:stub_update_901) {
     stub_request(:post, "#{client.base_url}/901")
       .with(body: hash_including(access_token: 'secret_access_token', name: 'New Campaign Name'))
-      .to_return(status: 400, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 400, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   # DELETE delete_request.
   let(:stub_delete_101) {
     stub_request(:delete, "#{client.base_url}/101")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { success: true }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { success: true }.to_json)
   }
 
   let(:stub_delete_801) {
     stub_request(:delete, "#{client.base_url}/801")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { success: false }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { success: false }.to_json)
   }
 
   let(:stub_delete_901) {
     stub_request(:delete, "#{client.base_url}/901")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 400, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 400, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   describe '.find' do
@@ -342,7 +342,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     before(:each) do
       stub_request(:get, "#{client.base_url}/act_100")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: { id: '100', name: 'Account Name' }.to_json)
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '100', name: 'Account Name' }.to_json)
     end
 
     it 'returns the object type' do
@@ -364,7 +364,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/#{campaign_101.id}/adsets")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Ad Set 1' },
             { id: '2', name: 'Ad Set 2' }
@@ -384,7 +384,7 @@ RSpec.describe ActiveAd::Facebook::Campaign do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/#{campaign_101.id}/ads")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Ad 1' },
             { id: '2', name: 'Ad 2' }

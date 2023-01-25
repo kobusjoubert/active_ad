@@ -77,6 +77,8 @@ Layout/HashAlignment:
   EnforcedColonStyle:
     - key
     - table
+  Exclude:
+    - lib/active_ad.rb
 
 Layout/LineLength:
   Max: 160

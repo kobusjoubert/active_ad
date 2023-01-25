@@ -16,13 +16,13 @@ RSpec.describe ActiveAd::Facebook::User do
   let(:stub_read_101) {
     stub_request(:get, "#{client.base_url}/101")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 200, body: { id: '101', name: 'User Name' }.to_json)
+      .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: { id: '101', name: 'User Name' }.to_json)
   }
 
   let(:stub_read_901) {
     stub_request(:get, "#{client.base_url}/901")
       .with(query: hash_including(access_token: 'secret_access_token'))
-      .to_return(status: 404, body: { error: { message: 'no no no!' } }.to_json)
+      .to_return(status: 404, headers: { 'Content-Type' => 'application/json' }, body: { error: { message: 'no no no!' } }.to_json)
   }
 
   describe '.find' do
@@ -63,7 +63,7 @@ RSpec.describe ActiveAd::Facebook::User do
     it 'returns the objects when invoked' do
       stub_request(:get, "#{client.base_url}/#{user_101.id}/businesses")
         .with(query: hash_including(access_token: 'secret_access_token'))
-        .to_return(status: 200, body: {
+        .to_return(status: 200, headers: { 'Content-Type' => 'application/json' }, body: {
           data: [
             { id: '1', name: 'Business 1' },
             { id: '2', name: 'Business 2' }
