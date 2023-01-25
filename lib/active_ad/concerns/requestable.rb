@@ -6,7 +6,6 @@ module ActiveAd::Requestable
   extend ActiveSupport::Concern
 
   REQUEST_METHODS = %i[get head delete trace post put patch].freeze
-  ANSI_COLORS = { red: "\e[31m", green: "\e[32m", yellow: "\e[33m", blue: "\e[34m", magenta: "\e[35m", cyan: "\e[36m", reset: "\e[0m" }.freeze
 
   # Expect a hash with the first key being one of `REQUEST_METHODS`.
   #
@@ -24,26 +23,13 @@ module ActiveAd::Requestable
 
     url = options[request_method]
 
-    ActiveAd.logger.info(
-      "#{ANSI_COLORS[:blue]}  ActiveAd #{request_log_color(request_method)} #{request_method.upcase} #{url} with options: " \
-      "#{ActiveAd.parameter_filter.filter(options)}#{ANSI_COLORS[:reset]}"
-    )
-
     response = ActiveAd.connection.send(request_method, url) do |req|
       req.headers = options[:headers] if options[:headers]
       req.params  = options[:params] if options[:params]
       req.body    = options[:body].to_json if options[:body]
     end
 
-    unless response.success?
-      ActiveAd.logger.warn(
-        "#{ANSI_COLORS[:yellow]}  ActiveAd  #{request_method.upcase} #{url} with options: #{ActiveAd.parameter_filter.filter(options)} failed with reason: " \
-        "#{response.body}#{ANSI_COLORS[:reset]}"
-      )
-
-      errors.add(:base, :api, message: api_error_message(response))
-    end
-
+    errors.add(:base, :api, message: api_error_message(response)) unless response.success?
     response
   end
 
@@ -71,18 +57,5 @@ module ActiveAd::Requestable
 
   def api_error_message(response)
     raise NotImplementedError, 'Subclasses must implement a api_error_message method'
-  end
-
-  def request_log_color(request_method)
-    case request_method
-    when :post
-      ANSI_COLORS[:green]
-    when :put, :patch
-      ANSI_COLORS[:yellow]
-    when :delete
-      ANSI_COLORS[:red]
-    else
-      ANSI_COLORS[:blue]
-    end
   end
 end

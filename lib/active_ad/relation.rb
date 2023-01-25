@@ -64,7 +64,7 @@ class ActiveAd::Relation
         break unless next_offset_value
 
         request_kwargs = kwargs.merge(index_response_offset)
-        ActiveAd.logger.debug("Calling index_request with kwargs: #{request_kwargs}")
+        ActiveAd.logger.debug("Calling index_request with kwargs: #{ActiveAd.parameter_filter.filter(request_kwargs)}")
         @_index_response = request(klass.index_request(client:, **request_kwargs))
         index = 0
       end
@@ -189,7 +189,7 @@ class ActiveAd::Relation
     kwargs.merge!(index_request_offset) if offset_value
 
     @_index_response ||= begin
-      ActiveAd.logger.debug("Calling index_request with kwargs: #{kwargs}")
+      ActiveAd.logger.debug("Calling index_request with kwargs: #{ActiveAd.parameter_filter.filter(kwargs)}")
       request(klass.index_request(client:, **kwargs))
     end
   end

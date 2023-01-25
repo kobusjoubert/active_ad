@@ -1,4 +1,6 @@
 class ActiveAd::Facebook::Client < ActiveAd::Client
+  include ActiveAd::Facebook::Requestable
+
   api_version '15.0'
   base_url "https://graph.facebook.com/v#{api_version}"
   pagination_type :cursor

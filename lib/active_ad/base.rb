@@ -220,7 +220,7 @@ class ActiveAd::Base
         run_callbacks(:create) do
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
-          ActiveAd.logger.debug("Calling create_request with kwargs: #{kwargs}")
+          ActiveAd.logger.debug("Calling create_request with kwargs: #{ActiveAd.parameter_filter.filter(kwargs)}")
           @response = request(create_request)
 
           if response.success?
@@ -234,7 +234,7 @@ class ActiveAd::Base
           return false unless changed?
           return false unless perform_validations(kwargs) # Not validating kwargs here, only checking if we need to validate at all incase of `validate: false`.
 
-          ActiveAd.logger.debug("Calling update_request with id: #{id}; kwargs: #{kwargs}")
+          ActiveAd.logger.debug("Calling update_request with id: #{id}; kwargs: #{ActiveAd.parameter_filter.filter(kwargs)}")
           @response = request(update_request)
           clear_changes_information if response.success?
         end
@@ -299,7 +299,7 @@ class ActiveAd::Base
     @response = nil
 
     run_callbacks(:link) do
-      ActiveAd.logger.debug("Calling link_request with id: #{id}; kwargs: #{kwargs}")
+      ActiveAd.logger.debug("Calling link_request with id: #{id}; kwargs: #{ActiveAd.parameter_filter.filter(kwargs)}")
       @response = request(link_request(**kwargs))
     end
 
@@ -321,7 +321,7 @@ class ActiveAd::Base
     @response = nil
 
     run_callbacks(:unlink) do
-      ActiveAd.logger.debug("Calling unlink_request with id: #{id}; kwargs: #{kwargs}")
+      ActiveAd.logger.debug("Calling unlink_request with id: #{id}; kwargs: #{ActiveAd.parameter_filter.filter(kwargs)}")
       @response = request(unlink_request(**kwargs))
     end
 
@@ -373,7 +373,7 @@ class ActiveAd::Base
       next if RESERVED_ATTRIBUTES.include?(attribute.to_sym) # Skip reserved attributes.
 
       attributes = { attribute => value }
-      ActiveAd.logger.debug("Assigning attribute with value #{attributes}")
+      ActiveAd.logger.debug("Assigning attribute with value #{ActiveAd.parameter_filter.filter(attributes)}")
       super(attributes.deep_stringify_keys) # TODO: Try attributes = attributes
     rescue ActiveModel::UnknownAttributeError
       ActiveAd.logger.warn("Tried to assign an unknown attribute (#{attribute}) to #{self.class}")
@@ -386,7 +386,7 @@ class ActiveAd::Base
     @response = nil
 
     run_callbacks(:find) do
-      ActiveAd.logger.debug("Calling read_request with id: #{id}; kwargs: #{kwargs}")
+      ActiveAd.logger.debug("Calling read_request with id: #{id}; kwargs: #{ActiveAd.parameter_filter.filter(kwargs)}")
       @response = request(read_request(**kwargs))
 
       if response.success?
